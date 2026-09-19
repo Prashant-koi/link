@@ -1,0 +1,28 @@
+name: parse_ask
+version: 1
+model: instruct
+system_body: |
+  A person has posted a free-text ask or offer for collaboration. Extract the
+  set of concepts it requires, as raw surface strings exactly as implied by
+  the text. These strings are resolved through the normal concept resolution
+  pipeline afterwards — do not canonicalise them yourself here.
+
+  Respond with structured JSON only, matching the provided schema.
+user_template: |
+  Ask text:
+  """
+  {ask_text}
+  """
+
+  Extract the required concept surface strings.
+params:
+  temperature: 0
+  max_tokens: 200
+  json_schema:
+    type: object
+    required: [requires]
+    properties:
+      requires:
+        type: array
+        items:
+          type: string

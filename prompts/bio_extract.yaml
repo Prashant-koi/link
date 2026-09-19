@@ -1,0 +1,28 @@
+name: bio_extract
+version: 1
+model: instruct
+system_body: |
+  Extract a flat list of interests, skills, research areas, and tools from a
+  messy source (a bio, lab page, or CV excerpt). Return each exactly as it
+  could plausibly have been typed by the person — do not normalise, canonicalise,
+  or invent items that are not supported by the text.
+
+  Respond with structured JSON only, matching the provided schema.
+user_template: |
+  Source text:
+  """
+  {source_text}
+  """
+
+  Extract the raw interest/skill/topic strings.
+params:
+  temperature: 0
+  max_tokens: 400
+  json_schema:
+    type: object
+    required: [items]
+    properties:
+      items:
+        type: array
+        items:
+          type: string

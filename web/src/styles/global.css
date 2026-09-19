@@ -1,0 +1,93 @@
+@import "./tokens.css";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--ink-900);
+  background: var(--surface);
+}
+
+/* Diagonal turquoise wash, fixed, fading to white before the top corner —
+   frontend handoff §2. Fixed rather than absolute so it never scrolls. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to top right, var(--tq-100) 0%, var(--tq-050) 28%, var(--surface) 58%);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: var(--tq-600);
+}
+
+/* Focus rings visible against both the wash and white cards (§9). */
+:focus-visible {
+  outline: 2px solid var(--tq-600);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+/* Connection lines draw in over 300ms, staggered 40ms apart (§9 motion
+   rules). pathLength=1 on the <line> makes stroke-dasharray/-offset
+   length-independent regardless of each line's actual pixel length. */
+@keyframes line-draw-in {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.constellation-line {
+  animation: line-draw-in 300ms ease-out both;
+}
+
+/* Person detail panel slides in over 150ms (§9 motion rules). */
+@keyframes panel-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.person-panel {
+  animation: panel-slide-in 150ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

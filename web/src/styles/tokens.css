@@ -1,0 +1,29 @@
+:root {
+  /* turquoise */
+  --tq-700: #0b6670; /* pressed states */
+  --tq-600: #0e7c86; /* accent text, links, active nav  — 4.9:1 on white */
+  --tq-500: #17a2b8; /* connection lines, borders, icons — 2.9:1, never body text */
+  --tq-300: #7fd4dc; /* weak connection lines */
+  --tq-100: #d6f1f4; /* background wash, chip fills */
+  --tq-050: #eef9fa; /* hover fills */
+
+  /* ink */
+  --ink-900: #0f1724; /* primary text */
+  --ink-600: #4a5568; /* secondary text */
+  --ink-500: #6b7280; /* de-emphasised text — 4.8:1, still readable */
+  --ink-400: #9aa3b2; /* disabled and decorative only, never information */
+  --ink-200: #e2e6ec; /* hairlines, dividers */
+
+  --surface: #ffffff;
+
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --fs-xl: 1.75rem; /* 28px  +2  page titles, the user's own name on home */
+  --fs-lg: 1.25rem; /* 20px  +1  section headings, person names in detail */
+  --fs-base: 1rem; /* 16px   0  body, list rows, everything unmarked */
+  --fs-sm: 0.875rem; /* 14px  -1  metadata, concept chips, helper text */
+  --fs-xs: 0.75rem; /* 12px  -2  timestamps, counts, captions — floor */
+
+  --lh-tight: 1.25; /* xl and lg */
+  --lh-body: 1.5; /* base and below */
+}

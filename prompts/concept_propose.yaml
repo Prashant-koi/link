@@ -1,0 +1,37 @@
+name: concept_propose
+version: 1
+model: instruct
+system_body: |
+  A raw string did not match any existing concept closely enough. Propose a
+  new canonical concept for it: a short label, a one-line definition written
+  so it embeds well (state what the concept is, not just its name), and,
+  optionally, a broader parent chosen by index from the candidate list you
+  are given. You never emit a concept id — parent is chosen by index, or
+  omitted if nothing is a reasonable parent.
+
+  Respond with structured JSON only, matching the provided schema.
+user_template: |
+  Raw string: "{raw_text}"
+
+  Candidate parents:
+  {candidate_list}
+
+  Propose a canonical concept for the raw string.
+params:
+  temperature: 0.2
+  max_tokens: 200
+  json_schema:
+    type: object
+    required: [label, definition, confidence]
+    properties:
+      label:
+        type: string
+      definition:
+        type: string
+      parent_choice:
+        type: integer
+        description: index into the candidate parent list, or -1 for none
+      confidence:
+        type: number
+        minimum: 0
+        maximum: 1

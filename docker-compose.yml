@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: link
+      POSTGRES_PASSWORD: link
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    command: npm run start:api
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:link@postgres:5432/link
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  resolution-worker:
+    build: .
+    command: npm run start:resolution-worker
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:link@postgres:5432/link
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Ingest worker is on-demand/batch (see runtime roles table in the backend
+  # handoff), not a long-running service — run it ad hoc:
+  #   docker compose run --rm ingest-worker path/to/batch.jsonl
+  ingest-worker:
+    build: .
+    command: npm run start:ingest-worker
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://postgres:link@postgres:5432/link
+    profiles: ["tools"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Model runtime (vLLM/Ollama) runs on the GX10, not in this compose file —
+  # point LLM_BASE_URL in .env at it. Nothing above assumes it's local.
+
+volumes:
+  pg-data:

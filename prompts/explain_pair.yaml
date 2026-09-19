@@ -1,0 +1,27 @@
+name: explain_pair
+version: 1
+model: instruct
+system_body: |
+  Write one short, plain-English sentence explaining why two people might
+  want to connect, given the evidence path between them. Do not invent
+  anything beyond the evidence provided. This is render-time only: you are
+  not deciding whether they should connect, only describing why the system
+  suggested it.
+
+  Respond with structured JSON only, matching the provided schema.
+user_template: |
+  Evidence path:
+  {evidence_path}
+
+  (graph version: {graph_version})
+
+  Write the one-sentence explanation.
+params:
+  temperature: 0.3
+  max_tokens: 120
+  json_schema:
+    type: object
+    required: [prose]
+    properties:
+      prose:
+        type: string
