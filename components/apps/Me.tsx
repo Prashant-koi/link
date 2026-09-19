@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useOS } from "@/lib/client/store";
 import { colorFor } from "@/lib/client/api";
 import { useFetch, Loading, Panel } from "./ui";
@@ -20,6 +21,19 @@ export function Me() {
     "/api/apps/goals",
   );
 
+  /* Every recommendation hangs off one person, so drawing all 30 gives a ring
+     of unreadable labels — the list below is the complete answer, the graph
+     shows the strongest connections. Memoised because a fresh object on each
+     render restarts the force simulation, which then never settles. */
+  const graph = useMemo(() => {
+    if (!data) return { nodes: [], links: [] };
+    const top = new Set(data.ranked.slice(0, 14).map((r) => r.node.id));
+    return {
+      nodes: data.subgraph.nodes.filter((n) => n.id === scope?.personId || top.has(n.id)),
+      links: data.subgraph.links.filter((l) => top.has(l.target) || top.has(l.source)),
+    };
+  }, [data, scope?.personId]);
+
   if (loading || error) return <Loading loading={loading} error={error} />;
   if (!data) return null;
 
@@ -29,6 +43,7 @@ export function Me() {
     if (!byLabel.has(r.node.label)) byLabel.set(r.node.label, []);
     byLabel.get(r.node.label)!.push(r);
   }
+
 
   return (
     <div className="grid h-full grid-cols-2">
@@ -88,9 +103,9 @@ export function Me() {
         ))}
       </div>
 
-      <div className="border-l border-white/10">
+      <div className="min-w-0 overflow-hidden border-l border-white/10">
         <GraphView
-          data={data.subgraph}
+          data={graph}
           highlight={scope?.personId}
           onNodeClick={(id) => open("node", "Node", { id })}
         />

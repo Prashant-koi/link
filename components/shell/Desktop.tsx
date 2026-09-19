@@ -7,6 +7,7 @@ import type { Scope } from "@/lib/auth/roles";
 import { Dock } from "./Dock";
 import { CommandBar } from "./CommandBar";
 import { WindowFrame } from "./WindowFrame";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { Compass } from "@/components/apps/Compass";
 import { Me } from "@/components/apps/Me";
 import { Courses } from "@/components/apps/Courses";
@@ -105,7 +106,7 @@ export function Desktop() {
       <div className="absolute inset-0 pt-8">
         {windows.map((w) => (
           <WindowFrame key={w.key} win={w}>
-            {render(w)}
+            <ErrorBoundary label={w.title}>{render(w)}</ErrorBoundary>
           </WindowFrame>
         ))}
       </div>

@@ -100,7 +100,7 @@ export function Compass({ seedQuery }: { seedQuery?: string }) {
       )}
 
       <div className="grid min-h-0 flex-1 grid-cols-5">
-        <div className="col-span-3 border-r border-white/10">
+        <div className="col-span-3 min-w-0 overflow-hidden border-r border-white/10">
           <GraphView data={graph} onNodeClick={(id) => open("node", "Node", { id })} />
         </div>
         <div className="col-span-2 flex min-h-0 flex-col overflow-auto p-3 text-sm">

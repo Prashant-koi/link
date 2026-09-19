@@ -31,6 +31,14 @@ Then open **http://localhost:3000** and pick a persona. Neo4j Browser is on
 | `docker compose logs -f app` | App logs, including every AI tool call |
 | `docker compose down` | Stop everything (`-v` also drops the graph) |
 
+**After changing dependencies**, rebuild *and* replace the container's
+`node_modules`, which lives in an anonymous volume that survives a plain
+rebuild:
+
+```bash
+docker compose up -d --build --renew-anon-volumes app
+```
+
 Override anything through the environment or `.env`: `APP_PORT`, `NEO4J_PASSWORD`,
 `JWT_SECRET`, `LLM_BASE_URL`, `LLM_MODEL`. Note that inside a container a vLLM
 running on your laptop is `http://host.docker.internal:8000/v1`, not `localhost`.

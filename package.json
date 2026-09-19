@@ -18,9 +18,11 @@
     "down": "docker compose down",
     "seed:docker": "docker compose run --rm seed",
     "test:docker": "docker compose --profile test run --rm test",
-    "logs": "docker compose logs -f app"
+    "logs": "docker compose logs -f app",
+    "up:fresh": "docker compose up -d --build --renew-anon-volumes app"
   },
   "dependencies": {
+    "d3-force": "^3.0.0",
     "jose": "^5.9.6",
     "neo4j-driver": "^5.28.1",
     "next": "^15.2.4",
@@ -32,6 +34,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.17",
+    "@types/d3-force": "^3.0.10",
     "@types/node": "^22.13.14",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
