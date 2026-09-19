@@ -1,0 +1,13 @@
+node_modules/
+.next/
+out/
+build/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+coverage/
+neo4j-data/
+.vercel
+next-env.d.ts
