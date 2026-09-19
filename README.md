@@ -8,15 +8,44 @@ It is explicitly **not** an LMS. Course folders and a deadlines calendar exist, 
 
 ---
 
-## Quickstart
+## Quickstart (docker compose — the whole stack)
+
+Nothing to install but Docker.
 
 ```bash
-cp .env.example .env         # defaults work for local dev
+cp .env.example .env              # optional; compose has working defaults
+docker compose up -d --build      # neo4j + app (hot reload) on http://localhost:3000
+docker compose run --rm seed      # wipe + load the synthetic university
+docker compose logs -f app
+```
+
+Then open **http://localhost:3000** and pick a persona. Neo4j Browser is on
+**http://localhost:7474** (`neo4j` / `studentos`).
+
+| Command | What it does |
+|---|---|
+| `docker compose up -d --build` | Neo4j + the app in dev mode, source bind-mounted, hot reload |
+| `docker compose run --rm seed` | Reseeds the graph (deterministic — safe to re-run any time) |
+| `docker compose --profile test run --rm test` | RBAC leak tests + AI smoke harness, inside the network |
+| `docker compose --profile prod up -d --build app-prod` | Production build (Next standalone) instead of dev |
+| `docker compose logs -f app` | App logs, including every AI tool call |
+| `docker compose down` | Stop everything (`-v` also drops the graph) |
+
+Override anything through the environment or `.env`: `APP_PORT`, `NEO4J_PASSWORD`,
+`JWT_SECRET`, `LLM_BASE_URL`, `LLM_MODEL`. Note that inside a container a vLLM
+running on your laptop is `http://host.docker.internal:8000/v1`, not `localhost`.
+
+### Running on the host instead
+
+If you would rather run Node directly and keep only the database in Docker:
+
+```bash
+cp .env.example .env         # NEO4J_URI=bolt://localhost:7687
 npm install
-npm run db:up                # Neo4j 5 in docker (bolt 7687, browser 7474)
-npm run seed                 # wipe + load the synthetic university
+npm run db:up                # Neo4j only
+npm run seed
 npm run dev                  # http://localhost:3000
-npm test                     # RBAC leak tests + AI smoke harness (needs the seeded DB)
+npm test                     # needs the seeded DB
 ```
 
 The login screen lists every seeded persona. Start as **Amara Okonkwo** (sophomore, computational biology) — she is the hero student the demo is built around.

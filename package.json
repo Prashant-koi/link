@@ -13,7 +13,12 @@
     "db:down": "docker compose down",
     "seed": "tsx seed/seed.ts",
     "test": "vitest run",
-    "test:rbac": "vitest run tests/rbac.test.ts"
+    "test:rbac": "vitest run tests/rbac.test.ts",
+    "up": "docker compose up -d --build",
+    "down": "docker compose down",
+    "seed:docker": "docker compose run --rm seed",
+    "test:docker": "docker compose --profile test run --rm test",
+    "logs": "docker compose logs -f app"
   },
   "dependencies": {
     "jose": "^5.9.6",

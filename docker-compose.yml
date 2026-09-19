@@ -1,3 +1,28 @@
+# StudentOS — the whole stack.
+#
+#   docker compose up -d --build        # neo4j + app (dev, hot reload) on :3000
+#   docker compose run --rm seed        # wipe + reload the synthetic university
+#   docker compose logs -f app
+#   docker compose down                 # add -v to drop the graph as well
+#
+# Profiles:
+#   --profile prod   production build (Next standalone) instead of dev
+#   --profile test   run the RBAC + AI test suites inside the network
+
+x-graph-env: &graph-env
+  NEO4J_URI: bolt://neo4j:7687
+  NEO4J_USER: ${NEO4J_USER:-neo4j}
+  NEO4J_PASSWORD: ${NEO4J_PASSWORD:-studentos}
+  NEO4J_DATABASE: ${NEO4J_DATABASE:-neo4j}
+  JWT_SECRET: ${JWT_SECRET:-dev-only-change-me-to-a-long-random-string}
+  JWT_TTL: ${JWT_TTL:-12h}
+  # Empty until the GPU host is reachable; the agent falls back to the local
+  # planner. From inside a container, a vLLM on your laptop is
+  # http://host.docker.internal:8000/v1 — not localhost.
+  LLM_BASE_URL: ${LLM_BASE_URL:-}
+  LLM_MODEL: ${LLM_MODEL:-Qwen/Qwen2.5-14B-Instruct}
+  LLM_API_KEY: ${LLM_API_KEY:-not-needed-for-local-vllm}
+
 services:
   neo4j:
     image: neo4j:5.26-community
@@ -6,13 +31,78 @@ services:
       - "7474:7474" # browser
       - "7687:7687" # bolt
     environment:
-      NEO4J_AUTH: neo4j/studentos
+      NEO4J_AUTH: ${NEO4J_USER:-neo4j}/${NEO4J_PASSWORD:-studentos}
       NEO4J_PLUGINS: '["apoc"]'
       NEO4J_server_memory_heap_max__size: 1G
     volumes:
       - ./neo4j-data:/data
     healthcheck:
-      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "studentos", "RETURN 1"]
+      test: ["CMD", "cypher-shell", "-u", "${NEO4J_USER:-neo4j}", "-p", "${NEO4J_PASSWORD:-studentos}", "RETURN 1"]
       interval: 10s
       timeout: 5s
       retries: 20
+
+  app:
+    build:
+      context: .
+      target: dev
+    container_name: studentos-app
+    environment: *graph-env
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - .:/app
+      # keep the image's installed deps and build cache, not the host's
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # one-shot: docker compose run --rm seed
+  seed:
+    build:
+      context: .
+      target: dev
+    profiles: ["seed"]
+    environment: *graph-env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run seed
+    depends_on:
+      neo4j:
+        condition: service_healthy
+
+  # docker compose --profile test run --rm test
+  test:
+    build:
+      context: .
+      target: dev
+    profiles: ["test"]
+    environment: *graph-env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm test
+    depends_on:
+      neo4j:
+        condition: service_healthy
+
+  # docker compose --profile prod up -d --build app-prod
+  app-prod:
+    build:
+      context: .
+      target: runner
+    container_name: studentos-app-prod
+    profiles: ["prod"]
+    environment: *graph-env
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
