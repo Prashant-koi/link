@@ -41,6 +41,29 @@ services:
       - "127.0.0.1:3000:3000" # tunnelled, never bound to 0.0.0.0 — see the deployment handoff, "Never expose"
     restart: unless-stopped
 
+  # TLS terminates here, so the site is served at https://<domain> with no
+  # port in the URL. Owns 80 (ACME challenge + redirect to HTTPS) and 443;
+  # proxies to api over the internal network. Config lives in
+  # nginx/user_conf.d/, and the certificate in the nginx_secrets volume.
+  nginx:
+    image: jonasal/nginx-certbot:latest
+    platform: linux/arm64
+    restart: unless-stopped
+    environment:
+      CERTBOT_EMAIL: ${CERTBOT_EMAIL}
+      # 1 = sign with a throwaway local CA instead of asking Let's Encrypt
+      # (browsers will warn). Only for the window before DNS points at this
+      # machine's public IP and 80/443 are forwarded — see .env.example.
+      USE_LOCAL_CA: ${USE_LOCAL_CA:-0}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
+      - ./nginx/user_conf.d:/etc/nginx/user_conf.d:ro
+    depends_on:
+      - api
+
   worker:
     build: .
     platform: linux/arm64
@@ -65,3 +88,4 @@ services:
 
 volumes:
   pgdata:
+  nginx_secrets:

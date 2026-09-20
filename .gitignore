@@ -12,3 +12,4 @@ neo4j-data/
 .vercel
 next-env.d.ts
 db/seed-data/.cso-cache.csv
+docker-compose.override.yml
