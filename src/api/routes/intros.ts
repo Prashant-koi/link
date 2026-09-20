@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { pool } from "../../db.js";
-import { requestIntro } from "../../services/intros.js";
+import { startOrSend } from "../../services/conversations.js";
+import { HttpError } from "../../services/httpError.js";
 
 export const introsRouter = Router();
 
@@ -18,6 +19,14 @@ introsRouter.post("/intros", async (req, res) => {
   );
   if (!rows[0]?.discoverable) return res.status(404).json({ error: "not_found" });
 
-  const state = await requestIntro(req.actorId!, targetId);
-  res.status(201).json({ state });
+  // A request is its first message (see conversations.ts) — a bare intro row
+  // would leave a thread nobody can see or answer.
+  const message = (req.body as { message?: unknown }).message;
+  try {
+    const started = await startOrSend(req.actorId!, targetId, message);
+    res.status(201).json({ state: started.state, conversationId: started.conversationId });
+  } catch (err) {
+    if (err instanceof HttpError) return res.status(err.status).json({ error: err.code });
+    throw err;
+  }
 });

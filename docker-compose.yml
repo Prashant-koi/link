@@ -45,6 +45,11 @@ services:
     # docker-compose.model.yml. Linux doesn't map host.docker.internal
     # automatically, hence this.
     extra_hosts: ["host.docker.internal:host-gateway"]
+    # Uploaded workspace files (text files live in Postgres).
+    environment:
+      WORKSPACE_DIR: /data/workspaces
+    volumes:
+      - workspace_files:/data/workspaces
     ports:
       - "127.0.0.1:3000:3000" # tunnelled, never bound to 0.0.0.0 — see the deployment handoff, "Never expose"
     restart: unless-stopped
@@ -105,4 +110,5 @@ services:
 
 volumes:
   pgdata:
+  workspace_files:
   nginx_secrets:

@@ -12,6 +12,9 @@ export const config = {
   databaseUrl: required("DATABASE_URL"),
   apiPort: Number(process.env.API_PORT ?? 3001),
   nodeEnv: process.env.NODE_ENV ?? "development",
+  // Binary workspace files (uploads) live here, one dir per workspace. A
+  // Docker volume in the deployment; text files are Yjs docs in Postgres.
+  workspaceDir: process.env.WORKSPACE_DIR ?? "./data/workspaces",
   auth: {
     // No default: an unrecognised or missing AUTH_MODE is an error, not a
     // silent fall-through to the permissive branch (auth handoff, "Mode

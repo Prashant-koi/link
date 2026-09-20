@@ -20,19 +20,25 @@
     "dev:reprocess": "tsx src/scripts/reprocess.ts"
   },
   "dependencies": {
+    "@hocuspocus/server": "^4.7.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "js-yaml": "^4.1.0",
+    "multer": "^2.4.0",
     "pg": "^8.12.0",
-    "unpdf": "^1.8.1"
+    "unpdf": "^1.8.1",
+    "ws": "^8.21.3",
+    "yjs": "^13.6.32"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^4.17.21",
     "@types/js-yaml": "^4.0.9",
+    "@types/multer": "^2.2.0",
     "@types/node": "^20.14.10",
     "@types/pg": "^8.11.6",
+    "@types/ws": "^8.18.1",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3"
   }

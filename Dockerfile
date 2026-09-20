@@ -3,14 +3,14 @@
 # instance, same-origin, so the SameSite=Lax session cookie actually
 # attaches once this is behind a tunnel — see src/api/server.ts.
 
-FROM node:20-slim AS frontend
+FROM node:22-slim AS frontend
 WORKDIR /app/web
 COPY web/package*.json ./
 RUN npm ci
 COPY web/ ./
 RUN npm run build
 
-FROM node:20-slim
+FROM node:22-slim
 WORKDIR /app
 COPY package*.json ./
 # Full install (not --omit=dev) here: the build needs typescript, which is a

@@ -4,11 +4,13 @@ import express from "express";
 import { authRouter } from "../auth/routes.js";
 import { requireSession } from "../auth/middleware.js";
 import { actorsRouter } from "./routes/actors.js";
+import { conversationsRouter } from "./routes/conversations.js";
 import { asksRouter } from "./routes/asks.js";
 import { conceptsRouter } from "./routes/concepts.js";
 import { importsRouter } from "./routes/imports.js";
 import { introsRouter } from "./routes/intros.js";
 import { meRouter } from "./routes/me.js";
+import { workspacesRouter } from "./routes/workspaces.js";
 import { searchRouter } from "./routes/search.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -45,6 +47,8 @@ export function createServer() {
   api.use(conceptsRouter);
   api.use(asksRouter);
   api.use(introsRouter);
+  api.use(conversationsRouter);
+  api.use(workspacesRouter);
   api.use(meRouter);
   api.use(searchRouter);
   app.use("/api", api);
