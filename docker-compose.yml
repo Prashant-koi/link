@@ -48,11 +48,41 @@ services:
     # Uploaded workspace files (text files live in Postgres).
     environment:
       WORKSPACE_DIR: /data/workspaces
+      # The API answers AI questions itself, so it needs the model too. Ollama
+      # only listens on the host's loopback; ollama-relay (below) exposes it on
+      # the docker bridge address only.
+      LLM_BASE_URL: http://host.docker.internal:11435
     volumes:
       - workspace_files:/data/workspaces
     ports:
       - "127.0.0.1:3000:3000" # tunnelled, never bound to 0.0.0.0 — see the deployment handoff, "Never expose"
     restart: unless-stopped
+
+  # Forwards the docker bridge address (172.17.0.1:11435, reachable from
+  # containers, not from the LAN) to Ollama on the host's loopback. Needed
+  # because Ollama binds 127.0.0.1 only and the API container is not on the host
+  # network. Uses the app image so nothing extra is pulled.
+  ollama-relay:
+    build: .
+    platform: linux/arm64
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      RELAY_BIND: "172.17.0.1"
+      RELAY_PORT: "11435"
+      RELAY_TARGET_PORT: "11434"
+    command:
+      - node
+      - -e
+      - |
+        const net = require("net");
+        const bind = process.env.RELAY_BIND, port = Number(process.env.RELAY_PORT), target = Number(process.env.RELAY_TARGET_PORT);
+        net.createServer((c) => {
+          const u = net.connect(target, "127.0.0.1");
+          c.pipe(u).pipe(c);
+          c.on("error", () => u.destroy());
+          u.on("error", () => c.destroy());
+        }).listen(port, bind, () => console.log("relay " + bind + ":" + port + " -> 127.0.0.1:" + target));
 
   # TLS terminates here, so the site is served at https://<domain> with no
   # port in the URL. Owns 80 (ACME challenge + redirect to HTTPS) and 443;

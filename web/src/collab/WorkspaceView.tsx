@@ -67,7 +67,7 @@ function iconFor(n: NodeView, open: boolean) {
   return n.isText ? <FileText size={16} /> : <FileIcon size={16} />;
 }
 
-export function WorkspaceView({ id, onGone }: { id: string; onGone: () => void }) {
+export function WorkspaceView({ id, onGone, initialFileId }: { id: string; onGone: () => void; initialFileId?: string | null }) {
   const { actor } = useAuth();
   const { subscribe, live } = useCollab();
   const narrow = useMedia("(max-width: 700px)");
@@ -116,6 +116,17 @@ export function WorkspaceView({ id, onGone }: { id: string; onGone: () => void }
     setActiveId((prev) => (prev && ids.has(prev) ? prev : null));
     setSelectedId((prev) => (prev && ids.has(prev) ? prev : null));
   }, [detail]);
+
+  // Deep link from an AI source chip: open that file once the tree has loaded.
+  const openedInitial = useRef(false);
+  useEffect(() => {
+    if (!detail || !initialFileId || openedInitial.current) return;
+    if (detail.nodes.some((n) => n.id === initialFileId && n.kind === "file")) {
+      openedInitial.current = true;
+      openFile(initialFileId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detail, initialFileId]);
 
   // Context menu: Esc or any click elsewhere dismisses it.
   useEffect(() => {

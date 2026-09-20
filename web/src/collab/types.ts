@@ -68,3 +68,43 @@ export interface WorkspaceDetail {
   usedBytes: number;
   limits: { file: number; workspace: number };
 }
+
+// ---- AI assistant ----
+export interface AiThread {
+  id: string;
+  title: string;
+  updatedAt: string;
+  lastMessage: string | null;
+  sourceCount: number;
+}
+export interface AiSource {
+  kind: "conversation" | "workspace";
+  refId: string;
+  label: string;
+}
+export interface AiAttachable {
+  conversations: (AiSource & { messageCount: number; lastAt: string | null })[];
+  workspaces: (AiSource & { fileCount: number })[];
+}
+export interface AiExcerpt {
+  n: number;
+  kind: "chat" | "file";
+  refId: string;
+  nodeId: string | null;
+  title: string;
+  when: string | null;
+  snippet: string;
+}
+export interface AiMessage {
+  id: string;
+  role: "user" | "assistant";
+  body: string;
+  sources: AiExcerpt[];
+  createdAt: string;
+}
+export interface AiThreadDetail {
+  id: string;
+  title: string;
+  sources: AiSource[];
+  droppedSources: number;
+}

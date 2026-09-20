@@ -1,4 +1,4 @@
-import type { Conversation, MessagePage, Message, NodeView, WorkspaceDetail, WorkspaceList, ConversationState } from "../collab/types";
+import type { AiAttachable, AiMessage, AiSource, AiThread, AiThreadDetail, Conversation, MessagePage, Message, NodeView, WorkspaceDetail, WorkspaceList, ConversationState } from "../collab/types";
 
 const BASE = "/api";
 
@@ -8,6 +8,9 @@ const MESSAGES: Record<string, string> = {
   request_declined: "They declined your request.",
   conversation_declined: "You declined this conversation.",
   rate_limited: "You're sending too fast — wait a moment.",
+  already_answering: "The assistant is still answering the previous question.",
+  model_unavailable: "The AI model isn't available right now.",
+  generation_failed: "The assistant couldn't finish that answer. Try again.",
   message_too_long: "That message is too long (4000 characters max).",
   message_required: "Write a message first.",
   not_found: "That no longer exists, or you don't have access.",
@@ -52,7 +55,66 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
   return res.status === 204 ? (undefined as T) : ((await res.json()) as T);
 }
 
+export interface AiStreamHandlers {
+  onStatus?: (text: string) => void;
+  onSources?: (sources: import("../collab/types").AiExcerpt[]) => void;
+  onToken: (text: string) => void;
+  onDone?: (info: { id: string; firstTokenMs: number | null }) => void;
+}
+
+// The answer arrives as server-sent events over a POST, so it is read with
+// fetch + a stream reader (EventSource can't POST).
+async function streamAnswer(threadId: string, text: string, h: AiStreamHandlers, signal: AbortSignal): Promise<void> {
+  const res = await fetch(`${BASE}/ai/threads/${threadId}/messages`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+    signal,
+  });
+  if (!res.ok || !res.body) {
+    let code = `http_${res.status}`;
+    try {
+      code = ((await res.json()) as { error?: string }).error ?? code;
+    } catch {
+      // keep the status code
+    }
+    throw new ApiError(res.status, code);
+  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    let end: number;
+    while ((end = buffer.indexOf("\n\n")) >= 0) {
+      const block = buffer.slice(0, end);
+      buffer = buffer.slice(end + 2);
+      const event = /^event: (.+)$/m.exec(block)?.[1];
+      const data = /^data: (.+)$/m.exec(block)?.[1];
+      if (!event || !data) continue;
+      const payload = JSON.parse(data);
+      if (event === "status") h.onStatus?.(payload.text);
+      else if (event === "sources") h.onSources?.(payload);
+      else if (event === "token") h.onToken(payload.text);
+      else if (event === "done") h.onDone?.(payload);
+      else if (event === "error") throw new ApiError(500, payload.code ?? "generation_failed");
+    }
+  }
+}
+
 export const collabApi = {
+  aiSources: () => call<AiAttachable>("GET", "/ai/sources"),
+  aiThreads: () => call<AiThread[]>("GET", "/ai/threads"),
+  aiThread: (id: string) => call<AiThreadDetail>("GET", `/ai/threads/${id}`),
+  aiMessages: (id: string) => call<AiMessage[]>("GET", `/ai/threads/${id}/messages`),
+  createAiThread: (sources: AiSource[]) => call<{ id: string }>("POST", "/ai/threads", { sources }),
+  setAiSources: (id: string, sources: AiSource[]) => call<void>("PUT", `/ai/threads/${id}/sources`, { sources }),
+  deleteAiThread: (id: string) => call<void>("DELETE", `/ai/threads/${id}`),
+  streamAnswer,
+
   conversations: () => call<Conversation[]>("GET", "/conversations"),
   messages: (id: string, before?: string) =>
     call<MessagePage>("GET", `/conversations/${id}/messages?limit=50${before ? `&before=${before}` : ""}`),

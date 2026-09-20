@@ -239,3 +239,86 @@ export function keepModelsWarm(): void {
   void pinAll();
   setInterval(() => void pinAll(), 2 * 60 * 1000).unref();
 }
+
+// ---- Streaming chat ---------------------------------------------------------
+// Free-text answers for the AI assistant, streamed from Ollama's native
+// /api/chat (NDJSON). Deliberately does not set `num_ctx`: the model is already
+// loaded with the default window, and asking for a different one forces a full
+// reload (~46 s). The caller keeps its prompt inside a budget instead.
+export interface ChatTurn {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+
+export interface ChatStreamEvent {
+  delta?: string;
+  done?: boolean;
+  promptTokens?: number;
+  outputTokens?: number;
+}
+
+const generationPool = new Semaphore(2); // protect the GPU from a pile of long answers
+
+export async function* streamChat(
+  messages: ChatTurn[],
+  opts: { signal?: AbortSignal; temperature?: number; maxTokens?: number } = {},
+): AsyncGenerator<ChatStreamEvent> {
+  const release = await acquire(generationPool, opts.signal);
+  try {
+    const res = await fetch(llmUrl("/api/chat"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      signal: opts.signal,
+      body: JSON.stringify({
+        model: config.llm.instructModel,
+        stream: true,
+        think: false,
+        messages,
+        options: { temperature: opts.temperature ?? 0.3, num_predict: opts.maxTokens ?? 1200 },
+      }),
+    });
+    if (!res.ok || !res.body) throw new Error(`chat request failed: ${res.status} ${await res.text().catch(() => "")}`);
+
+    const decoder = new TextDecoder();
+    let buffer = "";
+    for await (const chunk of res.body as unknown as AsyncIterable<Uint8Array>) {
+      buffer += decoder.decode(chunk, { stream: true });
+      let nl: number;
+      while ((nl = buffer.indexOf("\n")) >= 0) {
+        const line = buffer.slice(0, nl).trim();
+        buffer = buffer.slice(nl + 1);
+        if (!line) continue;
+        const json = JSON.parse(line) as {
+          message?: { content?: string };
+          done?: boolean;
+          prompt_eval_count?: number;
+          eval_count?: number;
+          error?: string;
+        };
+        if (json.error) throw new Error(json.error);
+        if (json.message?.content) yield { delta: json.message.content };
+        if (json.done) yield { done: true, promptTokens: json.prompt_eval_count, outputTokens: json.eval_count };
+      }
+    }
+  } finally {
+    release();
+  }
+}
+
+// Semaphore.run wraps a function; a generator needs an explicit acquire/release.
+function acquire(sem: Semaphore, signal?: AbortSignal): Promise<() => void> {
+  return new Promise((resolve, reject) => {
+    let started = false;
+    const onAbort = () => reject(new Error("aborted"));
+    signal?.addEventListener("abort", onAbort, { once: true });
+    void sem.run(
+      () =>
+        new Promise<void>((done) => {
+          started = true;
+          signal?.removeEventListener("abort", onAbort);
+          resolve(() => done());
+        }),
+    );
+    if (signal?.aborted && !started) onAbort();
+  });
+}

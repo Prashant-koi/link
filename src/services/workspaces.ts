@@ -3,6 +3,7 @@ import path from "node:path";
 import type { PoolClient } from "pg";
 import { config } from "../config.js";
 import { pool, withTransaction } from "../db.js";
+import { dropWorkspaceChunks } from "./ai/indexer.js";
 import { acceptedCounterparties } from "./conversations.js";
 import { publish } from "./events.js";
 import { HttpError } from "./httpError.js";
@@ -299,6 +300,7 @@ export async function deleteWorkspace(actorId: string, workspaceId: string): Pro
   const nodes = await pool.query<{ id: string }>(`SELECT id FROM workspace_node WHERE workspace_id = $1`, [workspaceId]);
   collabHooks.closeNodes(nodes.rows.map((n) => n.id));
   await pool.query(`DELETE FROM workspace WHERE id = $1`, [workspaceId]); // cascades members + nodes
+  await dropWorkspaceChunks(workspaceId);
   await fs.rm(path.join(config.workspaceDir, workspaceId), { recursive: true, force: true });
   publish(
     members.rows.map((r) => r.actor_id),

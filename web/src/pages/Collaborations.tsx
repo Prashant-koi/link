@@ -1,8 +1,9 @@
 import { useCallback, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Sparkles } from "lucide-react";
 import { useCollab } from "../collab/CollabContext";
 import { NewWorkspaceDialog } from "../collab/Dialogs";
+import { AiChat } from "../collab/AiChat";
 import { Messages } from "../collab/Messages";
 import { WorkspaceRailItem } from "../collab/WorkspaceFlyout";
 import { WorkspaceView } from "../collab/WorkspaceView";
@@ -16,9 +17,12 @@ export function Collaborations() {
   const { unreadTotal, workspaceList } = useCollab();
   const [creating, setCreating] = useState(false);
 
-  const tab = params.get("tab") === "workspaces" ? "workspaces" : "messages";
+  const tabParam = params.get("tab");
+  const tab = tabParam === "workspaces" ? "workspaces" : tabParam === "ai" ? "ai" : "messages";
   const conversationId = params.get("c");
   const workspaceId = params.get("w");
+  const fileId = params.get("f");
+  const aiThreadId = params.get("t");
 
   const go = useCallback(
     (next: Record<string, string | null>) => {
@@ -52,12 +56,19 @@ export function Collaborations() {
           onSelect={(id) => go({ tab: "workspaces", w: id })}
           onNew={() => setCreating(true)}
         />
+        <div className="cl-rail-item">
+          <button className="cl-rail-btn" aria-label="AI assistant" aria-pressed={tab === "ai"} onClick={() => go({ tab: "ai", t: aiThreadId })}>
+            <Sparkles size={20} />
+          </button>
+        </div>
       </nav>
 
       {tab === "messages" ? (
         <Messages selectedId={conversationId} onSelect={(id) => go({ tab: "messages", c: id })} />
+      ) : tab === "ai" ? (
+        <AiChat selectedId={aiThreadId} onSelect={(id) => go({ tab: "ai", t: id })} />
       ) : workspaceId ? (
-        <WorkspaceView key={workspaceId} id={workspaceId} onGone={onGone} />
+        <WorkspaceView key={workspaceId} id={workspaceId} initialFileId={fileId} onGone={onGone} />
       ) : (
         <div className="cl-pane">
           <div className="cl-empty">
