@@ -7,7 +7,7 @@ import type { AspirationMatch, MatchKind, Stance } from "../types.js";
 
 const DECAY_HALF_LIFE_DAYS = 270; // ~9 months; same unconfigured-constant status as gamma
 
-function matchKindFor(theirStance: Stance): MatchKind {
+export function matchKindFor(theirStance: Stance): MatchKind {
   switch (theirStance) {
     case "established":
       return "mentor";
@@ -21,7 +21,7 @@ function matchKindFor(theirStance: Stance): MatchKind {
 // Aspirations and explorations rot: someone who wrote "want to learn RF
 // design" 14 months ago probably moved on. Established expertise doesn't
 // decay (no stance_since is recorded for it).
-function stanceDecay(stance: Stance, stanceSince: string | null): number {
+export function stanceDecay(stance: Stance, stanceSince: string | null): number {
   if (stance === "established" || !stanceSince) return 1;
   const days = (Date.now() - new Date(stanceSince).getTime()) / (24 * 3600 * 1000);
   return Math.pow(0.5, Math.max(days, 0) / DECAY_HALF_LIFE_DAYS);

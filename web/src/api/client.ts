@@ -7,6 +7,7 @@ import type {
   ImportSummary,
   AskSummary,
   AspirationMatch,
+  SmartSearchResult,
   ConnectionSuggestion,
   Cursor,
   InterestRow,
@@ -97,6 +98,14 @@ const realApi = {
   getConceptActors: (conceptId: string) => get<ActorSummary[]>(`/concepts/${conceptId}/actors`),
   listAsks: (cursor?: string) => get<Cursor<AskSummary>>(`/asks${cursor ? `?cursor=${cursor}` : ""}`),
   createAsk: (text: string) => post<{ id: string }>("/asks", { text }),
+  // Phase 1 is instant; ai=true asks the local model to refine (resolves null when
+  // it has nothing to add — the caller keeps what it already has).
+  async searchSmart(q: string, ai = false, signal?: AbortSignal): Promise<SmartSearchResult | null> {
+    const res = await fetch(`${BASE}/search/smart?q=${encodeURIComponent(q)}${ai ? "&ai=1" : ""}`, { credentials: "include", signal });
+    if (res.status === 204) return null;
+    if (!res.ok) throw new Error(await errorMessage(res, "GET /search/smart"));
+    return res.json() as Promise<SmartSearchResult>;
+  },
   searchAspirations: (q: string) => get<AspirationMatch[]>(`/search/aspirations?q=${encodeURIComponent(q)}`),
   postInterest: (rawText: string, stance: Stance) => post<{ ok: true }>("/me/interests", { rawText, stance }),
   setDiscoverable: (discoverable: boolean) => patch<ActorSummary>(`/actors/me`, { discoverable }),
@@ -175,6 +184,10 @@ const fixtureApi: typeof realApi = {
   listAsks: () => settle({ items: fixtures.asks }),
   createAsk: () => settle({ id: "ask-new" }),
   searchAspirations: (q: string) => settle(fixtures.aspirations(q), 320),
+  searchSmart: async (q: string, ai = false) =>
+    ai
+      ? null
+      : settle({ query: q, correctedQuery: null, interpretation: null, refined: false, facets: [], people: [], totalPeople: 0, groups: [], nameMatches: [], unmatchedFacets: [], timingsMs: {} }, 200),
   postInterest: (rawText: string, stance) => {
     fixtureInterests.push({
       id: `i-${fixtureInterests.length}`,

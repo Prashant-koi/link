@@ -13,7 +13,8 @@ export type PromptName =
   | "concept_propose"
   | "bio_extract"
   | "explain_pair"
-  | "parse_ask";
+  | "parse_ask"
+  | "search_interpret";
 
 interface PromptFile {
   name: PromptName;

@@ -1,9 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../api/client";
-import { ConceptChip } from "../components/ConceptChip";
 import { PersonPanel } from "../components/PersonPanel";
-import { ReasonList } from "../components/ReasonList";
-import type { AspirationMatch, MatchKind } from "../types/api";
+import { buttonStyle, secondaryButtonStyle } from "../components/ImportCard";
+import type { ActorSummary, MatchKind, SmartGroup, SmartMatched, SmartPerson, SmartSearchResult } from "../types/api";
 
 const SECTIONS: { kind: MatchKind; title: string }[] = [
   { kind: "mentor", title: "People who have done this" },
@@ -11,47 +10,78 @@ const SECTIONS: { kind: MatchKind; title: string }[] = [
   { kind: "fellow_explorer", title: "People considering the same jump" },
 ];
 
-// Resolution is async (the worker embeds and adjudicates a new phrase, a few
-// seconds), so poll briefly instead of retrying once and giving up.
-const POLL_MS = 1500;
-const POLL_MAX = 8;
+const GROUP_LABEL: Record<SmartGroup["groupKind"], string> = { club: "Club", lab: "Lab", department: "Department" };
 
+const EXAMPLES = ["physics", "someone who plays jazz and codes", "healthcare", "people who build robots", "sports"];
+
+// Phase 1 is instant and never waits on the model; phase 2 (the local model reading
+// the query — splitting "X and Y", fixing typos, picking the fitting topics) arrives
+// a few seconds later and quietly replaces it. If it fails, phase 1 simply stays.
 export function Search() {
   const [query, setQuery] = useState("");
-  const [pendingText, setPendingText] = useState<string | null>(null);
-  const [matches, setMatches] = useState<AspirationMatch[] | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selected = (matches ?? []).find((m) => m.actor.id === selectedId);
+  const [result, setResult] = useState<SmartSearchResult | null>(null);
+  const [state, setState] = useState<"idle" | "loading" | "refining" | "done">("idle");
+  const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<{ actor: ActorSummary; reasons: SmartPerson["reasons"] } | null>(null);
+  const [added, setAdded] = useState<string | null>(null);
+  const run = useRef(0);
+  const abort = useRef<AbortController | null>(null);
 
-  const runId = useRef(0);
+  useEffect(() => () => abort.current?.abort(), []);
 
-  async function runSearch(q: string) {
-    const id = ++runId.current;
-    for (let attempt = 0; attempt <= POLL_MAX; attempt++) {
-      const results = await api.searchAspirations(q);
-      if (id !== runId.current) return; // a newer search took over
-      setMatches(results);
-      if (results.length > 0) return;
-      await new Promise((r) => setTimeout(r, POLL_MS));
+  async function search(raw: string) {
+    const q = raw.trim();
+    if (!q) return;
+    const id = ++run.current;
+    abort.current?.abort();
+    const controller = new AbortController();
+    abort.current = controller;
+    setQuery(q);
+    setError(null);
+    setAdded(null);
+    setSelected(null);
+    setResult(null);
+    setState("loading");
+    try {
+      const first = await api.searchSmart(q, false, controller.signal);
+      if (id !== run.current) return;
+      setResult(first);
+      setState("refining");
+      const refined = await api.searchSmart(q, true, controller.signal).catch(() => null);
+      if (id !== run.current) return;
+      if (refined) setResult(refined);
+    } catch (e) {
+      if ((e as Error).name === "AbortError" || id !== run.current) return;
+      setError("Search didn't work just now. Try again.");
     }
+    if (id === run.current) setState("done");
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!query.trim()) return;
-    setPendingText(query.trim());
-    setMatches(null);
-    await api.postInterest(query.trim(), "aspiring");
-    await runSearch(query.trim());
+  async function addToInterests() {
+    if (!result) return;
+    const text = result.correctedQuery ?? result.query;
+    await api.postInterest(text, "aspiring");
+    setAdded(text);
   }
+
+  const people = result?.people ?? [];
+  const nothing = state !== "loading" && result && people.length === 0 && result.groups.length === 0 && result.nameMatches.length === 0;
+  const topics = result?.facets.flatMap((f) => f.topics).filter((t, i, all) => all.findIndex((x) => x.conceptId === t.conceptId) === i) ?? [];
 
   return (
     <div>
-      <form onSubmit={handleSubmit} style={{ maxWidth: 560, margin: "48px auto 0", textAlign: "center" }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          search(query);
+        }}
+        style={{ maxWidth: 620, margin: "40px auto 0", textAlign: "center" }}
+      >
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="What are you looking into?"
+          placeholder="Search anything — a topic, a hobby, or a question"
+          aria-label="Search"
           style={{
             width: "100%",
             fontSize: "var(--fs-lg)",
@@ -64,54 +94,212 @@ export function Search() {
         />
       </form>
 
-      {pendingText && (
-        <div style={{ maxWidth: 560, margin: "16px auto 0", textAlign: "center" }}>
-          {matches && matches[0] ? (
-            <ConceptChip chip={matches[0].concept} />
-          ) : (
-            <span style={{ fontSize: "var(--fs-sm)", color: "var(--ink-500)" }}>{pendingText}</span>
-          )}
+      {state === "idle" && (
+        <div style={{ maxWidth: 620, margin: "20px auto 0", textAlign: "center", display: "grid", gap: 10 }}>
+          <p style={{ fontSize: "var(--fs-sm)", color: "var(--ink-500)" }}>Try one of these, or ask in your own words.</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
+            {EXAMPLES.map((e) => (
+              <button key={e} style={secondaryButtonStyle} onClick={() => search(e)}>
+                {e}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
-      <div style={{ marginTop: 40, display: "grid", gap: 32, maxWidth: 720, marginInline: "auto" }}>
+      {state !== "idle" && (
+        <div style={{ maxWidth: 720, margin: "20px auto 0", display: "grid", gap: 8, textAlign: "center" }}>
+          {state === "loading" && <p style={{ color: "var(--ink-500)" }}>Searching…</p>}
+          {result && (
+            <>
+              {result.correctedQuery && (
+                <p style={{ fontSize: "var(--fs-sm)", color: "var(--ink-600)" }}>
+                  Showing results for <strong>{result.correctedQuery}</strong> (you typed “{result.query}”)
+                </p>
+              )}
+              <p style={{ fontSize: "var(--fs-base)", color: "var(--ink-900)" }}>
+                {result.interpretation ? (
+                  <>
+                    <span aria-hidden="true" style={{ color: "var(--tq-600)" }}>
+                      ✦{" "}
+                    </span>
+                    {result.interpretation}
+                  </>
+                ) : (
+                  <>Showing people connected to “{result.query}” and related topics.</>
+                )}
+              </p>
+              {state === "refining" && <p style={{ fontSize: "var(--fs-xs)", color: "var(--ink-500)" }}>Refining with AI…</p>}
+              {result.unmatchedFacets.length > 0 && (
+                <p style={{ fontSize: "var(--fs-sm)", color: "var(--ink-500)" }}>
+                  Nobody lists {result.unmatchedFacets.map((f) => `“${f}”`).join(", ")} yet — showing the rest of your search.
+                </p>
+              )}
+              {topics.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center", marginTop: 4 }} aria-label="Related topics">
+                  {topics.slice(0, 10).map((t) => (
+                    <button
+                      key={t.conceptId}
+                      onClick={() => search(t.label)}
+                      title={t.via ? `${t.kind === "narrower" ? "Part of" : "Related to"} ${t.via}` : "Search this topic"}
+                      style={{
+                        fontSize: "var(--fs-sm)",
+                        padding: "2px 10px",
+                        borderRadius: 999,
+                        border: "1px solid var(--tq-300)",
+                        background: "var(--tq-050)",
+                        color: "var(--tq-700)",
+                        cursor: "pointer",
+                        font: "inherit",
+                      }}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {!nothing && (
+                <div style={{ marginTop: 6 }}>
+                  {added ? (
+                    <span style={{ fontSize: "var(--fs-sm)", color: "var(--ink-500)" }}>Added “{added}” to your interests.</span>
+                  ) : (
+                    <button style={secondaryButtonStyle} onClick={addToInterests}>
+                      Add “{result.correctedQuery ?? result.query}” to my interests
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+          {error && <p style={{ color: "#b3261e" }}>{error}</p>}
+        </div>
+      )}
+
+      {nothing && (
+        <div style={{ maxWidth: 560, margin: "32px auto 0", textAlign: "center", display: "grid", gap: 12 }}>
+          <p style={{ color: "var(--ink-600)" }}>
+            No one matches “{result?.query}” yet. Try a broader word, or add it to your interests so people can find you.
+          </p>
+          <div>
+            <button style={buttonStyle} onClick={addToInterests}>
+              Add “{result?.query}” to my interests
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div style={{ marginTop: 32, display: "grid", gap: 32, maxWidth: 720, marginInline: "auto" }}>
+        {(result?.nameMatches.length ?? 0) > 0 && (
+          <Section title="People with that name">
+            {result!.nameMatches.map((a) => (
+              <Card key={a.id} onOpen={() => setSelected({ actor: a, reasons: [] })} label={`Open details for ${a.displayName}`}>
+                <div style={{ fontSize: "var(--fs-base)", color: "var(--ink-900)" }}>{a.displayName}</div>
+                <div style={{ fontSize: "var(--fs-sm)", color: "var(--ink-500)" }}>
+                  {[a.personKind, a.homeUnit?.name].filter(Boolean).join(" · ")}
+                </div>
+              </Card>
+            ))}
+          </Section>
+        )}
+
         {SECTIONS.map((section) => {
-          const items = (matches ?? []).filter((m) => m.matchKind === section.kind);
+          const items = people.filter((p) => p.matchKind === section.kind);
           if (items.length === 0) return null;
           return (
-            <div key={section.kind}>
-              <h2 style={{ fontSize: "var(--fs-lg)", color: "var(--ink-900)", marginBottom: 12 }}>
-                {section.title}
-              </h2>
-              <div style={{ display: "grid", gap: 12 }}>
-                {items.map((m) => (
-                  <button
-                    key={m.actor.id}
-                    onClick={() => setSelectedId(m.actor.id)}
-                    aria-label={`Open details for ${m.actor.displayName}`}
-                    style={{
-                      border: "1px solid var(--ink-200)",
-                      borderRadius: 10,
-                      padding: 16,
-                      background: "var(--surface)",
-                      textAlign: "left",
-                      cursor: "pointer",
-                      font: "inherit",
-                      width: "100%",
-                    }}
-                  >
-                    <div style={{ fontSize: "var(--fs-base)", color: "var(--ink-900)" }}>
-                      {m.actor.displayName}
-                    </div>
-                    <ReasonList reasons={m.reasons} />
-                  </button>
-                ))}
-              </div>
-            </div>
+            <Section key={section.kind} title={section.title}>
+              {items.map((p) => (
+                <Card key={p.actor.id} onOpen={() => setSelected({ actor: p.actor, reasons: p.reasons })} label={`Open details for ${p.actor.displayName}`}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+                    <span style={{ fontSize: "var(--fs-base)", color: "var(--ink-900)" }}>{p.actor.displayName}</span>
+                    <span style={{ fontSize: "var(--fs-xs)", color: "var(--ink-500)" }}>
+                      {[p.actor.personKind, p.actor.homeUnit?.name].filter(Boolean).join(" · ")}
+                    </span>
+                  </div>
+                  <Matched items={p.matched} />
+                </Card>
+              ))}
+            </Section>
           );
         })}
+        {result && result.totalPeople > people.length && (
+          <p style={{ textAlign: "center", fontSize: "var(--fs-sm)", color: "var(--ink-500)" }}>
+            {result.totalPeople} people match; showing the strongest in each group. Narrow it with a topic above.
+          </p>
+        )}
+
+        {(result?.groups.length ?? 0) > 0 && (
+          <Section title="Clubs, labs & departments">
+            {result!.groups.map((g) => (
+              <div
+                key={g.actor.id}
+                style={{ border: "1px solid var(--ink-200)", borderRadius: 10, padding: 16, background: "var(--surface)", display: "grid", gap: 6 }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+                  <span style={{ fontSize: "var(--fs-base)", color: "var(--ink-900)" }}>{g.actor.displayName}</span>
+                  <span style={{ fontSize: "var(--fs-xs)", color: "var(--ink-500)" }}>
+                    {GROUP_LABEL[g.groupKind]}
+                    {g.members > 0 ? ` · ${g.members} member${g.members === 1 ? "" : "s"}` : ""}
+                  </span>
+                </div>
+                <Matched items={g.matched} />
+              </div>
+            ))}
+          </Section>
+        )}
       </div>
-      {selected && <PersonPanel actor={selected.actor} reasons={selected.reasons} onClose={() => setSelectedId(null)} />}
+
+      {selected && <PersonPanel actor={selected.actor} reasons={selected.reasons} onClose={() => setSelected(null)} />}
     </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h2 style={{ fontSize: "var(--fs-lg)", color: "var(--ink-900)", marginBottom: 12 }}>{title}</h2>
+      <div style={{ display: "grid", gap: 12 }}>{children}</div>
+    </div>
+  );
+}
+
+function Card({ children, onOpen, label }: { children: React.ReactNode; onOpen: () => void; label: string }) {
+  return (
+    <button
+      onClick={onOpen}
+      aria-label={label}
+      style={{
+        border: "1px solid var(--ink-200)",
+        borderRadius: 10,
+        padding: 16,
+        background: "var(--surface)",
+        textAlign: "left",
+        cursor: "pointer",
+        font: "inherit",
+        width: "100%",
+        display: "grid",
+        gap: 6,
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// Why this matched: the topic, and how it relates to what was searched.
+function Matched({ items }: { items: SmartMatched[] }) {
+  if (items.length === 0) return null;
+  return (
+    <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 4 }}>
+      {items.map((m) => (
+        <li key={m.conceptId} style={{ fontSize: "var(--fs-sm)", color: "var(--ink-600)" }}>
+          <span
+            style={{ display: "inline-block", padding: "0 8px", borderRadius: 999, background: "var(--tq-100)", color: "var(--tq-700)", marginRight: 6 }}
+          >
+            {m.label}
+          </span>
+          {m.note}
+        </li>
+      ))}
+    </ul>
   );
 }

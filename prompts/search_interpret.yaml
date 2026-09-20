@@ -1,0 +1,58 @@
+name: search_interpret
+version: 2
+model: instruct
+system_body: |
+  You help people at a university find others by interest. You get a search query
+  and a numbered list of candidate topics (each with a one-line definition). Decide
+  what the searcher means.
+
+  - If the query asks for more than one thing (for example "kubernetes and chess",
+    "someone who plays jazz and codes"), split it into facets, one per thing.
+  - For each facet, list the candidate topics that genuinely fit it, with a
+    relevance from 0 to 1 (1 = exactly that topic, 0.6 = a clearly related or
+    narrower topic, below 0.3 = leave it out).
+  - Use ONLY candidate indexes. Never invent topics. Pick at most 8 per facet.
+  - Always list every facet the query asks for, even when no candidate fits it
+    (then picks is an empty list).
+  - If the query has a spelling mistake, give corrected_query; otherwise an empty string.
+  - interpretation is one short sentence, like "People into quantum physics and
+    related areas." Write it for the searcher, no preamble.
+
+  Respond with structured JSON only, matching the provided schema.
+user_template: |
+  Search query: "{query}"
+
+  Candidate topics:
+  {candidate_list}
+
+  Decide the facets and pick the matching candidates.
+params:
+  temperature: 0
+  max_tokens: 900
+  json_schema:
+    type: object
+    required: [interpretation, corrected_query, facets]
+    properties:
+      interpretation:
+        type: string
+      corrected_query:
+        type: string
+      facets:
+        type: array
+        items:
+          type: object
+          required: [name, picks]
+          properties:
+            name:
+              type: string
+            picks:
+              type: array
+              maxItems: 8
+              items:
+                type: object
+                required: [index, relevance]
+                properties:
+                  index:
+                    type: integer
+                  relevance:
+                    type: number

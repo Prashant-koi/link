@@ -71,6 +71,44 @@ export type AspirationMatch = {
   reasons: Reason[];
 };
 
+// Meaning-based search (GET /search/smart) — mirrors the backend's SmartResult.
+export type SmartTopic = {
+  conceptId: string;
+  label: string;
+  weight: number;
+  kind: "match" | "narrower" | "broader" | "related" | "similar";
+  via?: string;
+};
+export type SmartMatched = { conceptId: string; label: string; note: string };
+export type SmartPerson = {
+  actor: ActorSummary;
+  matchKind: MatchKind;
+  score: number;
+  reasons: Reason[];
+  matched: SmartMatched[];
+  facetsMatched: number;
+};
+export type SmartGroup = {
+  actor: ActorSummary;
+  groupKind: "club" | "lab" | "department";
+  score: number;
+  matched: SmartMatched[];
+  members: number;
+};
+export type SmartSearchResult = {
+  query: string;
+  correctedQuery: string | null;
+  interpretation: string | null;
+  refined: boolean;
+  facets: { name: string; topics: SmartTopic[] }[];
+  people: SmartPerson[];
+  totalPeople: number;
+  groups: SmartGroup[];
+  nameMatches: ActorSummary[];
+  unmatchedFacets: string[];
+  timingsMs: Record<string, number>;
+};
+
 // Backend gap surfaced by Settings (§6): not part of the original §9 spec.
 export type Visibility = "public" | "institution" | "private";
 
