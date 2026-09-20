@@ -1,0 +1,70 @@
+{
+  "segmentId": "c07",
+  "messages": [
+    {
+      "from": "other",
+      "text": "wait. i just pulled the logs from the GX10.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "p95 is sitting at 4.2s. that's not right.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "huh? my local tests were under a second. am i hitting the same endpoint?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "yeah. look at this timestamp gap. 46 seconds to start responding after the first request.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "oh god. is it unloading the model?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "yep. ollama default behavior when idle. we are paying a 46s tax for every cold start.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "that explains the latency spikes. my embeddings were fine but the adjudication calls were lagging.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "we need a heartbeat. keep it warm. can you script that?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "sure. hit /api/generate with an empty prompt every 2 mins? should keep the weights in vram.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "also batch the embeddings. you're sending them one by one, right?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "yeah, sequential loop. oops.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "let's batch to 256. and set instruct concurrency to 2. we don't want to thrash the gpu either.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "doing it now. give me 10 mins to update the worker config.",
+      "gap": 1
+    }
+  ]
+}

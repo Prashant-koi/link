@@ -1,0 +1,65 @@
+{
+  "segmentId": "n03",
+  "messages": [
+    {
+      "from": "john",
+      "text": "branch pushed. `feature/resolution-pipeline`. i left the thresholds as env vars so you can tweak them without recompiling.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "pulling now. quick question on the scoring logic though. are we just summing shared concepts or weighting by rarity?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "rarity weighted. idf. if two people both list \"python\" it shouldn't count as much as them both listing \"homotopy type theory\".",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "right, but what about related concepts? if i know \"rust\" and you know \"systems programming\", should that boost our score?",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "yes. one-hop decay. i'm thinking start at 0.5 for direct hits, then maybe 0.1 or 0.2 for neighbors in the graph. don't want it to overshadow the direct match.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "ok. i'm going to seed a test set with some \"hero pairs\" where they share rare obscure interests vs common ones. let's see if the ranking holds up.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "good idea. make sure the hero pairs have at least one shared concept that's in the top 1% of our corpus by frequency. otherwise idf won't discriminate enough.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "got it. running the eval now. wait, i see \"machine learning\" appearing in like 40% of my seed data. that's going to blow up the denominator.",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "yeah, that's the point. idf should penalize it heavily. if everyone has it, knowing it tells you nothing about a specific connection.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "makes sense. but what if someone is *only* into ML? then for them it's their whole identity. should we cap the penalty?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "no cap. if you only have one node, your graph is weak. encourage breadth. we can add a bonus for diversity later if the metrics look bad.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "fair. i'll log the individual contribution of each concept in the eval output so we can debug which ones are dragging scores down.",
+      "gap": 10
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "segmentId": "c08",
+  "messages": [
+    {
+      "from": "john",
+      "text": "ok worker config is updated. 256 batch size, concurrency 2. restarted the container.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "nice. watch the logs for a sec. want to make sure it doesn't crash on the first request.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "running a test batch of 50 now.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "it's not crashing. but i see a bunch of `401 Unauthorized` hits in the nginx log from my own machine.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "wait, what? we're not supposed to need auth for imports yet, right? you're using the dev keys?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "no. i'm hitting /api/import/pdf without a session token. it should be open for now because onboarding happens before login.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "ah yeah, that's by design for the resume/linkedin/github import flow. i didn't add auth there yet.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "that's a risk though. anyone can spam it or leak data if they guess the endpoint. we should at least rate limit it before we let anyone else test.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "fair point. i'll add a simple token bucket to the import controller tomorrow. not gonna block on it tonight but flagging it for the hardening pass.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "agreed. just don't forget to mention it in the docs so we don't ship a hole.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "will do. adding it to the open items list in docs/decisions.md under 'auth hardening'.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "cool. i'm gonna go sleep. if it breaks at 3am, don't call me.",
+      "gap": 10
+    }
+  ]
+}

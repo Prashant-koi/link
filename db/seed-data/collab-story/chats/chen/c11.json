@@ -1,0 +1,55 @@
+{
+  "segmentId": "c11",
+  "messages": [
+    {
+      "from": "john",
+      "text": "yeah. let's not do that again. what was the limit?",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "512mb. the batch processor spikes to like 1.2gb when it loads the context. i'm bumping it to 2gb in compose.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "ok good. and can we add that retry logic for the failed jobs? the one with the exponential backoff?",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "yeah i was thinking about it. 5s, 20s, 60s sounds reasonable. i'll add it to the worker loop.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "perfect. also, we still need to harden the auth before wednesday. session rotation and rate limits on /auth.",
+      "gap": 6
+    },
+    {
+      "from": "other",
+      "text": "i know. it's on my list. i'll start on that tomorrow after i push the retry changes.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "cool. the deadline is wed 23rd right? so we have a bit of buffer.",
+      "gap": 7
+    },
+    {
+      "from": "other",
+      "text": "yeah. i hate having deadlines though. makes me want to do it all now and then crash.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "lol true. just don't force push the main branch like last time.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "i'm working on it. i'll open the pr for the retry logic tonight so you can review it tomorrow.",
+      "gap": 58
+    }
+  ]
+}

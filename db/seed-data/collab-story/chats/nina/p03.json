@@ -1,0 +1,65 @@
+{
+  "segmentId": "p03",
+  "messages": [
+    {
+      "from": "john",
+      "text": "wait. amara just pinged me in the group chat. she says the cluster is stuck in a loop.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "stuck how? logs not replicating or election spinning?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "election spinning. after she heals the partition, two nodes vote for themselves, then time out, then vote again. infinite loop. classic split vote.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "ugh. yeah, if their timeouts are identical they will step down at the exact same millisecond and collide. i mentioned this in the design doc but you skipped it.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "i skipped the whole thing because i was focused on the batch idempotency logic you kept nagging about. look, how do we fix it? randomize the timeout?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "yes. pick a random value in a range on every timer reset. say 150ms to 300ms. that breaks the symmetry.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "and we need to make sure the timer resets if we get a valid AppendEntries from a current leader, right? otherwise we keep stepping down even if someone is already leading.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "exactly. state machine says: if I see a valid AppendEntries, I am not a candidate anymore. reset the timer. stay follower.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "okay. i’m pushing the random timeout change now. `const timeout = 150 + Math.floor(Math.random() * 151);` simple enough.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "perfect. ping amara when it’s up. she can run the fault injector again to confirm the split vote is gone.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "done. pushed to main. amara says it’s holding steady now. no re-elections after the heal. we are actually stable for like 10 minutes straight.",
+      "gap": 45
+    },
+    {
+      "from": "other",
+      "text": "holy crap. that was fast. okay, that’s a win. let’s not celebrate too hard but i’m adding 'stable after partition heal' to the milestone checklist.",
+      "gap": 2
+    }
+  ]
+}

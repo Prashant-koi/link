@@ -1,0 +1,75 @@
+{
+  "segmentId": "j05",
+  "messages": [
+    {
+      "from": "john",
+      "text": "hey chen pinged me that https is live on linkmit.duckdns.org",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "test it out? we need the demo accounts working before i sleep",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "i just made john.doe and jane.doe in the seed script",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "password is hackmit2026 for both, don't commit that to git lol",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "also chen said he set up session rotation but i want to verify it on mobile",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "are you still awake or should i wake you up for a quick test?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "i'm looking at the login page now",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "wait my phone is throwing a cert warning? \"not secure\"?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "i clicked through but that's bad for a demo",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "also why is my keyboard not auto-filling the password? it should know this site since i just registered on desktop",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "i have to type hackmit2026 manually which is annoying",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "did we set the http-equiv meta tag? or is it the user-agent sniffing?",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "i'll add <input autocomplete=\"username\"> and \"current-password\" to the form fields",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "pushing a quick fix for the autofill, brb",
+      "gap": 2
+    }
+  ]
+}

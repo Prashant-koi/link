@@ -1,0 +1,75 @@
+{
+  "segmentId": "c10",
+  "messages": [
+    {
+      "from": "other",
+      "text": "up. watching tail logs. quiet so far.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "good. keep an eye on the worker container, i saw it hiccup yesterday during load test.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "yeah it restarts if it ooms. but we have limits set now. should be fine. i am literally staring at the terminal rn.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "cool. just ping me if it does it again, i need to know if it's the queue or memory.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "ok. also, disk space is getting tight. 400mb left on the box. docker layers are eating it alive.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "ugh. did you prune? we don't need all those old dev images anymore.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "running docker system prune -a now. this is scary but necessary. if this breaks, we are done.",
+      "gap": 10
+    },
+    {
+      "from": "john",
+      "text": "don't delete the postgres volume!! that's the only copy of the graph data.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "i know john. i am being careful. just images and dangling containers. volumes are safe.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "freed up 2gb. phew. feels like defusing a bomb with duct tape.",
+      "gap": 15
+    },
+    {
+      "from": "john",
+      "text": "worth it. let's hope the demo group doesn't hit the api too hard.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "worker container restarted. ungracefully. exit code 137. i see a spike in memory right before it died.",
+      "gap": 45
+    },
+    {
+      "from": "john",
+      "text": "sh*t. is it back up? did the queue lose jobs?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "it's back up. queue seems intact, postgres persists them. but that was a close call. we need to increase the memory limit before the next batch.",
+      "gap": 2
+    }
+  ]
+}

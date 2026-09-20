@@ -1,0 +1,60 @@
+{
+  "segmentId": "s04",
+  "messages": [
+    {
+      "from": "john",
+      "text": "just pulled the stage breakdown logs to double check the marginal gain numbers you wanted.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "Great. Does the trigram+embedding baseline hold up against the full pipeline?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "yep, 94% without the LLM vs 99.1 with it. that 5% is mostly ambiguous strings where the embedding score was borderline.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "That is a strong argument for keeping the adjudicator. Did you test the smaller model on these same cases?",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "we did compare qwen3.8 to the 4B model. 4B was faster but had some weird false positives on junk strings. qwen3.8 rejected all of them.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "Good. Accuracy over speed is fine for this use case, especially with local inference latency already tuned.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "agree. one concern though: most of our test strings are still synthetic. do we have enough real user data yet?",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "That is a valid concern for the evaluation section. Have you collected any from the pilot sign-ups?",
+      "gap": 7
+    },
+    {
+      "from": "john",
+      "text": "not many yet, just the ones Noor entered manually for testing. I can ask her to pull the actual strings from the seed list.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "Please do. Even a small set of 50-100 real inputs would strengthen the human eval plan significantly.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "on it. I'll get that sorted before the abstract deadline next month.",
+      "gap": 2
+    }
+  ]
+}

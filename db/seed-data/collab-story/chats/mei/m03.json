@@ -1,0 +1,60 @@
+{
+  "segmentId": "m03",
+  "messages": [
+    {
+      "from": "john",
+      "text": "ok so i'm testing the qwen3.8 output for the 'why you connect' field. it's generating full paragraphs which is... a lot of text for a card. do we want to trim that in the UI or let it run?",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "let it run?? no no. if i see a block of grey text i close the tab lol. we need the punchline first. like 'You both love distributed systems' then maybe a smaller line below explaining the nuance",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "agreed. so structurally: is it a hard template? like [Shared Concept] + [Model Explanation]? i'm worried the model will hallucinate a vibe that isn't there",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "yes hard template for the headline. the headline has to be factual. 'Shared: Raft Consensus'. then the subtext can be the model's flair. that way if the model is being weird, at least the main point is solid",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "makes sense. i'll parse the first sentence of the llm output as the 'headline' and put the rest in a collapsible 'read more' section. keeps the card clean but we don't lose the explanation",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "perfect. just make sure the 'read more' doesn't feel like an afterthought. maybe a little icon that expands? i hate when things are hidden behind tiny text links, feels so utilitarian",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "fair point. i'll use a chevron. wait, does the model explanation need to be short? qwen is being verbose as hell right now. 'It appears that you both have an interest in...' is not what we want",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "haha yes kill the 'it appears'. tell the model to be direct. 'You connect because you both build in Go.' short, punchy, human. can we add that to the system prompt?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "i'll add a constraint: 'max 20 words, no intro phrases'. let me run it again with that. if it still rambles i'm going to cut it off at the first period manually in the backend",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "do that. honestly if it's under 15 words it's probably better. we can always expand later but for the demo we need instant clarity",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "ok running the batch now. i'll ping you when i have a few examples to look at. hopefully it stops sounding like a robot trying to be a poet",
+      "gap": 1
+    }
+  ]
+}

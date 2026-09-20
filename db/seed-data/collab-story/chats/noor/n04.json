@@ -1,0 +1,65 @@
+{
+  "segmentId": "n04",
+  "messages": [
+    {
+      "from": "other",
+      "text": "okay seed generator is up. 300 synthetic people, split into CS/EE/Bio cohorts with shared club/lab contexts. i planted a hero pair with only \"algebraic topology\" in common and a decoy who shares \"python\" and \"linear algebra\".",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "clean. make sure the decoy actually gets ranked higher if we remove the idf weight? that's the only way we know the penalty is doing something.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "already added that ablation. also i'm generating synonym pairs (\"neural nets\" vs \"deep learning\") to check if the resolution pipeline treats them as the same node before scoring.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "wait, the synonym check happens in the resolver, not the scorer. if the resolver fails, the scorer just sees two distinct nodes with low overlap. that's a different failure mode.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "true. i'll log which gate each pair hits. if it's a resolver miss, we flag it separately from a scoring error. do you want me to print the confidence scores for the synonym matches too?",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "yes. i want to see if the trigram stage is catching them or if we're relying on embeddings. if it's >0.92, it should be auto-accept.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "running it... 12/300 done. hold on, i see 3 failed jobs in the queue. they timed out during embedding generation.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "don't retry them yet. what's the error message? is it the model unloading again?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "no, it says `connection reset`. looks like the worker crashed. i'm not going to hide these in the eval output. they count as failures, not skipped.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "agreed. if we skip them, our success rate is a lie. just mark them as 'infra error' so we can filter them out later without deleting the data point.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "noted. updating the schema to have a `status` column: resolved, rejected, infra_error. i'll re-run those 3 once you check the logs.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "send me the log snippet. i bet it's the Ollama context window limit. we're batching 256, but if one string is huge, it might overflow.",
+      "gap": 2
+    }
+  ]
+}

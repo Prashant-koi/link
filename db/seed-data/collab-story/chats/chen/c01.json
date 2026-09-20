@@ -1,0 +1,75 @@
+{
+  "segmentId": "c01",
+  "messages": [
+    {
+      "from": "john",
+      "text": "hey, you're on backend + infra right? api, docker, auth, the nginx stuff",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "yep. what's the deadline again? and are we using the gx10 for the models or is that still just for embedding tests?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "deadline is hack mit in sept so we got like 60 days. yes the gx10 with the 128gb unified mem is where we run the local llm stuff so no cloud apis for privacy reasons",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "ok cool i was hoping not to deal with api keys. do we have a repo yet or should i spin one up?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "i made it: link-backend. you have push access now. main branch is protected, work off feature branches. keep prs small like 200 lines max so review is actually possible",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "got it. setting up the docker compose file first to get nginx + https working on duckdns",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "perfect. also can you make sure the container stays alive if the model worker crashes? i don't want the whole api going down because one embedding job timed out",
+      "gap": 6
+    },
+    {
+      "from": "other",
+      "text": "yea i'll add restart: unless-stopped and maybe a healthcheck. also what port is the node api running on? 3000?",
+      "gap": 12
+    },
+    {
+      "from": "john",
+      "text": "3000 is fine for dev but in prod nginx will proxy to 80/443. just expose 3000 internally in the docker network",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "k. also do we need any specific env vars for the gx10 connection or does ollama just run locally on that box?",
+      "gap": 9
+    },
+    {
+      "from": "john",
+      "text": "it runs locally on the gx10 so we just hit localhost:11434 if we deploy there. for now assume it's a remote host at link-gpu.internal so we can change it later without breaking the api code",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "makes sense. i'll add an OLLAMA_HOST env var. gonna go write the dockerfile now, ping me if you need anything before midnight",
+      "gap": 7
+    },
+    {
+      "from": "john",
+      "text": "thanks. oh and no unit tests required yet but do add a basic /health endpoint so we can check it's alive during the hackathon",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "done. going to sleep soon, night",
+      "gap": 10
+    }
+  ]
+}

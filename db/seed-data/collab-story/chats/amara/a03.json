@@ -1,0 +1,45 @@
+{
+  "segmentId": "a03",
+  "messages": [
+    {
+      "from": "other",
+      "text": "wait. hold on. that test just failed again.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "it's the one checking log index continuity after a leader step down. failed out of like 20 runs total today but it's back. classic flake.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "ugh. which one is it? the election timeout race?",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "yeah. timing dependent. sometimes the new leader's first heartbeat lands before the old one finishes committing its last entry. so we get a gap in the log index sequence on the follower.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "hmm. that one's a pain to repro since it depends on actual wall clock timing.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "ok ok ok, I'm gonna inject a deterministic fake clock into the test harness now. no more \"works on my machine\" energy.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "please do. I hate when we have to rerun a suite 10 times to see if it's actually broken or just being dramatic.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "give me 5 mins to wire it up properly. once it's in, we can force the exact interleaving that triggers the bug every single time. also I'm naming the fake clock `time_is_a_lie`. feels appropriate.",
+      "gap": 4
+    }
+  ]
+}

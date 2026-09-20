@@ -1,0 +1,65 @@
+{
+  "segmentId": "j11",
+  "messages": [
+    {
+      "from": "john",
+      "text": "go grab some food before we do this. my brain is fried.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "done! got a slice of pizza and a very aggressive amount of coffee. okay, so... what actually went wrong? besides the mobile app disaster?",
+      "gap": 12
+    },
+    {
+      "from": "john",
+      "text": "the scope debate at the end was rough. we spent way too long arguing about the native app when we should have been polishing the explanations. also, i still hate that the mobile detour ate 3 days of dev time.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "totally agree. i was ready to build the calendar thing too but mei stopped me (thank god). what did you think about the atlas though? i'm still obsessed with how it looks.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "it was the best part. judges kept coming back to it during Q&A. the 'why' explanations plus the visual map is a strong combo. we need to keep that as our core.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "okay so if the atlas is the star, how do we prove it's not just pretty? i think we need actual data on whether people get value out of the matches.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "good point. we have logs but no subjective feedback. we should do a user study? like, get 10 students to use it for a week and rate the suggestions?",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "YES. i can recruit them from my friends. mei can design the survey questions. we can start thursday (the 24th) and wrap up by saturday (26th). that gives us time to analyze before the paper deadline.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "that works. i'll set up a simple form for ratings and comments. let's aim for 10 users. noor is doing her human eval on the strings, so we should align on what 'good match' means first.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "fair. i'll ping mei and noor tomorrow morning. also, chen said he's going to fix the auth stuff by wednesday (the 23rd) so we should be secure by then.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "yep, that's on my todo list too. i need to finish the retry logic for the model jobs by tuesday (22nd). after that, we're basically in maintenance mode until the study.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "okay! i feel way less stressed now. 3rd place + a clear plan. you ready to close the laptop for tonight?",
+      "gap": 10
+    }
+  ]
+}

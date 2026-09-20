@@ -1,0 +1,75 @@
+{
+  "segmentId": "j06",
+  "messages": [
+    {
+      "from": "other",
+      "text": "wait. hold up. 🛑 did diego just say we are cutting the mobile app??",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "i literally have a react native project half done. i spent 3 hours on the splash screen today! 😭",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "yeah. d5. no native app. no calendar integration. web only.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "but... why? we have 25 days. i can make the RN thing work by saturday night easily",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "diego's privacy concerns on device storage + the fact that debugging RN on our infra is a nightmare. also we need time for the atlas canvas.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "ok but my layout work in RN was actually pretty good. the animations!",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "i know. that's why i said the responsive web layout will carry it. we just reuse the CSS logic, no native bridge.",
+      "gap": 6
+    },
+    {
+      "from": "other",
+      "text": "fine. ugh. i'm mad but i get it. better to have a stable web demo than a flaky app that crashes on the ipad during judging.",
+      "gap": 7
+    },
+    {
+      "from": "john",
+      "text": "exactly. stability > flash. you want to keep the RN code in a branch so we don't lose it?",
+      "gap": 8
+    },
+    {
+      "from": "other",
+      "text": "yes! please. i'll push it to feat/rn-prototype right now before i delete my local state. 😤",
+      "gap": 9
+    },
+    {
+      "from": "john",
+      "text": "done. it's in the repo. don't merge it lol.",
+      "gap": 10
+    },
+    {
+      "from": "other",
+      "text": "you are a menace. ok, back to the login autofill issue then. why is my phone still not suggesting the password?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "probably because we're not using standard form semantics yet. i'm adding the autocomplete attributes now.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "great. push when ready, i'll test on my pixel and my iphone. 📱",
+      "gap": 4
+    }
+  ]
+}

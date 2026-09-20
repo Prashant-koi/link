@@ -1,0 +1,45 @@
+{
+  "segmentId": "s02",
+  "messages": [
+    {
+      "from": "other",
+      "text": "Morning John. I reviewed your initial description and think the angle on cost/privacy is actually the strongest part of the story.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "But for a workshop, I need to know exactly how you are evaluating this. Are we just looking at accuracy, or do you have baselines?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "Good question. Right now it's mostly heuristic + a few spot checks, but I agree that's weak for a paper.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "I'm thinking about comparing our local qwen2.5-14b against a standard API baseline to quantify the latency/privacy trade-off properly.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "That would be very compelling. If you can show that the local model gets within a few percent of the cloud version while keeping data on-prem, that is a solid contribution.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "Yeah, I think we can pull that off. Noor is building out the eval set right now so we have a fixed dataset for testing.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "Please ensure that dataset includes ambiguous or edge-case interests, not just clear keywords. The 'why it failed' cases are often more interesting than the successes.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "Noted. I'll make sure to highlight the adjudication failures in the one-pager too. Thanks, Sofia, this is helping a lot.",
+      "gap": 1
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "segmentId": "n06",
+  "messages": [
+    {
+      "from": "john",
+      "text": "just realized we're still running nomic-embed-text. is that actually our best bet or are we just lazy?",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "honestly? it's fine. 768 dims is small enough that the pgvector index isn't even strictly necessary at this scale.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "wait, sequential scan?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "yeah. like 3k vectors max. even a raw dot product loop in ts is faster than the overhead of a complex index lookup.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "bold. i was expecting us to be hitting disk limits by now.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "we're not. the real bottleneck is the qwen inference, not the vector search. i tried swapping in a bigger embedding model yesterday and it was just... heavier for no gain.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "how much heavier?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "like 2x memory footprint on the gx10. and since we're using it for the fuzzy match stage, it doesn't even need to be state-of-the-art. just consistent.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "true. the alias cache does most of the heavy lifting anyway. nomic is enough for the fuzzy layer.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "exactly. i'd rather spend that VRAM on keeping qwen3 warm.",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "agreed. so we stick with nomic, skip the index optimization for now? write it down as a decision?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "yeah. i'll add it to docs/decisions.md. \"D2a: sequential scan for pgvector\". saves us a headache later.",
+      "gap": 3
+    }
+  ]
+}

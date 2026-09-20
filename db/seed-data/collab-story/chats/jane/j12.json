@@ -1,0 +1,50 @@
+{
+  "segmentId": "j12",
+  "messages": [
+    {
+      "from": "john",
+      "text": "haha yeah, closing laptop. but wait, recruiting status?",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "6 so far!! mei just sent the consent form draft btw, it looks surprisingly professional lol",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "cool. i'll review it tonight. also, i'm pushing the retry logic (5s/20s/60s backoff) by tues so your test users don't hit failed model jobs during the study.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "perfect. that's a huge risk removed. do we need to seed them with specific interests or just let them type whatever?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "let them type whatever, but i'll pre-load a few common ones like 'distributed systems' and 'machine learning' so the graph isn't empty on day one.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "makes sense. okay, i'm going to go ask my friends. brb!",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "go get 'em.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "wait. one thing. can we actually reset the test accounts? if someone accidentally accepts a bad match, do we have a wipe button?",
+      "gap": 65
+    },
+    {
+      "from": "other",
+      "text": "and also... you still up? 😴",
+      "gap": 2
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "segmentId": "p07",
+  "messages": [
+    {
+      "from": "other",
+      "text": "ok so i am writing the linearizability checker now. just wanted to flag that the test harness expects `InstallSnapshot` to be idempotent.\n\nif you return an error on duplicate index, my retry logic will loop infinitely. can you make it a no-op?",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "yeah that makes sense. i'll just check `if snapshot.Index <= lastIndex` and return ok. won't take long.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "perfect.\n\nalso, do you have the final json schema for the snapshot payload? amara wants to mock it in the injector. term, last_index, data blob?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "term:\nint64\nlast_index:\nuint64\ndata:\n[]byte\n\nthat's it. no extra metadata, we just store the raw state.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "ok noted.\n\nreminder: design doc update is still on your list for milestone 3. profs are picky about this part. i can review if you want, but it needs to be in the repo by next week.",
+      "gap": 15
+    },
+    {
+      "from": "john",
+      "text": "yeah i know. it's on the checklist. just buried under all the link mit stuff right now. i'll push a draft tonight or tomorrow morning.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "cool. i will keep an eye out for the commit.\n\nback to code: my partition test is hitting that split-vote bug again even with the random timeouts. is it possible the follower is receiving the vote request before it realizes it's a candidate?",
+      "gap": 20
+    },
+    {
+      "from": "john",
+      "text": "check the term numbers. if their term > your term, you step down immediately. if it's equal, you should have already voted for someone else (or yourself).\n\nif you're seeing split votes, it's usually because two nodes think they're candidates at the same term but neither got a majority yet. the random timeout should fix that eventually.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "hmm. so if i log the `votedFor` field, does it show `nil` or `-1` when they haven't voted yet? want to make sure my assertion is correct.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "it's an empty string in our impl. so `if votedFor == \"\"` means no vote cast.\n\nanyway, i'm going to go update that design doc. ping me if the checker is ready for a dry run.",
+      "gap": 10
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "segmentId": "n02",
+  "messages": [
+    {
+      "from": "john",
+      "text": "ok so I was sketching the pipeline flow. exact match -> trigram fuzzy (>=0.6) -> embedding kNN -> LLM adjudication.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "wait, the model is the last resort? that sounds efficient but risky if the embeddings are weird.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yeah, we only call qwen when cheap matching fails. saves latency and cost. the embedding threshold is set to auto-accept >=0.92 though.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "that seems high for auto-accept. what happens if it's between 0.6 and 0.92?",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "llm adjudication picks from top-5 candidates. but here's the kicker: if all candidates are bad, it can propose a new concept.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "hold on. user-generated concepts? we just agreed the ontology is static for the hackathon?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "it's not user-driven, it's model-driven fallback. but i agree, that's a scope nightmare and privacy risk if we let it mint junk.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "definitely need guards. what if someone types \"vacation photos\"? i don't want that becoming a canonical node.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "good catch. let's add a char limit. only propose new concept if the input string is 5+ characters. short stuff gets rejected or forced to existing matches.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "5 chars feels arbitrary but okay. \"ml\" is 2, \"deep learning\" is 13. so \"ml\" won't create a new node? that's good.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "exactly. also, every model decision gets cached as an alias after the first time. so even if it makes a mistake once, it won't hit the model twice for the same string.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "smart. so the cache acts as a safety net too? if i see a bad alias later, i can just edit the db entry and it fixes future looksups?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "yes. manual override via the alias table. we'll document that as the \"human in the loop\" escape hatch for the demo if judges ask.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "i like it. i'll update my csv to mark which aliases are manual vs auto-generated so we don't accidentally delete a cached model decision.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "perfect. i'll code the pipeline stages in that order then: exact, trigram, embed, adjudicate. will push a branch tomorrow so you can test the thresholds.",
+      "gap": 3
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "segmentId": "p01",
+  "messages": [
+    {
+      "from": "other",
+      "text": "hey. cs 431 teaming up? i’m taking leader election + design doc, need someone for log replication and a tester for the fault injection stuff",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "wait, i was going to grab amara for that\nalso why is it go",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "prof said rust or go only because of the concurrency primitives in the spec\ngotta be someone who actually reads the whitepaper, so you’re it for replication\namara is already saying yes to me btw",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "i didn’t even know we were doing this in a language with garbage collection\ndamn",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "it’s not gc’d, it’s goroutines\nplease don’t make that joke again\nmilestone 1 is due fri 7 aug, we need a repo by wed",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "fri 7 aug? that’s basically next week\nokay i’m in. i hate go but i know the raft protocol better than most of you guys probably",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "i respect that energy\ni’ll make the repo and add you two\namara wants to do the jepsen-style injector, so that’s locked in",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "jepsen-style? for an undergrad course?\nwe’re going to need a lot of coffee",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "it’s just splitting the network and checking consistency\nwe’re doing it, don’t worry\ni’ll send the doc draft by end of day tomorrow",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "cool\nalso quick question for later: are we using etcd or writing from scratch?",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "from scratch. that’s the point of the assignment.\nif i use etcd i fail",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "makes sense\ni’m gonna go stare at my linkmit code for a bit, see you wed",
+      "gap": 6
+    }
+  ]
+}

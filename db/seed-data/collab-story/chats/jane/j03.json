@@ -1,0 +1,95 @@
+{
+  "segmentId": "j03",
+  "messages": [
+    {
+      "from": "john",
+      "text": "back. quick one on the search page before i lose focus",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "finally!! was about to write a mock api 😭 how do we want it to feel",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "aspiration search. type what you want to learn. hits people who have done it, are figuring it out, or just considering it",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "ohh nice so its not just matching interests but intents? that sounds way better for the demo",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "exactly. key constraint: read path is fast. exact match then trigram fuzzy only. we never block on the LLM during a search query",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "got it so if i type something new it might not show anything until the worker catches up?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yep. if its a brand new string, it resolves in the background. you need to tell them 'resolving...' and maybe retry after like 5s? or just show empty state with a hint",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "i can do a spinner + 'figuring out where this fits'. feels friendlier than a blank page",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "perfect. api shape: /search/aspiration?q=... returns groups by stance. keys are 'mastered', 'learning', 'considering'. each has a list of people + the matched concept name",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "wait does the response include the confidence score too? or is that internal?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "no, keep it clean. just the concept name and person id. we rank internally by idf + stance weight. frontend just renders what comes back",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "makes sense. so i don't have to do any scoring logic in react? thank god",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "correct. just a list render. i'll stub the endpoint tomorrow morning so you can hit it with dummy data first",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "you are a lifesaver. i hate writing fake json by hand 🙄",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "lol same. i'll also add a query param to force the 'resolving' state so you can test that flow without waiting for the worker",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "YES please. testing latency is the worst part of frontend dev imo",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "agreed. going to bed now. ping me if the api shape is ambiguous",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "night! gonna start the layout then 👋",
+      "gap": 2
+    }
+  ]
+}

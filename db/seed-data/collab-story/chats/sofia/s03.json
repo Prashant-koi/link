@@ -1,0 +1,45 @@
+{
+  "segmentId": "s03",
+  "messages": [
+    {
+      "from": "other",
+      "text": "Also, I need a single, clear research question. \"Is local better?\" is too vague. Try: \"What accuracy cost do we pay for on-prem inference in interest resolution?\"",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "Okay, that's much tighter. I'll reframe the intro around that trade-off specifically.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "And we need a baseline that doesn't use an LLM at all. Just the trigram + embedding pipeline. If you don't show the marginal gain of the adjudication step, reviewers will assume the model is overkill.",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "Fair point. We have the logs from when we tested the pipeline without the adjudicator. I can pull those numbers for the ablation table.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "Good. One more thing: we need human evaluation. Automatic metrics aren't enough for a workshop like this. Can Noor recruit 10 students to label the edge cases?",
+      "gap": 15
+    },
+    {
+      "from": "john",
+      "text": "I'll ask her. I assume you have a target venue in mind? The deadlines are moving fast.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "Yes. There is an NLP-for-Education workshop with a full paper deadline of Fri 2 Oct. Abstracts are due Fri 25 Sep. It's the best fit for our audience.",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "Got it. I'll put those dates in the project tracker and start drafting the abstract today. Thanks for the push, Sofia.",
+      "gap": 2
+    }
+  ]
+}

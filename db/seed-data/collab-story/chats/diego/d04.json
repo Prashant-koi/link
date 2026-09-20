@@ -1,0 +1,45 @@
+{
+  "segmentId": "d04",
+  "messages": [
+    {
+      "from": "other",
+      "text": "okay, i just finished watching the full run-through in my office. honest take: the 'why you connect' explanations are honestly the strongest part we have right now. judges will latch onto that.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "honestly? i was bracing for it to be the atlas viz. glad the text landed. it makes sense, seeing the specific shared concepts beats a pretty graph when you don't know us yet.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "yes. so here's my advice: cut the architecture slide entirely. no one wants to hear about Postgres and pgvector in a 3-minute slot unless they're an engineer, and even then, it kills the momentum.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "fair point. i was worried chen would feel left out if we skip the infra talk, but you're right. it's too dense. i'll swap it for a second example of a connection explanation.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "perfect. instead, prepare hard for privacy questions. they will ask why we're storing free-text interests and how we ensure they aren't leaked or used for tracking. have a crisp one-sentence answer ready.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "we can say it's local inference, no cloud api calls, and the data stays on the university's own servers? that covers the 'leak' part, i think. do we need to mention the double opt-in messaging too?",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "definitely mention the double opt-in. it shows we designed for consent, not just collection. 'Local processing + explicit consent' is a strong combo for a privacy-focused judge.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "got it. i'll write that up and run it by me and noor tomorrow morning. thanks diego, this actually feels a lot more solid now.",
+      "gap": 4
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "segmentId": "p05",
+  "messages": [
+    {
+      "from": "other",
+      "text": "okay that fix should hold the line. next up: are we actually doing snapshots this week or are we waiting until Milestone 3 deadline looms?",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "i was thinking just log replication for now, but if Amara's injector runs long enough the logs get huge. 1000 entries per snapshot? seems reasonable to cap memory.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "yes do it now. tests need it. if we wait until Friday we're going to have a meltdown when the disk fills up or the leader election times out because the log is 50mb long.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "fair point. i'll add the InstallSnapshot RPC. do we send the whole state or just a diff? i'm leaning towards full state for simplicity since our key-value store is small.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "full state is fine for now. diffing is too much work for this course project. just serialize the map, send it, done.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "agreed. i'll trigger it when the log length exceeds 1000 and the leader has a stable state. follower applies it before catching up on new entries?",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "yes. follower truncates its log, applies snapshot, then processes AppendEntries as normal. standard raft flow.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "wait, if the follower is far behind, do we send multiple snapshots or just the latest one? i think just the latest, assuming the log entries in between are not needed for state?",
+      "gap": 6
+    },
+    {
+      "from": "other",
+      "text": "just the latest. if they missed intermediate writes, the snapshot should contain all those states. otherwise the state machine is inconsistent.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "got it. i'm writing the RPC now. might take an hour to get the serialization right without blocking the main goroutine.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "make sure you don't block election timeouts while serializing! that's a classic gotcha.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "noted. i'll spawn a separate goroutine for the snapshot creation. thanks for the save, i would have missed that.",
+      "gap": 1
+    }
+  ]
+}

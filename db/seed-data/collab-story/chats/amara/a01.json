@@ -1,0 +1,45 @@
+{
+  "segmentId": "a01",
+  "messages": [
+    {
+      "from": "other",
+      "text": "yo john, amara here. jumping on the raft team for testing. how do you want the fault injector? drop/delay/partition/kill or are we doing something fancy?",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "hey amara. keep it simple please. just a wrapper around the rpc layer so we can intercept messages before they hit the wire.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "ok ok ok. so i inject faults at the transport boundary? that means partitioning is just dropping packets in one direction until we heal it?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "yeah basically. i need to be able to force split votes after a partition heals later, so make sure you can re-enable the link cleanly.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "noted. i'll add a 'heal' command that restores full connectivity. should i also support random delay jitter or just fixed ms?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "fixed is fine for now. we can add jitter if the linearizability tests get weird. focus on drop and partition first.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "cool. i'll have a stub ready by thursday. what format do you want the test cases in? json config or code?",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "json please. easier to review and we can generate them later if needed. thanks amara.",
+      "gap": 2
+    }
+  ]
+}

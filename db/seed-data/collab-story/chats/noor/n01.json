@@ -1,0 +1,70 @@
+{
+  "segmentId": "n01",
+  "messages": [
+    {
+      "from": "john",
+      "text": "okay Noor, you're officially in. welcome to the chaos.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "thanks. i've been looking at the CSO. it's huge though. do we take all of it or just a subset?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "definitely a subset. 600 concepts seems like a good starting size? anything more and the graph gets noisy.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "agreed. i'll filter for the core areas first. how do we handle the broader/narrower relations in that subset? keep them or flatten it?",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "keep them. we need the hierarchy for the scoring later. broader concepts should have lower weight than specific ones, basically an idf thing.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "makes sense. what about the aliases? users are definitely going to type messy strings like 'ml' or 'deep learning' instead of the canonical name.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yeah, that's the hard part. we need a mapping table for common aliases. maybe you can seed it with some obvious ones to start?",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "i'll start a csv with ~50 common synonyms. should i include abbreviations and plural forms too?",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "yes to both. the more noise we catch early, the less the model has to guess later.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "okay. one more thing: should the ontology be static for now, or do we plan for user-generated concepts?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "static for the hackathon. user-generated is a scope nightmare we don't have time for. let's focus on resolving existing strings to our fixed set.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "fair. i'll get that subset and the alias list ready by tomorrow then.",
+      "gap": 60
+    },
+    {
+      "from": "john",
+      "text": "perfect. ping me when it's done so i can test the resolution pipeline against it.",
+      "gap": 3
+    }
+  ]
+}

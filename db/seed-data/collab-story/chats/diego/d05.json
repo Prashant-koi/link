@@ -1,0 +1,45 @@
+{
+  "segmentId": "d05",
+  "messages": [
+    {
+      "from": "other",
+      "text": "HEADS UP!!! just got out of the judging room and we are officially 3rd in the Dropbox track. 🎉🎉🎉",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "WHAT. actually? i was bracing for last place honestly. did they like the privacy bit?",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "they loved it. one judge specifically asked how we ensured the free-text data wasn't being sold or used for ad tracking. your \"local processing + double opt-in\" answer landed perfectly.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "haha okay so chen's infra talk was a waste of everyone's time but at least the result is good. i owe me and noor an apology for not trusting the text more.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "don't apologize, just take the win. also, the CS chair is already asking about it in her office. she heard from the judges. this is actually blowing up a bit.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "whoa. the chair? that's... new. does this mean the pilot meeting on the 29th is now a formality?",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "definitely not a formality, but the mood has shifted from \"interesting student project\" to \"what can we do with this.\" i'll send you a one-pager for the privacy summary by friday so we're ready. congrats team.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "thank you diego. genuinely. going to go stare at the wall for five minutes to let it sink in.",
+      "gap": 3
+    }
+  ]
+}

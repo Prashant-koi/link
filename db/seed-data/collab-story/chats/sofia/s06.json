@@ -1,0 +1,55 @@
+{
+  "segmentId": "s06",
+  "messages": [
+    {
+      "from": "other",
+      "text": "Thanks John. Before we finalize the timeline: Noor, have you started the human evaluation of the 100 strings yet? I need those results to verify our baseline claims before the abstract is drafted.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "she's on it actually. i think she's done like 40 already? noor, status check for prof?",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "I see. John, let's set a hard internal deadline: Noor to submit the raw eval data by Friday 25 Sep. Abstract due that same day? That seems tight.",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "tight but doable if we just lock the numbers then. i can draft the abstract skeleton tonight so it's just a fill-in-the-blanks job for the 25th.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "Agreed. What about the full paper? I would prefer to see a complete draft by Monday 28 Sep so we have two days to discuss revisions before the Friday submission on Oct 2.",
+      "gap": 10
+    },
+    {
+      "from": "john",
+      "text": "monday 28 works. i'll aim to have the related work section done by then too, that's my main bottleneck right now.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "Good. Noor, please prioritize the evaluation over any new coding tasks until Friday. It is critical for the paper's validity.",
+      "gap": 12
+    },
+    {
+      "from": "john",
+      "text": "totally fair. i'll handle the infra tasks (like that retry backoff logic) so she can focus on the data. noor, you good with that?",
+      "gap": 6
+    },
+    {
+      "from": "other",
+      "text": "Excellent. I will review the intro changes and the figure placement once you send them. Keep me posted on Noor's progress.",
+      "gap": 15
+    },
+    {
+      "from": "john",
+      "text": "will do. sending the updated draft in an hour or so. thanks again for pushing on the timeline, it helped clarify priorities.",
+      "gap": 8
+    }
+  ]
+}

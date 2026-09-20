@@ -1,0 +1,65 @@
+{
+  "segmentId": "c09",
+  "messages": [
+    {
+      "from": "other",
+      "text": "wait, did you actually push the token bucket code? i see a new commit on the branch but it looks like you just hardcoded the limit to 1000 req/min. that's basically nothing for a pdf import.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "it's a placeholder. i know. 1000 is fine for our internal testing but yeah, we need tighter limits before anyone external touches it. the real config comes from env vars in the hardening pass.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "ok. also, are we setting the body size limit? i see nginx is set to 16m but express default is 100kb. if someone uploads a legit linkedin export it might fail silently.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "good catch. i'll bump the json body limit to 12mb in the middleware. that should cover most resumes and profile dumps without eating all the memory.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "also, health checks. are we returning a 200 on /health if the db is down? i just curled it and got a 200 even though i stopped postgres locally.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yeah, that's bad. it should check the connection pool. i'll add a quick pg query to the health endpoint so it actually fails if we're disconnected.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "can you add that to the checklist in docs/decisions.md? i want to make sure we don't forget it when we do the final sweep before the freeze.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "done. added: 'health check validates db connection' under the hardening section. also noting that we need to log request ids for the import endpoint so we can trace spam attempts later.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "we should have a staging env for this. i don't want to be testing auth flows on prod while you're still tweaking the token bucket logic.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "there's no time for a full staging setup before the freeze. we have 4 days. i'd rather spend that time fixing the actual bugs than spinning up a new docker compose env.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "fair. but let's at least use a separate database schema for your local testing. don't want you wiping out the seeded concept graph again.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "i already am using a throwaway container. just be careful with the shared volume mounts when you're doing your docker stuff tomorrow.",
+      "gap": 2
+    }
+  ]
+}

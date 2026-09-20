@@ -1,0 +1,30 @@
+{
+  "segmentId": "s07",
+  "messages": [
+    {
+      "from": "other",
+      "text": "Confirming our Thursday meeting at 10:00 AM. Could you send over the trigram-ablation numbers before we meet? I want to see exactly what drops when we remove that stage.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "yeah, sorry forgot to confirm. thursday 10 works.\n\nrunning the ablation now actually. give me 20 mins and i'll have the csv ready for you.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "Thank you. I suspect the drop will be significant, but I want to quantify it precisely before we argue it away in the paper.",
+      "gap": 12
+    },
+    {
+      "from": "john",
+      "text": "agreed. it's doing a lot of the heavy lifting for common aliases.\n\nwill ping you once the script finishes running.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "Looking forward to it. Best, Sofia",
+      "gap": 45
+    }
+  ]
+}

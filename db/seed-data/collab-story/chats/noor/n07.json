@@ -1,0 +1,65 @@
+{
+  "segmentId": "n07",
+  "messages": [
+    {
+      "from": "john",
+      "text": "yeah just pushed that to decisions.md. thanks.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "quick check on the qwen3.8 swap we did Thursday. i reran the adjudication eval set with the new model.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "go ahead.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "fewer wrong adjudications overall. the 14b was still hallucinating on edge cases like 'distributed systems' vs 'systems'. 3.8 is tighter.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "good. but i hit a weird bug this morning. model returns empty string sometimes.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "ah. that's the thinking mode thing, right?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "yeah. it thinks for like 5 seconds then gives us nothing. i have to force reasoning_effort=none in the api call.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "makes sense. it's a thinking model, so if we don't explicitly disable the chain-of-thought output, it might be getting filtered out or timing out before returning the final answer.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "exactly. i added it to the config now. works fine. just want to make sure we document that quirk so we don't hit it again if we switch models later.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "will do. also, regarding those junk concepts minted earlier? i saw some weird entries in the ontology.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "yeah i cleaned up 17 of them this morning. 'vacation photos' and 'my dog' were still in there from before we added the length check.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "good. that should help the scoring quality since those were diluting the idf weights.",
+      "gap": 3
+    }
+  ]
+}

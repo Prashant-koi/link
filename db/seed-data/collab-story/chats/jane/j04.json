@@ -1,0 +1,90 @@
+{
+  "segmentId": "j04",
+  "messages": [
+    {
+      "from": "other",
+      "text": "ok so i'm working on the person panel now and there is a bug 🤦‍♀️ the session cookie isn't attaching when i go through the tunnel. it's dropping me back to login every single time.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "classic SameSite=Lax issue with cross-origin requests. since we're behind nginx serving both api and frontend from the same origin, it should actually fix itself if you hit the local domain directly instead of the tunnel.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "wait really? but i need the tunnel for my phone to connect...",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "use the duckdns link. if you hit linkmit.duckdns.org directly in your browser, the cookie will stick because it's same-origin. the tunnel breaks that.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "hmm let me test that... [5 min later] ok it works! weird. i hate cookie bugs they are invisible",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "yeah. also, what happens when you click 'Send a message'? i want to make sure the UI matches the logic before i wire up the backend.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "good question! right now it just looks like it sends. but what is the actual state machine? do they get notified instantly?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "no instant notifications yet. it's request/accept. you send a 'request', they see it in their inbox, and if they accept THEN the thread opens. double opt-in.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "oh right! me and diego talked about that last week. so i should render a 'pending' state on my end until they accept?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "exactly. button changes to 'Requested' with a disabled look. maybe a little clock icon? so they know it's not lost, just waiting.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "okay doing that now. also should i show the reason we connect on the message send screen? or is that just for the profile?",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "profile only. keep the action light. if you clutter the 'send' action with the explanation it feels heavy.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "fair. less is more i guess 😅",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yeah. just 'Send request'. clean.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "alright! pushing the layout update in a bit. you want me to open a PR when i'm done or just merge it?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "open a PR. i'll take a quick look at the state logic before we merge.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "you're so professional 🥰 okay writing code now, brb!",
+      "gap": 1
+    }
+  ]
+}

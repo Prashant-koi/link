@@ -1,0 +1,50 @@
+{
+  "segmentId": "p06",
+  "messages": [
+    {
+      "from": "john",
+      "text": "brb, chen is yelling at me about the auth middleware again",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "haha. ignore him if it's not blocking the demo. \n\nquick ping: since you're in the zone, here is my test plan for the raft part so i can start on it:\n1. linearizability checker (jepsen-style but simpler)\n2. random kill/restart of leader\n3. partition tests to check split votes\n\ndoes that look right?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yeah that covers it. amara is handling the fault injector so just make sure your tests hook into her interface.\n\nsorry i'm in the middle of the hackathon build right now, can't code for like 2 hours. will catch up on the snapshot rpc later.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "no worries. just making sure i don't step on your toes.\n\ni'll start writing the linearizability checks now. that takes forever anyway.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "good luck with the flaky tests. let me know if you hit any weird election timeouts again.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "will do. \n\none sec, amara is asking for the log index format. i'll reply then.",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "json with term and index. standard stuff.\n\ngotta go, mei just dropped a new design token set and jane is panicking. talk later!",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "hahaha classic. good luck with the turquoise theme.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "it's 'aqua' apparently. whatever. back in a few hours.",
+      "gap": 6
+    }
+  ]
+}

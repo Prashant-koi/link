@@ -1,0 +1,75 @@
+{
+  "segmentId": "c03",
+  "messages": [
+    {
+      "from": "john",
+      "text": "just pushed migration 001 and 002. i added a graph_version trigger so we can invalidate the alias cache when the ontology changes. do you want to own the mv for idf?",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "yes i'll do that. just finished the dockerfile btw, it builds clean now",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "nice. wait, did you use uuids for the concept id? i was planning bigints for speed",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "uuids. they're everywhere in the api already and it makes joins simpler if we ever sharding. bigint is faster but not by much for this scale",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "fine, uuids win. i'll just update my local schema to match. annoying that i have to change the join logic in the resolver",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "honestly it's fine. also i just pushed 003 and 004. you might want to pull, they handle the relation table indexes",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "wait, i already have a 003 and 004 locally. collision. mine are for the user_interests table",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "oh no. sorry. let me rename mine to 005 and 006 and push again. you keep 003/004?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yeah keep mine. it's cleaner if we just number sequentially from now on. i'll rename my 001/002 to 000_init and 000b so there's no ambiguity",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "done. pushed 005 and 006. now the numbering makes sense (ish)",
+      "gap": 10
+    },
+    {
+      "from": "john",
+      "text": "perfect. i'm going to start coding the exact alias match stage now. should be quick since it's just a lookup",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "cool. let me know if you need any new indexes for that",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "probably not, the primary key on concept_id should be enough. i'll add a unique constraint on the alias string too",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "smart. good night john, for real this time",
+      "gap": 5
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "segmentId": "a05",
+  "messages": [
+    {
+      "from": "john",
+      "text": "6pm works. i'll bring code, you bring the will to make me suffer through edge cases.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "deal. i'm already compiling a list of things that should theoretically break but don't because i'm lazy.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "that's not laziness, that's strategic resource allocation. also, what are we drinking? last time you had me staring at a wall for 45 mins with that 'special' matcha blend.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "it was artisanal. you're not refined enough to appreciate the notes of green tea and existential dread.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "lmao fair. i'll just stick to black coffee this time if you want me to actually read your test assertions.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "no pressure, but i'm bringing the 'special' blend just in case the split-vote bug comes back to life. see you wednesday 👋",
+      "gap": 4
+    }
+  ]
+}

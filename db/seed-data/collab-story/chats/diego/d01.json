@@ -1,0 +1,45 @@
+{
+  "segmentId": "d01",
+  "messages": [
+    {
+      "from": "john",
+      "text": "Hey Diego, quick intro to what we're building for Link. Basically a campus app that maps student interests onto a concept graph and surfaces connections based on shared rare concepts.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "Got it. Sounds interesting, but heads up: since we're dealing with student data, we need to be really careful about FERPA compliance from day one.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "Fair point. We're actually running the AI locally on a dedicated box right now specifically to avoid sending personal data to cloud APIs, but I'd love your input on how the department handles this kind of pilot.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "That's smart. Local inference is definitely the way to go. Can you send me a rough spec of what data points you're actually storing about each student? I want to make sure it aligns with the university's privacy policy.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "Sure, mostly free-text interests and some basic profile info. No sensitive stuff like grades or location. I'll put together a one-page summary for you by the end of the week.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "Perfect. Also, let's get the department IT team involved early so we can sort out the authentication and access controls properly before we scale it up.",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "Agreed. We're using standard session auth for now, but I'm happy to integrate with whatever SSO or identity provider the department prefers.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "Great. I'll set up a meeting with IT next week. For now, just keep the scope tight and document your data handling process clearly.",
+      "gap": 5
+    }
+  ]
+}

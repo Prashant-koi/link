@@ -1,0 +1,45 @@
+{
+  "segmentId": "a04",
+  "messages": [
+    {
+      "from": "other",
+      "text": "ok ok ok, `time_is_a_lie` is officially in the repo. watch this.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "ran it 50 times straight. passed 49, failed 1. the fake clock actually catches the race now instead of us guessing.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "wait so it's not a flake anymore? we can see the exact interleaving?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "yep. forced the old leader to commit entry 42 right after the new leader sends heartbeat 1. deterministic gap every time now.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "holy shit. i've been staring at that log for three days. thank you. do you want to pair on the snapshot test logic later? we need to make sure the follower doesn't just drop the entry.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "for sure. also congrats on the hackathon! heard from Chen that you guys did well?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "yeah, actually not bad. 3rd place in the dropbox track. mostly because we didn't break during the demo, which is a win.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "lmao 'didn't break' is the bar and you cleared it. anyway, wednesday 23rd at 6 pm? my schedule is open until then and i want to get this snapshot thing sorted before the milestone deadline.",
+      "gap": 5
+    }
+  ]
+}

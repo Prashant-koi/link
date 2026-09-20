@@ -1,0 +1,45 @@
+{
+  "segmentId": "s01",
+  "messages": [
+    {
+      "from": "john",
+      "text": "Hi Prof. Petrov, hope the weekend is treating you well. I’m John Doe from Chen’s group; we’re building Link for the HackMIT/Dropbox event in September.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "We’ve got a pretty clean pipeline for resolving free-text interests to a concept ontology, and I was wondering if you’d be open to advising on a workshop paper about the method?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "Hello John. Interesting scope. Do you have a rough one-page summary of the approach and any preliminary results you can share by Tuesday? I am generally available on Thursdays for quick calls or reviews.",
+      "gap": 12
+    },
+    {
+      "from": "john",
+      "text": "Absolutely. I’ll have that over to you before end of day Tue. Quick heads-up: we’re keeping it very local (no cloud APIs) for privacy reasons, so the evals are all on our own infra.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "That is a strong constraint to build around. Please include the trade-offs you observed with local inference in that summary as well; context matters for the method description.",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "Will do. I’m drafting it now so I can get your eyes on the framing before I finalize the numbers. Thanks for being so quick to respond, by the way.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "You are welcome. Keep it focused on the resolution logic itself rather than the application wrapper; that is where the contribution lies for a workshop audience. Best, Sofia",
+      "gap": 15
+    },
+    {
+      "from": "john",
+      "text": "Understood. I’ll strip the app UI details out and focus on the ontology mapping and scoring. I’ll send that one-pager over in about two days.",
+      "gap": 4
+    }
+  ]
+}

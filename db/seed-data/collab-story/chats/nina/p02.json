@@ -1,0 +1,65 @@
+{
+  "segmentId": "p02",
+  "messages": [
+    {
+      "from": "other",
+      "text": "ok so i’m drafting the doc now. here is the skeleton.\n1. RPC: RequestVote, AppendEntries (that’s it for v1)\n2. Storage interface: ReadState, WriteLog, Snapshot\n3. State machine: Follower -> Candidate -> Leader\n4. Safety proofs (copying from slide 12 honestly)",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "do you have strong opinions on the storage interface yet? i’m thinking just a `LogEntry` struct and no fancy WAL for now",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "wait, no fancy WAL?? that’s gonna hurt when we do crash recovery tests later. if the disk flushes out of order we’re cooked",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "but for milestone 1 yeah let’s keep it simple. just append to a file and sync. don’t over-engineer it yet.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "agreed. `fsync` after every commit. i’ll add that to the interface.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "also, i want to batch AppendEntries. if we send one entry per RPC over localhost it’s going to be slow and the overhead is stupid",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "batching is a performance thing. i want correctness first. if i batch and one fails, do we resend the whole batch? that’s a pain to reason about.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "we can just make it idempotent. leader tracks last index sent per follower. if follower says 'i have up to X', we only send X+1..Y.\nbasically the pipeline i use for interest resolution but for logs lol",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "ok that makes sense. i’ll add a `nextIndex` and `matchIndex` field to the leader state.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "yeah.\njust promise me we don’t try to optimize the batching logic until the basic election works. i’ve seen too many people fall into that rabbit hole.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "promise.\nfirst we get `leaderElected` and `logReplicated` working. then we talk speed.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "deal. you’re the project manager, i’m the guy who stops you from breaking things.",
+      "gap": 1
+    }
+  ]
+}

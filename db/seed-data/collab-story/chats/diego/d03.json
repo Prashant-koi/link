@@ -1,0 +1,35 @@
+{
+  "segmentId": "d03",
+  "messages": [
+    {
+      "from": "other",
+      "text": "hey, quick logistics before i head out to the venue setup. did you guys actually register for the dropbox track yet?",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "yeah, chen submitted the form last night. we're in the main hall, table 14 i think? feels a bit too close to the coffee station for my taste.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "haha, caffeine is fuel. just check the wifi portal rules though, they're strict about bandwidth caps this year. don't want your local model inference getting throttled mid-demo.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "good heads up. we're mostly running offline anyway since it's all on the gx10, but i'll grab an ethernet cable just in case the wifi chokes. also bringing a spare monitor so jane can see the atlas without squinting.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "i actually have a spare dell sitting in my office. it's got a 4k display, might be better for the visual part. i'll drop it off at the registration desk before noon.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "you are a lifesaver. the turquoise theme needs the pixels. thanks diego.",
+      "gap": 1
+    }
+  ]
+}

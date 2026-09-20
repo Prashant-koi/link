@@ -1,0 +1,75 @@
+{
+  "segmentId": "c05",
+  "messages": [
+    {
+      "from": "other",
+      "text": "waking up. coffee #1. trying to get the nginx cert sorted",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "certbot is failing. venue network isn't forwarding 80/443 to my machine. i can see the port scan requests but they never arrive",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "ugh. yeah, hackathon wifi is a nightmare for inbound traffic usually",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "do you want me to just skip https for now? or should i generate a self-signed cert?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "self-signed is fine as a stopgap. we don't have real traffic yet so the warning won't matter until later",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "ok. generating it now. also added restart: unless-stopped to all services in compose.yaml just in case the venue resets routers or whatever",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "good call on the restart policy. i hate when containers die after a reboot and i have to manually start them again",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "linkmit.duckdns.org is resolving now, cert is loaded. browser says insecure but it's working",
+      "gap": 10
+    },
+    {
+      "from": "john",
+      "text": "that's fine for tonight. we can revisit proper certs if the network opens up tomorrow",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "yeah. i'll leave a note in the deploy doc so we don't forget to swap it out later",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "thanks. also, did you get that index on auth_attempts added?",
+      "gap": 30
+    },
+    {
+      "from": "other",
+      "text": "yep, pushed it last night before i went to sleep. `CREATE INDEX idx_auth_ip_time ON auth_attempts (ip, created_at);`",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "perfect. i'm about to test the trigram matching stage, hoping it catches more than i think it will",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "good luck. if you need me to add a debug endpoint for the pipeline stages, let me know",
+      "gap": 1
+    }
+  ]
+}

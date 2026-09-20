@@ -1,0 +1,65 @@
+{
+  "segmentId": "n05",
+  "messages": [
+    {
+      "from": "john",
+      "text": "checked the logs. it wasn't the context window. worker died on a null pointer in the vector normalize step. fixing now.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "ok. while you patch that, i pulled the distribution of cosine similarities for the embedding stage across the 300 test strings.",
+      "gap": 6
+    },
+    {
+      "from": "other",
+      "text": "zero hits above 0.92. max was 0.848. most cluster between 0.60 and 0.75. our auto-accept threshold is basically decorative right now.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "that's... actually expected? nomic-embed-text isn't calibrated for this kind of conceptual distance. i saw the same thing when we tested it last week.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "so adjudication is doing 100% of the heavy lifting. which means our latency is entirely dependent on qwen2.5-14b response time.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yeah. and if it's only seeing top-1 candidates because the similarity is low, it's guessing blind. we need to widen the candidate set.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "i can add trigram near-misses as fallback candidates if embedding similarity < 0.85. that way the LLM has actual options to choose from, not just one weak match.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "do it. also, let's drop the adjudication floor from 0.75 to 0.60. if we're sending borderline cases to the LLM anyway, might as well trust its judgment more.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "wait, lower the floor? that means more strings go through adjudication. latency will spike.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "only for the ones that were previously auto-rejected or borderline. and with trigram candidates added, the LLM should resolve them faster because it's not guessing from a single weak vector.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "...ok, convinced. i'll push the trigram fallback and update the threshold config. re-running the 3 failed jobs now that your worker fix is in?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "yes. and log which stage resolved each one this time. i want to see if trigram candidates actually improve adjudication accuracy.",
+      "gap": 2
+    }
+  ]
+}

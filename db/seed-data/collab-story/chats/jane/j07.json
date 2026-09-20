@@ -1,0 +1,85 @@
+{
+  "segmentId": "j07",
+  "messages": [
+    {
+      "from": "john",
+      "text": "pushed the autocomplete attrs. pull and test on that pixel.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "also, did you see Mei's sketch for the atlas? the soft regions thing?",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "YES!!!! I literally looked at it 5 mins ago and started hacking a canvas proto. 🎨",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "it looks amazing but the performance is... not great.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "choppy?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "55fps in chrome which is decent, but firefox is literally dropping frames when i drag a sphere. looks like a powerpoint slideshow.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "that sounds like the canvas is re-rendering the whole graph on every mousemove event instead of just updating the transform.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "yep. i'm doing a full redraw because i don't know how to do partial updates in canvas without writing my own engine.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "do we even need canvas? Mei's sketch is basically vector shapes.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "svg? thought that was dead lol. but fair, it might handle the soft gradients better anyway.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "for like 50 spheres and 10 regions? SVG is fine. Canvas is overkill unless we have thousands of nodes.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "ok converting to svg. but i'm still worried about the jank when dragging.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "only run the animation loop (requestAnimationFrame) while the pointer is down. stop it on pointerup. don't let it tick in the background.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "smart. i was having a global setInterval running forever. why am i like this. 😂",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "sleep deprivation. go fix it, i'm going to stare at the logs until my eyes bleed.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "on it. give me 20 mins. if it works i'm sending you a gif. if it doesn't i'm blaming you.",
+      "gap": 1
+    }
+  ]
+}

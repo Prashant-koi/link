@@ -1,0 +1,45 @@
+{
+  "segmentId": "m08",
+  "messages": [
+    {
+      "from": "john",
+      "text": "ok screenshots are done. sending them to jane now. btw for the user study, did you draft the consent form yet? i vaguely remember diego saying we need something written for ethics even if it's just a quick check-in.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "haha yes. it's basically 'we watch you use the app and then ask why'. jane is finalizing the language but i sketched out the flow: intro -> task list -> debrief. do we have the coffee cards ready?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "jane said she's ordering 15 of those $10 gift cards from the campus shop. i think that covers our 10 students plus a buffer for no-shows. do we need to mention the privacy aspect in the form? like 'we don't upload your data'?",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "yes, definitely. that was the whole point of running local models. i wrote a bullet: 'All processing happens on your device; no personal data leaves your browser.' is that too scary sounding?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "not scary, just true. actually, wait. we run it locally on the GX10 box, not the user's device. the users are on their own laptops accessing linkmit.duckdns.org. so 'no data leaves your browser' is technically wrong if they type something into the search bar.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "cringe. okay, rewrite to 'interests are processed on a secure campus server and not shared with third parties'. better? i hate when we have to be so precise about infra details in user-facing text.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "that works. i'll update the one-pager for diego's meeting later this week too, so it matches. jeez, just having to explain where the data goes makes me want to go back to writing the paper abstract.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "save your energy for the demo! i'm going to go print out these consent forms. if you see jane, tell her i picked the turquoise pens for the sticky notes. visual consistency is key.",
+      "gap": 1
+    }
+  ]
+}

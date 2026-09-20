@@ -1,0 +1,110 @@
+{
+  "segmentId": "j10",
+  "messages": [
+    {
+      "from": "other",
+      "text": "ok it is officially 1:04 am and i just realized the name labels on the phone layout are overflowing if the user has a long last name. why do we have so many users named 'Smith-Jones-Washington'.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "add ellipsis. text-overflow: ellipsis; white-space: nowrap. it's a css fight, not a design fight.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "i tried that but the canvas is clipping the bubble weirdly now. also i am eating cold pizza for the third time. send help or snacks.",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "chinese food on elm is open until 3. chen is driving. get back here in 20 mins.",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "YES. also the wifi dropped for a sec when i plugged in the charger. do you think the demo laptop is cursed?",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "check if it's on the 5ghz band. switch to 2.4 if it's flaky. also don't trust the charger, use the dock.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "switched. seems fine for now. chen brought dumplings. i love him. back to work in 15.",
+      "gap": 25
+    },
+    {
+      "from": "john",
+      "text": "quick check: is the 'why you connect' modal loading the explanation from cache or hitting qwen3.8? if it's hitting the model, we have a latency risk.",
+      "gap": 10
+    },
+    {
+      "from": "other",
+      "text": "it's reading from the db alias table. no model call unless it's a new string. which it shouldn't be for the demo data.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "good. run the demo flow one more time. start with the specific person match, then zoom out to the atlas. under 3 mins?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "2 mins 45 secs. i think we are ready. going to sleep for like 4 hours. wake me up at 7:30.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "you're on. i'm running the final regression tests on the backend. good luck.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "7:32 am. i smell like sleep and stale dumplings. is the db up?",
+      "gap": 460
+    },
+    {
+      "from": "john",
+      "text": "db is up. ollama is warm. nginx is serving https on linkmit.duckdns.org. ready when you are.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "ok deep breaths. judges are walking in. i'm shaking a little bit lol. do you want to go first with the tech setup or should i start with the user story?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "you start. lead with the 'why' explanation. if they get confused, i'll jump in with the pipeline details. let's go.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "they asked about privacy for the third time. chen is handling it. we are still on track. 5 minutes left to wrap up.",
+      "gap": 35
+    },
+    {
+      "from": "john",
+      "text": "we did good. i think we nailed the explanation part. let's hope the judges actually looked at the code.",
+      "gap": 10
+    },
+    {
+      "from": "other",
+      "text": "wait. wait wait wait. chen just walked in with a face that looks like he's seen a ghost or won the lottery. i don't know which one it is.",
+      "gap": 45
+    },
+    {
+      "from": "john",
+      "text": "what. what did he say.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "3rd place. dropbox track. we are in 3rd place. i might actually cry in this parking lot.",
+      "gap": 2
+    }
+  ]
+}

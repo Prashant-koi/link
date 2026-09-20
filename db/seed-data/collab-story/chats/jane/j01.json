@@ -1,0 +1,95 @@
+{
+  "segmentId": "j01",
+  "messages": [
+    {
+      "from": "john",
+      "text": "hey jane, you around? want to join a hackathon team for linkmit?",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "omg hey!! linkmit? yes please!! what's the vibe?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "basically we map everyone's interests onto a concept graph. so if you like 'distributed systems' and someone likes 'raft consensus', we surface them because those connect.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "ohh that sounds actually useful not just another todo app lol. stack?",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "postgres for the graph stuff, node api, react frontend. you'd own the front. i'm doing the resolution pipeline.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "i've done react for two internships already so yeah i can handle it!! canvas viz? charts?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "mostly a web app. no native mobile. we want it responsive and fast. you good with that?",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "totally!! i hate native anyway lol. who else is in?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "chen for backend/infra, noor for data/ml, mei for design. solid team imo.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "wait chen diaz? he's good with docker i think. okay this is a real team not just vibes 💪",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "yeah he pushed for postgres over neo4j too. one datastore, we know sql. less moving parts.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "smart move honestly graphs in pg are fine for this scale. do we have a name yet? 'link'?",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "working title is link. hackmit dropbox track. starts tues 14 jul which is today lol.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "oh wow zero sleep then?? i can do it!! when do we meet?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "kickoff call 9pm tonight. chen, noor, mei, you, me. video link coming shortly.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "yesss send it!! i'll grab my laptop and coffee ☕️ see you in a bit!",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "calm down it's 21:04. we have until 9. i'll ping the group chat.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "fair point 😂 but i'm pumped!! this could actually win something.",
+      "gap": 5
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "segmentId": "s05",
+  "messages": [
+    {
+      "from": "other",
+      "text": "Hi John, I had a look at the v1 draft of the intro. It is quite long; can you cut it down to two paragraphs? Also, we discussed moving the pipeline figure to section 3, but it is still in the introduction.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "yeah i noticed the intro is basically a wall of text. will trim it today. good catch on the fig, moving it to sec 3 now",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "One more thing: please tone down the use of 'novel'. We describe the method as a new application of existing techniques, not a fundamental algorithmic novelty.",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "fair point. i was trying to sound confident but i get how it reads as overclaiming. swapping it for 'practical' or just describing the pipeline steps instead",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "Also, regarding the user study you mentioned: have you checked with the department on ethics approval? I do not want any delays there.",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "we did. diego told us a short consent form is enough since we are not collecting sensitive personal data, just interest strings and public profiles. i have the template ready",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "Good. Please attach the consent form to the appendix so reviewers can see it. Let me know if you need help with the wording.",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "will do, adding it to the end. thanks for the quick feedback, makes a big difference before the freeze tomorrow",
+      "gap": 2
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "segmentId": "a02",
+  "messages": [
+    {
+      "from": "other",
+      "text": "ok i got the history recorder hooked up to your kv layer. using wing & gong's linearizability checker logic since it handles concurrent ops nicely.",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "nice. did you feed it a random mix of reads and writes or just sequential? want to make sure the interleaving actually stresses the commit path.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "random mix, 50/50. but wait. why is read returning old data after a write committed on the leader? that shouldn't happen if log replication worked.",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "hmm. let me check the kv store code real quick. probably the apply loop isn't flushing the memtable before acking the read. give me 2 mins.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "ok standing by. if it's the memtable flush, we might need a barrier there or the linearizability tests will fail every time there's a concurrent read.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "yep, found it. was missing a wait for the latest log entry before serving reads. just pushed a fix to main. can you rerun the checker?",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "rerunning now... okay that actually passed this time. weird how one missing sync call breaks everything.",
+      "gap": 12
+    },
+    {
+      "from": "john",
+      "text": "yeah, classic distributed systems bug. glad you caught it with the checker instead of waiting for jepsen to scream at us later.",
+      "gap": 2
+    }
+  ]
+}

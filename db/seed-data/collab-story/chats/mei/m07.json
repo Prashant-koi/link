@@ -1,0 +1,55 @@
+{
+  "segmentId": "m07",
+  "messages": [
+    {
+      "from": "john",
+      "text": "hey mei, still up? i'm prepping the deck skeleton and i need to know exactly which screenshots you want for slide 3. the 'zoom out' moment?",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "barely 😴 yes! i want the specific pair you two (or whatever dummy data) have, showing the tooltip first, then a transition to the full atlas. can you get that sequence recorded as a short gif or just high-res stills? i'll animate it in the deck if needed",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "stills are safer for the projector. i can do a 3-second screen capture of the hover state -> zoom out. give me 10 mins to pick the best pair that doesn't look like 'i like pizza' + 'i also like pizza'",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "lmao yes, avoid the pizza cliché. maybe something with 'distributed systems' and 'raft consensus'? since we know that one works well in the backend? or just a random interesting overlap like 'synesthesia' and 'color theory'?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "i checked the db. 'synesthesia' connects to 'perception' which is super rare in our sample. that's a good high-idf match. i'll use that for the hero shot. it looks visually distinct on the atlas too.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "perfect. that feels more 'smart' and less 'generic'. okay, slide 4 is where you explain the rarity weighting? i think we need a visual for that. do we have one yet?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "not really. i can generate a simple bar chart showing how 'python' is weighted low vs 'graph neural networks' weighted high. i'll style it with the turquoise tokens so it doesn't look like an excel screenshot.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "yes please. keep it minimal though. we have 5 minutes for the whole demo, remember? i'm aiming for 1 minute intro, 2 minutes live app, 1 minute 'why it matters', 1 min q&a buffer. you have to be fast with the mouse movements",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "i'll pre-load the specific user profile so there's no search delay. i'll also have the 'why' explanation pre-rendered in my head so i don't stumble. is it okay if i just click and talk over the animation?",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "totally fine. just make sure you don't click the settings toggle by accident! i'll be standing right next to you with a 'do not touch' hand ready. good luck with the screenshots, send them when you're done so i can place them before bed",
+      "gap": 2
+    }
+  ]
+}

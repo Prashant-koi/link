@@ -1,0 +1,75 @@
+{
+  "segmentId": "p04",
+  "messages": [
+    {
+      "from": "john",
+      "text": "ok next is log replication. i'm adding the prevLogIndex/prevLogTerm check to AppendEntries now.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "good. if that check fails, you have to send a truncated response and let the leader backfill, right? don't just drop the request.",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yeah, returning success=false with my last log index. leader will adjust next time.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "wait. if the follower has conflicting entries at that index, do we just overwrite or truncate first?",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "truncate then append. standard raft behavior. otherwise commitIndex logic breaks later.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "ok. also, when the leader gets a majority ack, it should advance commitIndex and then notify followers in the next heartbeat. make sure that's decoupled from the actual append.",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "yeah, I'm updating commitIndex in memory immediately but only sending it on the next tick. that keeps the clock consistent.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "perfect. watch out for the commitIndex lagging behind lastApplied though. that's a classic bug source.",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "hmm... actually running into something weird. one of my followers applied entry #42 twice. state machine got corrupted because it executed the same write op twice.",
+      "gap": 6
+    },
+    {
+      "from": "other",
+      "text": "what? that's bad. did you check if the follower is missing a lastApplied pointer?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yep. i was only checking if logIndex < commitIndex to decide whether to apply. but if we receive duplicates or if the state machine callback is async, it can fire again. need an explicit lastApplied index per node.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "make sure lastApplied is strictly less than commitIndex before you apply. and don't reset it on leader change if the log persists?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "exactly. i'm adding `if (log[commitIndex].term > lastApplied) apply()`. pushing that fix now.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "run the injector again after that. i don't trust 'it works' until amara breaks it.",
+      "gap": 4
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "segmentId": "c06",
+  "messages": [
+    {
+      "from": "john",
+      "text": "ok so i'm looking at the worker loop right now",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "yeah. using `FOR UPDATE SKIP LOCKED` for the dequeue?",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "yep. works fine. but i have a question about the container networking",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "worker needs to hit ollama on the host right? since ollama isn't in the compose stack yet",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "exactly. i'm using `network_mode: host` for the worker service so it can reach localhost:11434 directly. feels hacky but i don't want to expose ollama to the whole bridge network tonight",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "fair. works on the gx10. just remember that breaks if we ever containerize ollama itself",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "noted. added a comment in docker-compose.yml so we don't forget",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "also what happens if the model call actually fails? like a timeout or whatever",
+      "gap": 12
+    },
+    {
+      "from": "john",
+      "text": "right now it just sets status to 'failed' and moves on. no retry logic yet",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "so we get a bunch of failed jobs if the box hiccups for 5 mins?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "yeah exactly. i'm thinking maybe a simple retry count column? bump it on fail, only give up after 3 tries",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "don't overcomplicate it for tonight. just log the error and let me know. i'll add a /retry-failed endpoint later if needed",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "ok good plan. also distinct states are 'queued', 'processing', 'needs_review', 'failed'. needs_review is for when confidence is low but not outright wrong",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "makes sense. i'll add a simple index on status for the worker to scan efficiently",
+      "gap": 2
+    }
+  ]
+}

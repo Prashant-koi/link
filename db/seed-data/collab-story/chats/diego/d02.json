@@ -1,0 +1,45 @@
+{
+  "segmentId": "d02",
+  "messages": [
+    {
+      "from": "other",
+      "text": "quick one before I log off for the weekend, exactly where does all this data live? i keep thinking about the network egress",
+      "gap": 0
+    },
+    {
+      "from": "john",
+      "text": "it's all local. postgres on the same box as ollama in the cs lab. zero cloud apis for inference or embeddings",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "ok good. so even the vector math stays on-prem?",
+      "gap": 1
+    },
+    {
+      "from": "john",
+      "text": "yeah, nomic-embed-text runs locally too. the only internet traffic is for npm and docker pulls during setup",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "that's a huge relief. what about the messaging feature? can anyone just ping someone out of nowhere?",
+      "gap": 5
+    },
+    {
+      "from": "john",
+      "text": "nope, we built in double opt-in. both people have to accept before a thread opens. also users control exactly which interests are visible to others",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "perfect. that aligns much better with our policy. i'll still want that one-page summary you promised though, just so i can show it to the dean",
+      "gap": 4
+    },
+    {
+      "from": "john",
+      "text": "will do. i'll draft it tonight. also chen is working on the session rotation logic we discussed",
+      "gap": 2
+    }
+  ]
+}

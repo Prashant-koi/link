@@ -1,0 +1,75 @@
+{
+  "segmentId": "c04",
+  "messages": [
+    {
+      "from": "other",
+      "text": "hey, i'm done with the docker compose updates. just realized we need to finalize auth before i wire up the rate limits.",
+      "gap": 0
+    },
+    {
+      "from": "other",
+      "text": "thoughts on using signed cookies for sessions instead of jwt? feels easier to revoke without a blacklist table",
+      "gap": 2
+    },
+    {
+      "from": "john",
+      "text": "signed cookies are fine. i actually prefer them for this scale. revocation is just `UPDATE sessions SET revoked_at = now() WHERE user_id = ...`",
+      "gap": 5
+    },
+    {
+      "from": "other",
+      "text": "yep exactly. so we store the session id in the cookie and look it up in pg. simple.",
+      "gap": 1
+    },
+    {
+      "from": "other",
+      "text": "also, for the hackathon demo, do we want passwords to be... like `john_doe_2026`? derived from their name?",
+      "gap": 3
+    },
+    {
+      "from": "john",
+      "text": "hah. if it's demo mode, sure. but we need a hard gate that refuses to boot in production if `NODE_ENV=production` and demo auth is on.",
+      "gap": 4
+    },
+    {
+      "from": "other",
+      "text": "agreed. i'll add a check in the config loader. throw an error immediately if the env vars don't match.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "what about rate limiting on login? 10 attempts per 15 minutes per ip?",
+      "gap": 6
+    },
+    {
+      "from": "john",
+      "text": "sounds reasonable. just make sure it's applied before we hit the db for the user lookup so we don't leak existence.",
+      "gap": 3
+    },
+    {
+      "from": "other",
+      "text": "noted. i'll use a redis-like in-memory store or just pg if we want to keep deps low. actually pg is fine, `SELECT count(*) FROM auth_attempts WHERE ip = $1 AND created_at > now() - interval '15 minutes'`",
+      "gap": 8
+    },
+    {
+      "from": "john",
+      "text": "that query is going to be a pain if we get actual traffic though. but for hackathon scale it's fine. let's not over-engineer.",
+      "gap": 2
+    },
+    {
+      "from": "other",
+      "text": "lol yeah. i'll add an index on ip and created_at anyway just in case.",
+      "gap": 15
+    },
+    {
+      "from": "john",
+      "text": "good call. i'm going to go write the alias matching logic now, should be done by morning",
+      "gap": 40
+    },
+    {
+      "from": "other",
+      "text": "ok. i'll push the auth middleware changes in a sec. night",
+      "gap": 2
+    }
+  ]
+}
