@@ -8,6 +8,8 @@ export interface InterestRow {
   stance: Stance;
   visibility: "public" | "institution" | "private";
   resolved: boolean;
+  /** Set once the interest resolves to a concept; lets the client match it against people. */
+  conceptId: string | null;
 }
 
 // Backend gap surfaced by the Settings page (frontend handoff §6): editing
@@ -15,7 +17,7 @@ export interface InterestRow {
 // capped/anonymous-of-id topConcepts doesn't provide.
 export async function listInterests(actorId: string): Promise<InterestRow[]> {
   const { rows } = await pool.query(
-    `SELECT ac.id, ac.raw_text, ac.stance, ac.visibility, c.pref_label
+    `SELECT ac.id, ac.raw_text, ac.stance, ac.visibility, ac.concept_id, c.pref_label
      FROM actor_concept ac
      LEFT JOIN concept c ON c.id = ac.concept_id
      WHERE ac.actor_id = $1
@@ -29,6 +31,7 @@ export async function listInterests(actorId: string): Promise<InterestRow[]> {
     stance: row.stance,
     visibility: row.visibility,
     resolved: row.pref_label !== null,
+    conceptId: row.concept_id ?? null,
   }));
 }
 
