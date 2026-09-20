@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { search } from "../../services/search.js";
 import { searchAspirations } from "../../services/aspirations.js";
+import { searchBlurbs } from "../../services/searchBlurbs.js";
 import { refineSearch, smartSearch } from "../../services/smartSearch.js";
 
 export const searchRouter = Router();
@@ -45,5 +46,21 @@ searchRouter.get("/search/smart", async (req, res) => {
   } catch (err) {
     console.error("smart search failed:", err);
     res.status(500).json({ error: "search_failed" });
+  }
+});
+
+// AI descriptions for the top results, tailored to the query. Best effort: 204 when the
+// model can't produce grounded text in time, and the page just shows no AI line.
+searchRouter.get("/search/blurbs", async (req, res) => {
+  const q = typeof req.query.q === "string" ? req.query.q : "";
+  const ids = (typeof req.query.ids === "string" ? req.query.ids.split(",") : []).filter((i) => /^[0-9a-f-]{36}$/i.test(i)).slice(0, 3);
+  if (!q.trim() || ids.length === 0) return res.status(400).json({ error: "q and ids are required" });
+  if (tooMany(req.actorId!)) return res.status(429).json({ error: "rate_limited" });
+  try {
+    const blurbs = await searchBlurbs(q, ids);
+    blurbs ? res.json({ blurbs }) : res.status(204).end();
+  } catch (err) {
+    console.error("search blurbs failed:", err);
+    res.status(204).end();
   }
 });

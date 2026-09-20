@@ -106,6 +106,12 @@ const realApi = {
     if (!res.ok) throw new Error(await errorMessage(res, "GET /search/smart"));
     return res.json() as Promise<SmartSearchResult>;
   },
+  // AI descriptions for the top results (best effort: null when the model has nothing grounded to say).
+  async searchBlurbs(q: string, ids: string[], signal?: AbortSignal): Promise<Record<string, string> | null> {
+    const res = await fetch(`${BASE}/search/blurbs?q=${encodeURIComponent(q)}&ids=${ids.join(",")}`, { credentials: "include", signal });
+    if (res.status === 204 || !res.ok) return null;
+    return ((await res.json()) as { blurbs: Record<string, string> }).blurbs;
+  },
   searchAspirations: (q: string) => get<AspirationMatch[]>(`/search/aspirations?q=${encodeURIComponent(q)}`),
   postInterest: (rawText: string, stance: Stance) => post<{ ok: true }>("/me/interests", { rawText, stance }),
   setDiscoverable: (discoverable: boolean) => patch<ActorSummary>(`/actors/me`, { discoverable }),
@@ -184,6 +190,7 @@ const fixtureApi: typeof realApi = {
   listAsks: () => settle({ items: fixtures.asks }),
   createAsk: () => settle({ id: "ask-new" }),
   searchAspirations: (q: string) => settle(fixtures.aspirations(q), 320),
+  searchBlurbs: async () => null,
   searchSmart: async (q: string, ai = false) =>
     ai
       ? null

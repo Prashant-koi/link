@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { api } from "../api/client";
+import { AiBadge } from "../components/AiBadge";
 import { PersonPanel } from "../components/PersonPanel";
 import { buttonStyle, secondaryButtonStyle } from "../components/ImportCard";
 import type { ActorSummary, MatchKind, SmartGroup, SmartMatched, SmartPerson, SmartSearchResult } from "../types/api";
@@ -27,7 +28,48 @@ export function Search() {
   const run = useRef(0);
   const abort = useRef<AbortController | null>(null);
 
-  useEffect(() => () => abort.current?.abort(), []);
+  // AI descriptions for the three strongest results, tailored to the query. Fetched
+  // whenever those three (or the query) change — first after the instant results, again
+  // if the AI refinement reorders them; identical requests are cached server-side.
+  const [blurbs, setBlurbs] = useState<Record<string, string>>({});
+  const [blurbFor, setBlurbFor] = useState<string | null>(null); // key of the request in flight or done
+  const [blurbLoading, setBlurbLoading] = useState(false);
+  const blurbAbort = useRef<AbortController | null>(null);
+
+  const top3 = (result?.people ?? [])
+    .slice()
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map((p) => p.actor.id);
+  const top3Key = result ? `${result.query}|${top3.join(",")}` : "";
+
+  useEffect(() => {
+    if (!result || top3.length === 0 || top3Key === blurbFor) return;
+    blurbAbort.current?.abort();
+    const controller = new AbortController();
+    blurbAbort.current = controller;
+    setBlurbFor(top3Key);
+    setBlurbLoading(true);
+    // Keep any blurb we already have for someone who is still in the top three.
+    setBlurbs((prev) => Object.fromEntries(Object.entries(prev).filter(([id]) => top3.includes(id))));
+    api
+      .searchBlurbs(result.correctedQuery ?? result.query, top3, controller.signal)
+      .then((b) => {
+        if (controller.signal.aborted) return;
+        if (b) setBlurbs((prev) => ({ ...prev, ...b }));
+        setBlurbLoading(false);
+      })
+      .catch(() => !controller.signal.aborted && setBlurbLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [top3Key]);
+
+  useEffect(
+    () => () => {
+      abort.current?.abort();
+      blurbAbort.current?.abort();
+    },
+    [],
+  );
 
   async function search(raw: string) {
     const q = raw.trim();
@@ -41,6 +83,9 @@ export function Search() {
     setAdded(null);
     setSelected(null);
     setResult(null);
+    setBlurbs({});
+    setBlurbFor(null);
+    blurbAbort.current?.abort();
     setState("loading");
     try {
       const first = await api.searchSmart(q, false, controller.signal);
@@ -215,6 +260,18 @@ export function Search() {
                       {[p.actor.personKind, p.actor.homeUnit?.name].filter(Boolean).join(" · ")}
                     </span>
                   </div>
+                  {top3.includes(p.actor.id) && (blurbs[p.actor.id] || blurbLoading) && (
+                    <div style={{ display: "grid", gap: 4, padding: "8px 10px", borderRadius: 8, background: "var(--tq-050)", border: "1px solid var(--tq-100)" }}>
+                      <span>
+                        <AiBadge />
+                      </span>
+                      {blurbs[p.actor.id] ? (
+                        <span style={{ fontSize: "var(--fs-sm)", color: "var(--ink-900)", lineHeight: 1.5 }}>{blurbs[p.actor.id]}</span>
+                      ) : (
+                        <span className="ai-shimmer" style={{ display: "block", height: 34, borderRadius: 6 }} aria-label="Writing a description" />
+                      )}
+                    </div>
+                  )}
                   <Matched items={p.matched} />
                 </Card>
               ))}

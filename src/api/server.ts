@@ -5,6 +5,7 @@ import { authRouter } from "../auth/routes.js";
 import { requireSession } from "../auth/middleware.js";
 import { actorsRouter } from "./routes/actors.js";
 import { conversationsRouter } from "./routes/conversations.js";
+import { aiProfileRouter } from "./routes/aiProfile.js";
 import { aiRouter } from "./routes/ai.js";
 import { asksRouter } from "./routes/asks.js";
 import { conceptsRouter } from "./routes/concepts.js";
@@ -51,6 +52,7 @@ export function createServer() {
   api.use(conversationsRouter);
   api.use(workspacesRouter);
   api.use(aiRouter);
+  api.use(aiProfileRouter);
   api.use(meRouter);
   api.use(searchRouter);
   app.use("/api", api);

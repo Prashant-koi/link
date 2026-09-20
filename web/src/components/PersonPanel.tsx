@@ -6,6 +6,7 @@ import { buttonStyle, inputStyle, secondaryButtonStyle } from "./ImportCard";
 import { ConceptChip } from "./ConceptChip";
 import { ReasonList } from "./ReasonList";
 import { ContactBlock } from "./ContactBlock";
+import { AiSummary } from "./AiSummary";
 
 // The §5 detail panel: opens beside the constellation/list rather than
 // navigating away, so "why this person" never disappears.
@@ -94,6 +95,8 @@ export function PersonPanel({
       )}
 
       <ReasonList reasons={reasons} />
+
+      {actor.kind === "person" && <AiSummary key={actor.id} actorId={actor.id} name={actor.displayName} />}
 
       <div>
         {sent ? (

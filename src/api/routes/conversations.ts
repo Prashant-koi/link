@@ -17,6 +17,12 @@ export const wrap =
   (fn: Handler) =>
   (req: Request, res: Response, next: NextFunction): void => {
     fn(req, res).catch((err) => {
+      // A stream that already started cannot become a JSON error: just close it.
+      if (res.headersSent) {
+        console.error("error after the response started:", err);
+        if (!res.writableEnded) res.end();
+        return;
+      }
       if (err instanceof HttpError) res.status(err.status).json({ error: err.code });
       else next(err);
     });

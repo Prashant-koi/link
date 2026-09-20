@@ -83,6 +83,22 @@ a {
   transform-origin: center;
 }
 
+/* Placeholder while an AI description is being written. */
+@keyframes ai-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.ai-shimmer {
+  background: linear-gradient(90deg, var(--tq-100) 25%, var(--tq-050) 50%, var(--tq-100) 75%);
+  background-size: 200% 100%;
+  animation: ai-shimmer 1.6s linear infinite;
+}
+
 .person-panel {
   animation: panel-slide-in 150ms ease-out;
 }
