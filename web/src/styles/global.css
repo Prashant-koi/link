@@ -20,14 +20,55 @@ body {
 }
 
 /* Diagonal turquoise wash, fixed, fading to white before the top corner —
-   frontend handoff §2. Fixed rather than absolute so it never scrolls. */
+   frontend handoff §2. Fixed rather than absolute so it never scrolls.
+   Pulled back from --tq-100 to --tq-050 so it sits under the band below
+   rather than competing with it. */
 body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background: linear-gradient(to top right, var(--tq-050) 0%, var(--surface) 46%);
+}
+
+/* The diagonal band: one turquoise streak from the top-right corner to the
+   bottom-left, fading out into the white at both ends.
+
+   No rotated element — a rotated box has to be oversized to cover the
+   viewport after rotation, and the overflow has to be hidden somewhere. A
+   gradient does it exactly: colour stops run along the gradient line, so
+   bands of constant colour sit perpendicular to it. A line pointing
+   bottom-right (135deg) therefore produces a band running top-right to
+   bottom-left, and stop positions expressed as calc() off 50% give the band a
+   fixed pixel width at any viewport size.
+
+   Two passes: a wide diffuse one for the glow, and a 1px core with a 1px
+   feather either side so the line reads as crisp without aliasing. The mask
+   runs along the band (45deg, the perpendicular axis) and is what makes both
+   ends dissolve into the page instead of hitting the corners. */
+body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(to top right, var(--tq-100) 0%, var(--tq-050) 28%, var(--surface) 58%);
+  background:
+    linear-gradient(
+      135deg,
+      transparent calc(50% - 1.5px),
+      var(--band-core) calc(50% - 0.5px),
+      var(--band-core) calc(50% + 0.5px),
+      transparent calc(50% + 1.5px)
+    ),
+    linear-gradient(
+      135deg,
+      transparent calc(50% - var(--band-soft-width) / 2),
+      var(--band-soft) 50%,
+      transparent calc(50% + var(--band-soft-width) / 2)
+    );
+  -webkit-mask-image: linear-gradient(45deg, transparent 4%, #000 30%, #000 70%, transparent 96%);
+  mask-image: linear-gradient(45deg, transparent 4%, #000 30%, #000 70%, transparent 96%);
 }
 
 h1,
@@ -80,6 +121,17 @@ a {
 
 .person-panel {
   animation: panel-slide-in 150ms ease-out;
+}
+
+/* Hover and active states. Everything in this app is styled with inline
+   style objects, which cannot express a pseudo-class — so the handful of
+   states that genuinely need one live here, and layout stays inline. */
+.nav-link {
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+
+.nav-link:hover {
+  color: var(--tq-600);
 }
 
 /* Login page inputs: 1px hairline, turning --tq-500 on focus (auth

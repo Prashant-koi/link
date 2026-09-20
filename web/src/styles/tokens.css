@@ -26,4 +26,60 @@
 
   --lh-tight: 1.25; /* xl and lg */
   --lh-body: 1.5; /* base and below */
+
+  /* ---- Diagonal band -----------------------------------------------------
+     The turquoise streak running top-right to bottom-left. It gets its own
+     tokens because the band is drawn as two passes — a wide diffuse one and a
+     narrow bright core — and the two have to stay in step. */
+  --band-core: rgba(23, 162, 184, 0.55); /* --tq-500, the bright centre line */
+  --band-soft: rgba(23, 162, 184, 0.14); /* the wide diffuse pass around it */
+  --band-core-width: 2px;
+  --band-soft-width: 260px;
+
+  /* ---- Canvas ------------------------------------------------------------
+     The home canvas paints in SVG, where a custom property resolves fine but
+     there is no way to take a token and change its alpha at the use site. So
+     the translucent fills the interest fields and spheres need are declared
+     here explicitly rather than derived. */
+  /* Interest fields: one hue each, identity only — never rank, so re-ranking
+     never repaints a field that is still on screen.
+
+     Chosen by running the data-viz palette validator over the documented
+     palette steps, for the all-pairs case (any two fields can overlap, so
+     every pair is adjacent). Worst pair: CVD ΔE 13.0, normal-vision ΔE 16.3 —
+     both clear of the floors. Yellow and magenta sit under 3:1 against white,
+     which the validator flags as needing relief; every field carries a visible
+     text label, and /view carries the same data as a list, which is that
+     relief. */
+  --field-1: #2a78d6; /* blue */
+  --field-2: #eda100; /* yellow */
+  --field-3: #e87ba4; /* magenta */
+  --field-4: #008300; /* green */
+  --field-5: #4a3aa7; /* violet */
+
+  /* Fills stay very low-alpha: five of these can stack, and the label and
+     stroke carry identity, not the wash. */
+  --field-fill-alpha: 0.1;
+  --field-stroke-alpha: 0.55;
+
+  /* Spheres are neutral glass, deliberately. A person can sit in two fields at
+     once, so colouring the sphere would contradict its position — the field
+     underneath supplies the colour. */
+  --sphere-glass: rgba(255, 255, 255, 0.58);
+  --sphere-glass-edge: rgba(255, 255, 255, 0.92);
+  --sphere-rim: rgba(15, 23, 36, 0.22);
+  --sphere-shadow: rgba(15, 23, 36, 0.14);
+
+  --viewer-fill: #0a4a66; /* the profile at the centre: darker, still, quiet */
+  --link: rgba(15, 23, 36, 0.14); /* node-to-node connections */
+
+  --bridge-mid: rgba(226, 232, 240, 0.75); /* bridges are ink-toned, not a */
+  --bridge-deep: #64748b; /* match — they are structure between people */
+
+  /* ---- Motion ------------------------------------------------------------
+     Two durations. Anything slower than --t-slow on a direct interaction
+     reads as lag rather than polish. */
+  --t-fast: 120ms;
+  --t-slow: 260ms;
+  --ease-out: cubic-bezier(0.22, 0.68, 0.32, 1);
 }

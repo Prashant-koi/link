@@ -108,3 +108,38 @@ export type CourseOffering = {
   startsOn: string;
   endsOn: string;
 };
+
+// ---- Not served by any endpoint yet ---------------------------------------
+// The home canvas needs these two, and neither exists behind the API today.
+// They are declared here anyway so the shape is settled and the client has one
+// place to return an empty result from: against the real backend both come
+// back empty, and nothing fabricated ever reaches the screen. The fixture feed
+// populates them. See the backend follow-up for what has to be built.
+//
+// Bridges need a person-to-person relation, which the `edge` table's CHECK
+// list does not currently allow, plus the already-typed `Reason.kind: "path"`
+// to actually be produced by the scorer.
+export type BridgeSuggestion = {
+  actor: ActorSummary;
+  /** The suggested actor this person stands between you and. */
+  targetId: string;
+  /** What the three of you have in common, phrased for display. */
+  via: string;
+};
+
+// Events exist as `context.kind = 'event'` rows with attendance edges, but
+// `context.kind` is never selected by any read query and there is no route,
+// so today they are unreachable.
+export type EventSummary = {
+  id: string;
+  title: string;
+  startsOn: string;
+  venue?: string;
+  topConcepts: ConceptChip[];
+};
+
+export type EventSuggestion = {
+  event: EventSummary;
+  score: number;
+  reasons: Reason[];
+};

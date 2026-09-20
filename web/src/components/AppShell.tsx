@@ -53,11 +53,13 @@ function Shell() {
               key={item.to}
               to={item.to}
               end={item.to === "/"}
+              className="nav-link"
               style={({ isActive }) => ({
                 fontSize: "var(--fs-base)",
                 color: isActive ? "var(--tq-600)" : "var(--ink-600)",
                 textDecoration: "none",
                 paddingBottom: 4,
+                whiteSpace: "nowrap",
                 borderBottom: isActive ? "2px solid var(--tq-600)" : "2px solid transparent",
               })}
             >
@@ -89,6 +91,8 @@ function Shell() {
             background: "none",
             border: "none",
             cursor: "pointer",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
           }}
         >
           Log out

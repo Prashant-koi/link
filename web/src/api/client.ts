@@ -1,6 +1,8 @@
 import type {
   ActorSummary,
+  BridgeSuggestion,
   CourseOffering,
+  EventSuggestion,
   ImportKind,
   ImportSummary,
   AskSummary,
@@ -12,8 +14,24 @@ import type {
   Stance,
   Visibility,
 } from "../types/api";
+import { fixtures } from "../home/fixtures";
 
 const BASE = "/api";
+
+/**
+ * Fixture mode. The real stack needs Postgres and Ollama, so `?fixtures=1` (or
+ * VITE_FIXTURES=1 at build time) swaps the whole client for a canned dataset.
+ * The switch lives here and nowhere else: AuthContext, the route guard and
+ * every page work unmodified, and the production path is one early branch.
+ */
+export const USING_FIXTURES: boolean = (() => {
+  try {
+    if (new URLSearchParams(window.location.search).get("fixtures") === "1") return true;
+  } catch {
+    // No window (SSR, a test runner) — fall through to the build-time flag.
+  }
+  return import.meta.env.VITE_FIXTURES === "1";
+})();
 
 // credentials: 'include' so the signed session cookie rides along —
 // without it every request behind requireSession would 401.
@@ -62,10 +80,16 @@ export interface AuthMeResponse {
   authMode: "demo" | "real";
 }
 
-export const api = {
+const realApi = {
   // "me" is accepted as a literal path segment server-side and resolved
   // from the session — the frontend never needs to know its own actor id.
   getActor: () => get<ActorSummary>(`/actors/me`),
+
+  // Neither of these has an endpoint yet. They resolve empty rather than
+  // throwing, so against the live backend the home page renders the real
+  // graph with those two layers simply absent — never with invented data.
+  getBridges: async (): Promise<BridgeSuggestion[]> => [],
+  getEventSuggestions: async (): Promise<EventSuggestion[]> => [],
   getActorSettings: () => get<ActorSummary & { discoverable: boolean }>(`/actors/me/settings`),
   getSuggestions: (limit?: number) =>
     get<ConnectionSuggestion[]>(`/actors/me/suggestions${limit ? `?limit=${limit}` : ""}`),
@@ -121,3 +145,64 @@ export const api = {
     await fetch(`${BASE}/auth/logout`, { method: "POST", credentials: "include" });
   },
 };
+
+// ---- Fixture client --------------------------------------------------------
+// Same surface, resolved from the canned dataset. Mutations are kept in module
+// state so the demo responds to what you do to it within a session.
+
+const fixtureInterests = [...fixtures.interests];
+let fixtureDiscoverable = true;
+
+/** A small delay on reads, so loading states are exercised rather than skipped. */
+const settle = <T>(value: T, ms = 120): Promise<T> =>
+  new Promise((resolve) => setTimeout(() => resolve(value), ms));
+
+const fixtureApi: typeof realApi = {
+  getActor: () => settle(fixtures.viewer),
+  getBridges: () => settle(fixtures.bridges),
+  getEventSuggestions: () => settle(fixtures.events),
+  getActorSettings: () => settle({ ...fixtures.viewer, discoverable: fixtureDiscoverable }),
+  getSuggestions: (limit?: number) =>
+    settle([...fixtures.people, ...fixtures.societies].slice(0, limit ?? 5)),
+  getConnection: (otherId: string) =>
+    settle(fixtures.people.find((p) => p.actor.id === otherId)?.reasons ?? []),
+  getConceptActors: (conceptId: string) =>
+    settle(
+      [...fixtures.people, ...fixtures.societies]
+        .filter((s) => s.actor.topConcepts.some((c) => c.conceptId === conceptId))
+        .map((s) => s.actor),
+    ),
+  listAsks: () => settle({ items: fixtures.asks }),
+  createAsk: () => settle({ id: "ask-new" }),
+  searchAspirations: (q: string) => settle(fixtures.aspirations(q), 320),
+  postInterest: (rawText: string, stance) => {
+    fixtureInterests.push({
+      id: `i-${fixtureInterests.length}`,
+      rawText,
+      conceptLabel: null,
+      stance,
+      visibility: "institution",
+      resolved: false,
+    });
+    return settle({ ok: true as const });
+  },
+  setDiscoverable: (discoverable: boolean) => {
+    fixtureDiscoverable = discoverable;
+    return settle(fixtures.viewer);
+  },
+  listInterests: () => settle(fixtureInterests),
+  setInterestVisibility: (interestId: string, visibility) => {
+    const row = fixtureInterests.find((i) => i.id === interestId);
+    if (row) row.visibility = visibility;
+    return settle({ ok: true as const });
+  },
+  createActor: () => settle(fixtures.viewer),
+  getCourseCatalog: () => settle(fixtures.courses),
+  listImports: () => settle(fixtures.imports),
+  createImport: () => settle({ id: "im-new" }),
+  me: () => settle({ status: 200, body: { actor: fixtures.viewer, authMode: "demo" as const } }),
+  login: () => settle({ status: 200, body: { actor: fixtures.viewer, authMode: "demo" as const } }),
+  logout: () => settle(undefined),
+};
+
+export const api: typeof realApi = USING_FIXTURES ? fixtureApi : realApi;
