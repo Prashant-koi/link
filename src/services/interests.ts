@@ -36,8 +36,13 @@ export async function listInterests(actorId: string): Promise<InterestRow[]> {
 }
 
 export async function setInterestVisibility(
+  actorId: string,
   interestId: string,
   visibility: "public" | "institution" | "private",
-): Promise<void> {
-  await pool.query(`UPDATE actor_concept SET visibility = $2 WHERE id = $1`, [interestId, visibility]);
+): Promise<boolean> {
+  const result = await pool.query(
+    `UPDATE actor_concept SET visibility = $3 WHERE id = $2 AND actor_id = $1`,
+    [actorId, interestId, visibility],
+  );
+  return result.rowCount === 1;
 }

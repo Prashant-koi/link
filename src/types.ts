@@ -35,6 +35,18 @@ export type ConnectionSuggestion = {
   reasons: Reason[]; // ordered by contribution, capped at 3
 };
 
+export type AtlasSuggestion = ConnectionSuggestion & {
+  /** Complete visible intersection, independent of capped profile chips. */
+  sharedConceptIds: string[];
+};
+
+export type AtlasResponse = {
+  interests: { conceptId: string; label: string; count: number }[];
+  suggestions: AtlasSuggestion[];
+  /** Number of ranked people matching the filter, before the display cap. */
+  total: number;
+};
+
 export type Reason = {
   kind: "shared_concept" | "shared_context" | "path";
   summary: string; // always present, template-generated
