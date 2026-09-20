@@ -81,6 +81,11 @@ export async function resolveRawText(rawText: string): Promise<ResolutionResult>
   if (fast) {
     return { status: "resolved", conceptId: fast.conceptId, via: fast.via };
   }
+
+  if (!config.llm.baseUrl && !config.resolution.strict) {
+    return { status: "needs_review", reason: "model runtime unavailable (LLM_BASE_URL unset)" };
+  }
+
   const surfaceNorm = normalizeSurface(rawText);
 
   const [embedding] = await embed([rawText]);

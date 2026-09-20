@@ -26,9 +26,14 @@ export const config = {
     pollIntervalMs: Number(process.env.WORKER_POLL_INTERVAL_MS ?? 1000),
   },
   resolution: {
-    exactAliasOnly: false,
     vectorAcceptThreshold: Number(process.env.RESOLUTION_ACCEPT_THRESHOLD ?? 0.92),
     vectorAdjudicateFloor: Number(process.env.RESOLUTION_ADJUDICATE_FLOOR ?? 0.75),
     candidateCount: 5,
+    // When the model runtime is unreachable, an unresolved row goes to
+    // needs_review rather than failing the job outright — seed data
+    // handoff, stage 7: "leaves vector-band and unmatched rows in
+    // needs_review rather than failing". --strict (once a runtime exists to
+    // point at) makes that a hard failure instead.
+    strict: process.env.RESOLUTION_STRICT === "true",
   },
 };

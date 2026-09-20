@@ -10,7 +10,9 @@
     "start:api": "node dist/run-api.js",
     "start:ingest-worker": "node dist/run-ingest-worker.js",
     "start:resolution-worker": "node dist/run-resolution-worker.js",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "seed": "tsx src/seed/index.ts",
+    "migrate": "tsx src/migrate.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

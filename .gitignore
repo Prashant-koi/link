@@ -11,3 +11,4 @@ coverage/
 neo4j-data/
 .vercel
 next-env.d.ts
+db/seed-data/.cso-cache.csv

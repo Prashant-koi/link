@@ -5,7 +5,13 @@ import type { EvidenceRef, Reason } from "../types.js";
 // questions": hop decay constant, and no concrete values are given for the
 // context weight/recency terms either). Defaults here are placeholders,
 // same as the doc's own 0.92/0.75 thresholds, pending measurement.
-const HOP_DECAY = 0.5;
+// Tuned down from the data model handoff's illustrative 0.5: within a dense
+// branch of the concept hierarchy a candidate can accumulate several hop-1
+// matches simultaneously (concept_relation is dense - ~2.4 edges/concept in
+// the seed data), so 0.5 let a handful of ordinary hierarchy-adjacent
+// overlaps rival one deliberately rare direct match. This is exactly the
+// kind of constant the handoff flags as needing tuning against real data.
+const HOP_DECAY = 0.15;
 const CONNECTED_PENALTY = 5;
 const CONTEXT_RECENCY_HALF_LIFE_YEARS = 3;
 const REASONS_CAP = 3;
