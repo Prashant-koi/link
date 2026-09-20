@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { AppShell } from "./components/AppShell";
@@ -7,6 +8,9 @@ import { View } from "./pages/View";
 import { Search } from "./pages/Search";
 import { Settings } from "./pages/Settings";
 import { Login } from "./pages/Login";
+
+// Editor + tree libraries are heavy; only load them when the page is opened.
+const Collaborations = lazy(() => import("./pages/Collaborations").then((m) => ({ default: m.Collaborations })));
 
 // Any unauthenticated route redirects to /login; render nothing until
 // GET /auth/me resolves, to avoid a flash of the login form for an
@@ -42,6 +46,14 @@ export function App() {
             <Route path="/import" element={<Import />} />
             <Route path="/view" element={<View />} />
             <Route path="/search" element={<Search />} />
+            <Route
+              path="/collaborations"
+              element={
+                <Suspense fallback={null}>
+                  <Collaborations />
+                </Suspense>
+              }
+            />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>

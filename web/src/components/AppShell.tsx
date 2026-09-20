@@ -1,11 +1,13 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { CollabProvider, useCollab } from "../collab/CollabContext";
 
 const NAV_ITEMS = [
   { to: "/", label: "Home" },
   { to: "/import", label: "Import" },
   { to: "/view", label: "View" },
   { to: "/search", label: "Search" },
+  { to: "/collaborations", label: "Collaborations" },
   { to: "/settings", label: "Settings" },
 ];
 
@@ -13,7 +15,17 @@ const NAV_ITEMS = [
 // footer (frontend handoff, "Routes"). Log out sits at the far right —
 // not a fifth nav item, since the spec fixes the nav at four.
 export function AppShell() {
+  return (
+    <CollabProvider>
+      <Shell />
+    </CollabProvider>
+  );
+}
+
+function Shell() {
   const { logout } = useAuth();
+  const { unreadTotal, inviteCount } = useCollab();
+  const fullBleed = useLocation().pathname.startsWith("/collaborations");
   const navigate = useNavigate();
 
   async function handleLogout() {
@@ -22,17 +34,20 @@ export function AppShell() {
   }
 
   return (
-    <div>
+    // The collaborations page fills the viewport (rail + panes manage their own
+    // scrolling); every other page keeps the padded, page-scrolling layout.
+    <div style={fullBleed ? { height: "100%", display: "flex", flexDirection: "column" } : undefined}>
       <header
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 32,
+          flexWrap: "wrap", // six links no longer fit a phone-width bar on one line
+          gap: "8px 32px",
           padding: "16px 24px",
         }}
       >
         <span style={{ fontSize: "var(--fs-lg)", fontWeight: 600, color: "var(--ink-900)" }}>Link</span>
-        <nav style={{ display: "flex", gap: 24, flex: 1 }}>
+        <nav style={{ display: "flex", flexWrap: "wrap", gap: "4px 24px", flex: 1 }}>
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
@@ -47,6 +62,22 @@ export function AppShell() {
               })}
             >
               {item.label}
+              {item.to === "/collaborations" && unreadTotal + inviteCount > 0 && (
+                <span
+                  aria-label={`${unreadTotal + inviteCount} new`}
+                  style={{
+                    marginLeft: 6,
+                    padding: "0 6px",
+                    borderRadius: 8,
+                    background: "var(--tq-600)",
+                    color: "var(--surface)",
+                    fontSize: "var(--fs-xs)",
+                    fontWeight: 600,
+                  }}
+                >
+                  {unreadTotal + inviteCount}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -63,7 +94,7 @@ export function AppShell() {
           Log out
         </button>
       </header>
-      <main style={{ padding: "24px" }}>
+      <main style={fullBleed ? { flex: 1, minHeight: 0, display: "flex", flexDirection: "column" } : { padding: "24px" }}>
         <Outlet />
       </main>
     </div>

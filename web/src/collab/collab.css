@@ -1,0 +1,691 @@
+/* Collaborations page. Everything here is built from tokens.css — no new
+   accent colour. The only additions are a monospace stack for the editor and
+   a small palette for remote cursors (people must be told apart). */
+
+.cl-root {
+  --cl-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  border-top: 1px solid var(--ink-200);
+  background: var(--surface);
+}
+
+/* ---- icon rail ---- */
+.cl-rail {
+  width: 56px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0;
+  border-right: 1px solid var(--ink-200);
+  background: var(--tq-050);
+}
+.cl-rail-item {
+  position: relative;
+}
+.cl-rail-btn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+.cl-rail-btn:hover {
+  background: var(--tq-100);
+}
+.cl-rail-btn[aria-pressed="true"] {
+  color: var(--tq-600);
+  background: var(--tq-100);
+}
+/* the same 2px accent the top nav uses for the active page */
+.cl-rail-btn[aria-pressed="true"]::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--tq-600);
+  border-radius: 2px;
+}
+.cl-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--tq-600);
+  color: var(--surface);
+  font-size: var(--fs-xs);
+  line-height: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ---- flyout ---- */
+.cl-flyout {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  z-index: 20;
+  width: 300px;
+  margin-left: 4px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--ink-200);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 36, 0.12);
+}
+/* invisible bridge so the pointer can travel from the icon into the flyout */
+.cl-flyout::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+}
+.cl-flyout h3 {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 8px 4px;
+}
+.cl-flyout-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink-900);
+  font-size: var(--fs-base);
+}
+.cl-flyout-row:hover,
+.cl-flyout-row[aria-current="true"] {
+  background: var(--tq-050);
+}
+.cl-flyout-row[aria-current="true"] {
+  color: var(--tq-600);
+}
+
+/* ---- two-pane layout ---- */
+.cl-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+.cl-list {
+  width: 320px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--ink-200);
+  min-height: 0;
+}
+.cl-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--ink-200);
+}
+.cl-list-head h2 {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+}
+.cl-scroll {
+  overflow-y: auto;
+  min-height: 0;
+  flex: 1;
+}
+.cl-section {
+  padding: 12px 16px 4px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cl-thread-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-bottom: 1px solid var(--ink-200);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink-900);
+}
+.cl-thread-row:hover {
+  background: var(--tq-050);
+}
+.cl-thread-row[aria-current="true"] {
+  background: var(--tq-100);
+}
+.cl-row-body {
+  min-width: 0;
+  flex: 1;
+}
+.cl-row-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.cl-row-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cl-row-time {
+  font-size: var(--fs-xs);
+  color: var(--ink-500);
+  flex: none;
+}
+.cl-row-preview {
+  font-size: var(--fs-sm);
+  color: var(--ink-600);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cl-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tq-600);
+  align-self: center;
+}
+.cl-avatar {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--tq-100);
+  color: var(--tq-700);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.cl-avatar.sm {
+  width: 24px;
+  height: 24px;
+  font-size: var(--fs-xs);
+}
+
+.cl-pane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.cl-pane-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--ink-200);
+}
+.cl-pane-head h2 {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+}
+.cl-sub {
+  font-size: var(--fs-sm);
+  color: var(--ink-500);
+}
+.cl-empty {
+  margin: auto;
+  padding: 32px;
+  text-align: center;
+  color: var(--ink-500);
+  max-width: 360px;
+}
+
+/* ---- thread ---- */
+.cl-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.cl-day {
+  align-self: center;
+  margin: 12px 0 8px;
+  font-size: var(--fs-xs);
+  color: var(--ink-500);
+}
+.cl-bubble {
+  max-width: min(70%, 520px);
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: var(--fs-base);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--ink-200);
+  background: var(--surface);
+}
+.cl-bubble.mine {
+  align-self: flex-end;
+  background: var(--tq-100);
+  border-color: var(--tq-100);
+}
+.cl-bubble time {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--ink-500);
+  margin-top: 2px;
+}
+.cl-composer {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  padding: 12px 16px;
+  border-top: 1px solid var(--ink-200);
+}
+.cl-composer textarea {
+  flex: 1;
+  resize: none;
+  max-height: 160px;
+}
+.cl-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--ink-200);
+  background: var(--tq-050);
+  font-size: var(--fs-sm);
+  color: var(--ink-600);
+}
+.cl-error {
+  padding: 8px 16px;
+  font-size: var(--fs-sm);
+  color: #b3261e;
+}
+
+/* ---- buttons / inputs shared by the page ---- */
+.cl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--tq-600);
+  color: var(--surface);
+}
+.cl-btn:hover {
+  background: var(--tq-700);
+}
+.cl-btn:disabled {
+  background: var(--ink-200);
+  color: var(--ink-500);
+  cursor: not-allowed;
+}
+.cl-btn.secondary {
+  background: var(--tq-050);
+  color: var(--tq-700);
+  border: 1px solid var(--tq-300);
+}
+.cl-btn.secondary:hover {
+  background: var(--tq-100);
+}
+.cl-btn.danger {
+  background: #b3261e;
+}
+.cl-btn.danger:disabled {
+  background: var(--ink-200);
+  color: var(--ink-500);
+}
+.cl-btn.danger:hover:not(:disabled) {
+  background: #8f1e18;
+}
+.cl-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+.cl-icon-btn:hover {
+  background: var(--tq-050);
+  color: var(--tq-600);
+}
+.cl-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: var(--fs-base);
+  padding: 8px 12px;
+  border: 1px solid var(--ink-200);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink-900);
+}
+.cl-input:focus-visible {
+  border-color: var(--tq-500);
+}
+
+/* ---- dialog ---- */
+.cl-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(15, 23, 36, 0.4);
+}
+.cl-dialog {
+  width: min(480px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--surface);
+  border-radius: 12px;
+  display: grid;
+  gap: 16px;
+}
+.cl-dialog h2 {
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+}
+.cl-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+.cl-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* ---- workspace ---- */
+.cl-ws-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.cl-group {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+.cl-tree-pane {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--tq-050);
+  min-width: 0;
+}
+.cl-tree-tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 8px;
+  border-bottom: 1px solid var(--ink-200);
+}
+.cl-tree-tools .cl-sub {
+  flex: 1;
+  padding-left: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+}
+.cl-tree-host {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.cl-tree-host.dropping {
+  outline: 2px dashed var(--tq-500);
+  outline-offset: -4px;
+}
+.cl-node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+  padding-right: 8px;
+  font-size: var(--fs-sm);
+  color: var(--ink-900);
+  cursor: pointer;
+  border-radius: 4px;
+}
+.cl-node:hover {
+  background: var(--tq-100);
+}
+.cl-node.selected {
+  background: var(--tq-100);
+  color: var(--tq-700);
+}
+.cl-node.dragging {
+  opacity: 0.5;
+}
+.cl-node.willReceiveDrop {
+  outline: 1px solid var(--tq-500);
+}
+.cl-node svg {
+  flex: none;
+  color: var(--ink-500);
+}
+.cl-node.selected svg {
+  color: var(--tq-600);
+}
+.cl-node span.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cl-node input {
+  min-width: 0;
+  flex: 1;
+  font: inherit;
+  padding: 0 4px;
+  border: 1px solid var(--tq-500);
+  border-radius: 4px;
+}
+.cl-newrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--ink-200);
+  font-size: var(--fs-sm);
+}
+.cl-newrow input {
+  flex: 1;
+  min-width: 0;
+}
+.cl-sep {
+  width: 1px;
+  background: var(--ink-200);
+}
+.cl-sep:hover,
+.cl-sep[data-separator="active"] {
+  background: var(--tq-500);
+}
+.cl-menu {
+  position: fixed;
+  z-index: 40;
+  min-width: 180px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--ink-200);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(15, 23, 36, 0.12);
+}
+.cl-menu button {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  text-align: left;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  color: var(--ink-900);
+}
+.cl-menu button:hover {
+  background: var(--tq-050);
+}
+
+.cl-editor-pane {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.cl-tabs {
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--ink-200);
+  background: var(--tq-050);
+  flex: none;
+}
+.cl-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 12px;
+  border: none;
+  border-right: 1px solid var(--ink-200);
+  background: none;
+  font-size: var(--fs-sm);
+  color: var(--ink-600);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cl-tab[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--tq-600);
+  box-shadow: inset 0 -2px 0 var(--tq-600);
+}
+.cl-tab .x {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+.cl-tab .x:hover {
+  background: var(--tq-100);
+}
+.cl-editor-host {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.cl-editor-host .cm-editor {
+  height: 100%;
+}
+.cl-viewer {
+  height: 100%;
+  overflow: auto;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--tq-050);
+}
+.cl-viewer img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  background: var(--surface);
+  border: 1px solid var(--ink-200);
+}
+.cl-statusbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 12px;
+  border-top: 1px solid var(--ink-200);
+  background: var(--tq-050);
+  font-size: var(--fs-xs);
+  color: var(--ink-600);
+}
+.cl-statusbar .grow {
+  flex: 1;
+}
+.cl-presence {
+  display: flex;
+  gap: 4px;
+}
+.cl-presence .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* y-codemirror.next remote carets */
+.cm-ySelectionInfo {
+  font-family: var(--font);
+  font-size: var(--fs-xs);
+  padding: 1px 4px;
+  border-radius: 4px 4px 4px 0;
+  color: #fff;
+}
+
+/* ---- narrow screens: list/thread stack, tree becomes its own view ---- */
+@media (max-width: 700px) {
+  .cl-list {
+    width: 100%;
+    border-right: none;
+  }
+  .cl-main.has-selection .cl-list {
+    display: none;
+  }
+  .cl-main:not(.has-selection) .cl-pane {
+    display: none;
+  }
+  .cl-flyout {
+    width: min(300px, calc(100vw - 72px));
+  }
+}
+
+.cl-back {
+  display: none;
+}
+@media (max-width: 700px) {
+  .cl-back {
+    display: grid;
+  }
+}

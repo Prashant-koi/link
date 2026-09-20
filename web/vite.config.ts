@@ -14,6 +14,11 @@ export default defineConfig(({ mode }) => {
         "/api": {
           target: env.API_PROXY_TARGET || "http://localhost:3001",
         },
+        // Live co-editing WebSocket (Hocuspocus).
+        "/collab": {
+          target: env.API_PROXY_TARGET || "http://localhost:3001",
+          ws: true,
+        },
       },
     },
   };

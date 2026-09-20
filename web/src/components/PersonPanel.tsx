@@ -1,6 +1,8 @@
 import { useState } from "react";
-import type { ActorSummary, IntroState, Reason } from "../types/api";
-import { api } from "../api/client";
+import { Link } from "react-router-dom";
+import type { ActorSummary, Reason } from "../types/api";
+import { collabApi } from "../api/collab";
+import { buttonStyle, inputStyle, secondaryButtonStyle } from "./ImportCard";
 import { ConceptChip } from "./ConceptChip";
 import { ReasonList } from "./ReasonList";
 import { ContactBlock } from "./ContactBlock";
@@ -16,11 +18,27 @@ export function PersonPanel({
   reasons: Reason[];
   onClose: () => void;
 }) {
-  const [introState, setIntroState] = useState<IntroState | null>(null);
+  // "Send a message" is a request: the first message is what the other
+  // person accepts or declines, so it is written here rather than sent blank.
+  const [composing, setComposing] = useState(false);
+  const [text, setText] = useState("");
+  const [sent, setSent] = useState<{ id: string; state: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  async function handleRequestIntro() {
-    const { state } = await api.requestIntro(actor.id);
-    setIntroState(state);
+  async function handleSend(e: React.FormEvent) {
+    e.preventDefault();
+    if (!text.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const r = await collabApi.start(actor.id, text.trim());
+      setSent({ id: r.conversationId, state: r.state });
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -78,10 +96,38 @@ export function PersonPanel({
       <ReasonList reasons={reasons} />
 
       <div>
-        {introState ? (
-          <p style={{ fontSize: "var(--fs-sm)", color: "var(--ink-500)" }}>Intro {introState}.</p>
+        {sent ? (
+          <p style={{ fontSize: "var(--fs-sm)", color: "var(--ink-600)" }}>
+            {sent.state === "accepted" ? "Message sent." : `Request sent — ${actor.displayName} will see it and can accept.`}{" "}
+            <Link to={`/collaborations?tab=messages&c=${sent.id}`}>Open conversation</Link>
+          </p>
+        ) : composing ? (
+          <form onSubmit={handleSend} style={{ display: "grid", gap: 8 }}>
+            <textarea
+              autoFocus
+              rows={4}
+              maxLength={4000}
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              aria-label={`Message to ${actor.displayName}`}
+              placeholder="Say hello, and why you're reaching out"
+              style={{ ...inputStyle, resize: "vertical" }}
+            />
+            <p style={{ fontSize: "var(--fs-xs)", color: "var(--ink-500)" }}>
+              Sent as a request — {actor.displayName} chooses whether to accept.
+            </p>
+            {error && <p style={{ fontSize: "var(--fs-sm)", color: "#b3261e" }}>{error}</p>}
+            <div style={{ display: "flex", gap: 8 }}>
+              <button type="submit" disabled={busy || !text.trim()} style={buttonStyle}>
+                Send request
+              </button>
+              <button type="button" onClick={() => setComposing(false)} style={secondaryButtonStyle}>
+                Cancel
+              </button>
+            </div>
+          </form>
         ) : (
-          <ContactBlock actor={actor} onRequestIntro={handleRequestIntro} />
+          <ContactBlock actor={actor} onRequestIntro={() => setComposing(true)} />
         )}
       </div>
     </aside>
