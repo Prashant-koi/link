@@ -98,7 +98,7 @@ async function main() {
     await pool.query(
       `SELECT count(*) AS n FROM message m JOIN intro i ON i.id = m.intro_id
        WHERE m.created_at < $1 AND (m.body ILIKE '%3rd place%' OR m.body ILIKE '%third place%')`,
-      [new Date(end - 8 * 86400000)],
+      [new Date(end - 7 * 86400000 - 4 * 3600000)],
     )
   ).rows[0].n;
   console.log(`  messages before the hackathon that mention the result: ${leaks}`);

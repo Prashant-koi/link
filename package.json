@@ -19,7 +19,8 @@
     "reprocess": "node dist/scripts/reprocess.js",
     "dev:reprocess": "tsx src/scripts/reprocess.ts",
     "seed:collab:generate": "tsx src/seed/collab/generate.ts",
-    "seed:collab": "tsx src/seed/collab/load.ts"
+    "seed:collab": "tsx src/seed/collab/load.ts",
+    "seed:expand": "tsx src/seed/expand/index.ts"
   },
   "dependencies": {
     "@hocuspocus/server": "^4.7.0",
