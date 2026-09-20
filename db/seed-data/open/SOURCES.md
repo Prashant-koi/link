@@ -8,7 +8,5 @@ Built by `scripts/build-open-vocab.mjs`; the JSON here is checked in so seeding 
 | `hobbies.json` | dariusk/corpora `sports`, `music/genres`, `art/isms`, https://github.com/dariusk/corpora | CC0 / public domain |
 | `names.json` | sigpwned/popular-names-by-country-dataset (forenames and surnames by country) | CC0 |
 
-A short list of everyday hobbies (Cooking, Reading, Video games, ...) and the popular head entries for sports and music (Soccer, Jazz, ...) is written by hand in `src/seed/expand/vocab.ts`, because the open lists above do not contain them.
-
 Person names are random first x last combinations from these lists; they do not identify real people.
 Clubs, labs and departments are fictional campus entities named from these vocabularies.

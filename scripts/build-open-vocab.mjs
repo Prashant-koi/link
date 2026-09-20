@@ -74,7 +74,7 @@ for (const r of cip) {
   if (code.length === 2) families.push({ code, title: titleCase(cleanTitle(title)), definition });
   else if (code.length === 5) series.push({ code, family: code.slice(0, 2), title: cleanTitle(title), definition });
   else if (code.length === 7) {
-    if (/(^Other\b|, Other$|\bOther\b\.?$)/i.test(title)) continue;
+    if (/(^Other\b|, Other$|\bOther\b\.?$|^Reserved\b)/i.test(title)) continue; // placeholder rows in CIP
     programs.push({ code, series: code.slice(0, 5), family: code.slice(0, 2), title: cleanTitle(title), definition });
   }
 }

@@ -118,6 +118,7 @@ export async function buildVocab(client: pg.PoolClient, rng: Rng): Promise<Vocab
   for (const p of cip.programs) {
     if (SKIP_FAMILIES.has(p.family)) continue;
     const label = tidy(p.title);
+    if (/^(reserved|other|general|not applicable)$/i.test(label)) continue;
     const c = add({ label, definition: p.definition, depth: 3, kind: "program", family: p.family, series: p.series });
     if (!c) continue;
     push(programsByFamily, p.family, c);

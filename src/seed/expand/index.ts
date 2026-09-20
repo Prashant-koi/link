@@ -3,7 +3,7 @@
 // (no --reset); every row it creates has a deterministic id, so re-running is a
 // no-op for anything already loaded.
 //
-//   npx tsx src/seed/expand/index.ts [--people=1200] [--seed=42] [--dry-run] [--rebuild]
+//   npx tsx src/seed/expand/index.ts [--people=1200] [--seed=42] [--dry-run] [--rebuild] [--orgs-only]
 //
 // --rebuild first removes the rows a previous run created (recognised by their
 // namespaced deterministic ids) and regenerates them with the current recipe.
@@ -22,6 +22,34 @@ const COUNT = Number(args.get("people") ?? 1200);
 const SEED = Number(args.get("seed") ?? 42);
 const DRY = args.has("dry-run");
 const REBUILD = args.has("rebuild");
+const ORGS_ONLY = args.has("orgs-only"); // (re)write departments/labs/clubs and what they are about; no people
+
+// A department with no stated concepts (the original base-seed ones) is described by
+// what its NAME means: the concepts nearest to "Physics" or "Design" in embedding
+// space. (Its members' interests cannot be used: in the base seed, department and
+// interests are unrelated.) Idempotent: only fills departments that have none.
+async function deriveDepartmentConcepts(client: import("pg").PoolClient): Promise<number> {
+  if (!config.llm.baseUrl) return 0;
+  const depts = (await client.query<{ id: string; name: string }>(
+    `SELECT d.id, d.display_name AS name FROM actor d WHERE d.kind = 'department' AND NOT EXISTS (SELECT 1 FROM actor_concept x WHERE x.actor_id = d.id)`,
+  )).rows;
+  let rows = 0;
+  for (const d of depts) {
+    const [v] = await embed([d.name], "query");
+    const near = await client.query<{ id: string; label: string }>(
+      `SELECT id, pref_label AS label FROM concept WHERE embedding IS NOT NULL AND (1 - (embedding <=> $1::vector)) >= 0.62 ORDER BY embedding <=> $1::vector LIMIT 6`,
+      [toVector(v)],
+    );
+    for (const c of near.rows) {
+      await client.query(
+        `INSERT INTO actor_concept (actor_id, concept_id, raw_text, strength, source, stance, resolved_at) VALUES ($1, $2, $3, 1.0, 'seed', 'established', now())`,
+        [d.id, c.id, c.label],
+      );
+      rows++;
+    }
+  }
+  return rows;
+}
 
 const toVector = (v: number[]) => `[${v.join(",")}]`;
 
@@ -76,6 +104,14 @@ async function main() {
       }
       console.log(`embedded ${need.length} concepts`);
     } else console.log("LLM_BASE_URL unset: concepts left without embeddings");
+
+    console.log(`derived concepts for ${await deriveDepartmentConcepts(client)} department rows`);
+    if (ORGS_ONLY) {
+      await client.query(`REFRESH MATERIALIZED VIEW concept_idf`);
+      await client.query(`UPDATE graph_version SET version = version + 1 WHERE id = true`);
+      console.log("orgs-only: groups saved with their concepts; people untouched");
+      return;
+    }
 
     let inserted = 0, interests = 0, queued = 0;
     const logins: { username: string; password: string }[] = [];

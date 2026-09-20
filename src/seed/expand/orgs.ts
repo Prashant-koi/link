@@ -1,5 +1,6 @@
 import type pg from "pg";
-import { deterministicUuid, type Rng } from "../rng.js";
+import { deterministicUuid, stableUuid, type Rng } from "../rng.js";
+import { expansionOrgIds } from "./rebuild.js";
 import type { ExpConcept, Vocab } from "./vocab.js";
 
 // New departments, labs, clubs and the contexts (courses, events, papers,
@@ -101,7 +102,11 @@ export async function buildOrgs(
   seed: number,
   vocab: Vocab,
 ): Promise<{ depts: Dept[]; labs: Lab[]; clubs: Club[]; contexts: Ctx[]; general: Ctx[] }> {
-  const existingNames = new Set((await client.query<{ n: string }>(`SELECT lower(display_name) AS n FROM actor WHERE kind <> 'person'`)).rows.map((r) => r.n));
+  // Names taken by anything that is NOT one of this expansion's own orgs, so a re-run
+  // reproduces the same orgs (same ids) instead of skipping them as duplicates.
+  const existingNames = new Set(
+    (await client.query<{ n: string }>(`SELECT lower(display_name) AS n FROM actor WHERE kind <> 'person' AND id <> ALL($1::uuid[])`, [expansionOrgIds(seed)])).rows.map((r) => r.n),
+  );
   const depts: Dept[] = [];
   const labs: Lab[] = [];
   const contexts: Ctx[] = [];
@@ -201,6 +206,20 @@ export async function saveOrgs(client: pg.PoolClient, o: Awaited<ReturnType<type
   for (const d of o.depts) await actor(d.id, "department", d.name);
   for (const l of o.labs) await actor(l.id, "lab", l.name);
   for (const c of o.clubs) await actor(c.id, "club", c.name);
+  // What each group is about, so search can find groups by interest. Pre-resolved
+  // (concept ids are known), idempotent through a stable id per (group, concept).
+  const about = async (orgId: string, concepts: ExpConcept[]) => {
+    for (const c of concepts) {
+      await client.query(
+        `INSERT INTO actor_concept (id, actor_id, concept_id, raw_text, strength, source, stance, resolved_at)
+         VALUES ($1, $2, $3, $4, 1.0, 'seed', 'established', now()) ON CONFLICT (id) DO NOTHING`,
+        [stableUuid("expand:org_concept", `${orgId}:${c.id}`), orgId, c.id, c.label],
+      );
+    }
+  };
+  for (const d of o.depts) await about(d.id, d.pool.slice(0, 6)); // broad topics come first in the pool
+  for (const l of o.labs) await about(l.id, l.concepts);
+  for (const c of o.clubs) await about(c.id, c.concepts);
   for (const c of o.contexts) {
     await client.query(`INSERT INTO context (id, kind, title, starts_on, ends_on) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (id) DO NOTHING`, [c.id, c.kind, c.title, c.startsOn, c.endsOn]);
   }

@@ -6,6 +6,12 @@ import { deterministicUuid } from "../rng.js";
 // from a namespaced deterministic hash, so the candidate ids are recomputed and
 // only those are deleted. Base-seed rows (different namespaces) and the concept
 // vocabulary are left alone.
+/** Ids the expansion may have used for orgs (department, lab, club). */
+export function expansionOrgIds(seed: number): string[] {
+  const range = (ns: string, n: number) => Array.from({ length: n }, (_, i) => deterministicUuid(seed, ns, i));
+  return [...range("expand:org:department", 200), ...range("expand:org:lab", 800), ...range("expand:org:club", 800)];
+}
+
 export async function rebuildCleanup(client: pg.PoolClient, seed: number): Promise<Record<string, number>> {
   const range = (ns: string, n: number) => Array.from({ length: n }, (_, i) => deterministicUuid(seed, ns, i));
   const people = range("expand:person", 6000);

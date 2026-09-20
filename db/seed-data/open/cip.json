@@ -2040,13 +2040,6 @@
    "definition": "A program that prepares individuals to receive, inspect, store, process, and package agricultural products in the form of human food consumables, animal or plant food, or other industrial products.  Includes instruction in the nutrient and industrial properties of various agricultural products; logistics and storage procedures; chemical and mechanical processing operations; packaging; safety and health requirements; and related technical and business principles."
   },
   {
-   "code": "01.0480",
-   "series": "01.04",
-   "family": "01",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
    "code": "01.0504",
    "series": "01.05",
    "family": "01",
@@ -2143,13 +2136,6 @@
    "family": "01",
    "title": "Urban and Community Horticulture",
    "definition": "A program that focuses on principles and techniques for the production of horticultural crops in an urban environment. Includes instruction in ecology, environmental sustainability, food production systems, and plant and soil sciences."
-  },
-  {
-   "code": "01.0680",
-   "series": "01.06",
-   "family": "01",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "01.0701",
@@ -2297,13 +2283,6 @@
    "family": "01",
    "title": "Range Science and Management",
    "definition": "A program that focuses on the scientific study of rangelands, arid regions, grasslands, and other areas of low productivity, as well as the principles of managing such resources for maximum benefit and environmental balance.  Includes instruction in livestock management, wildlife biology, plant sciences, ecology, soil science, and hydrology."
-  },
-  {
-   "code": "01.1180",
-   "series": "01.11",
-   "family": "01",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "01.1201",
@@ -3648,13 +3627,6 @@
    "family": "12",
    "title": "Wine Steward/Sommelier",
    "definition": "A program that prepares individuals to manage wine selection, purchasing, storage, sales, and service for a variety of establishments in the hospitality industry. Includes instruction in wine production, wine regions of the world, wine tasting, food and wine matching, service techniques, and wine program management."
-  },
-  {
-   "code": "12.0580",
-   "series": "12.05",
-   "family": "12",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "12.0601",
@@ -5701,20 +5673,6 @@
    "definition": "A program that focuses on the development of proficiency in reading, writing, and speaking English for those for whom English is not their mother tongue. Includes instruction in the use of basic communication skills to develop and transmit ideas and thoughts in English as well as specialized programs that focus on the development of proficiency in English sufficient to meet specific occupational or academic demands. Note: These programs are for academic credit towards a postsecondary credential. For second language programs that are not for academic credit towards a postsecondary credential, see 32.0109."
   },
   {
-   "code": "16.1702",
-   "series": "16.17",
-   "family": "16",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "16.1799",
-   "series": "16.17",
-   "family": "16",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
    "code": "16.1801",
    "series": "16.18",
    "family": "16",
@@ -5930,13 +5888,6 @@
    "family": "19",
    "title": "Work and Family Studies",
    "definition": "An introductory program that focuses on family and consumer science concepts and principles at the basic and vocational levels, and the various potential career paths open to interested students.  Includes instruction in career, community, and family connections; family and family/consumer resources; human development; interpersonal relationships; nutrition and wellness; parenting; and career possibilities in various related areas."
-  },
-  {
-   "code": "21.0101",
-   "series": "21.01",
-   "family": "21",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "22.0000",
@@ -7059,13 +7010,6 @@
    "definition": "A program that focuses on the planning, acquisition and management of military bases, housing, installations and other facilities plus their associated buildings, systems, equipment, staffing and maintenance.  Includes instruction in operations management, acquisitions planning, contracts management, building construction, real estate, facilities management, hospitality management, administrative budgeting and finance, personnel supervision and leadership, related regulations and policies, and applications to specific service requirements, operational needs, and types of facilities. This CIP code is not valid for IPEDS reporting."
   },
   {
-   "code": "28.0801",
-   "series": "28.08",
-   "family": "28",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
    "code": "29.0201",
    "series": "29.02",
    "family": "29",
@@ -7225,13 +7169,6 @@
    "family": "29",
    "title": "Radar Communications and Systems Technology",
    "definition": "A program that focuses on the principles, technology and maintenance of air, sea and ground-based radar systems.  Includes instruction in electronic principles and digital techniques, transistors and solid-state component theory, radar systems; maintenance technology, data processing systems, wiring and circuit schematics, maintenance management, safety procedures, and applications to specific systems and services."
-  },
-  {
-   "code": "29.0501",
-   "series": "29.05",
-   "family": "29",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "29.0601",
@@ -9222,13 +9159,6 @@
    "definition": "A program that focuses on the systematic analysis of public policy issues related to relationships among nations and among governments and non-governmental entities. Includes instruction in international politics, governance, financial policy, and security affairs; globalization; economic and social policies of developing nations; and applications to specific public policy topics such as labor and employment, immigration, and human rights."
   },
   {
-   "code": "44.0580",
-   "series": "44.05",
-   "family": "44",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
    "code": "44.0701",
    "series": "44.07",
    "family": "44",
@@ -10979,13 +10909,6 @@
    "definition": "A program that prepares individuals, under the supervision of speech-language pathologists, to assist in the provision of speech-language pathology services to individuals of all ages, including screenings and assessments, following treatment plans or protocols, documenting and reporting patient performance, performing checks and maintenance of equipment, and providing support in research projects.  Includes instruction in speech and language development, phonetics, childhood and adult communication disorders, speech and hearing screening, and clinical procedures in speech-language pathology."
   },
   {
-   "code": "51.0817",
-   "series": "51.08",
-   "family": "51",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
    "code": "51.0901",
    "series": "51.09",
    "family": "51",
@@ -11145,13 +11068,6 @@
    "family": "51",
    "title": "Orthopedic Technology/Technician",
    "definition": "A program that prepares individuals, under the supervision of physicians, to cast, splint, and brace orthopedic injuries. Includes instruction in patient assessment; casting, splinting, and orthopedic appliances; radiographic interpretation; traction; and wound care."
-  },
-  {
-   "code": "51.0924",
-   "series": "51.09",
-   "family": "51",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "51.1001",
@@ -11462,13 +11378,6 @@
    "definition": "A program that focuses on understanding elements of traumatic exposure, trauma-sensitive care, and crisis intervention. Includes instruction in disaster response, grief and loss counseling, crisis intervention and management, trauma counseling, neurobiology of trauma, PTSD and combat-related trauma, relational trauma and treatment of trauma-related disorders."
   },
   {
-   "code": "51.1580",
-   "series": "51.15",
-   "family": "51",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
    "code": "51.1701",
    "series": "51.17",
    "family": "51",
@@ -11677,13 +11586,6 @@
    "family": "51",
    "title": "Public Health Genetics",
    "definition": "A program that prepares individuals to respond to the complex social, legal, ethical, and public health policy implications generated by genetic research. Includes instruction in biochemical genetics of complex diseases, bioethics, chromosomes and human disease, genetic counseling, genetic epidemiology, gene mapping, human population genetics, and the molecular basis of human inherited disease."
-  },
-  {
-   "code": "51.2280",
-   "series": "51.22",
-   "family": "51",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "51.2300",
@@ -12281,13 +12183,6 @@
    "definition": "A program that prepares registered nurses to provide health care specific to women. Includes instruction in the wellness and care of women, gynecology, obstetrics, advanced nursing practices for women, evidence-based nursing practice, advanced physiology and pathophysiology, advanced pharmacology, and pharmacotherapeutics."
   },
   {
-   "code": "51.3823",
-   "series": "51.38",
-   "family": "51",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
    "code": "51.3824",
    "series": "51.38",
    "family": "51",
@@ -12307,13 +12202,6 @@
    "family": "51",
    "title": "Nursing Assistant/Aide and Patient Care Assistant/Aide",
    "definition": "A program that prepares individuals to perform routine nursing-related services to patients in hospitals or long-term care facilities, under the training and supervision of a registered nurse or licensed practical nurse."
-  },
-  {
-   "code": "51.9980",
-   "series": "51.99",
-   "family": "51",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "52.0101",
@@ -12862,13 +12750,6 @@
    "definition": "A program that prepares individuals to possess the skills associated with direct promotion of products and services to potential customers and to function as independent sales representatives and managers.  Includes instruction in consumer psychology, image projection, public speaking and interpersonal communications, sales organization and operations, customer relations, professional standards and ethics, and applicable technical skills."
   },
   {
-   "code": "52.1880",
-   "series": "52.18",
-   "family": "52",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
    "code": "52.1901",
    "series": "52.19",
    "family": "52",
@@ -12937,13 +12818,6 @@
    "family": "52",
    "title": "Hospitality and Recreation Marketing Operations",
    "definition": "A program that prepares individuals to provide marketing services in the hospitality and leisure fields. Includes instruction in hospitality operations, customer sales and assistance operations and techniques, telephone operations, basic office management, retail sports, recreation equipment, food and beverage."
-  },
-  {
-   "code": "52.1980",
-   "series": "52.19",
-   "family": "52",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "52.2001",
@@ -13077,90 +12951,6 @@
    "family": "54",
    "title": "Military History",
    "definition": "A program that focuses on the study of the history of warfare and military institutions in their operational, politico-economic and socio-cultural contexts; including airpower history, naval history, and military history.  Includes instruction in military organization, military operations, the history of technology, leadership and biography, military psychology and behavior, international relations and politics, economics, aspects of general and regional history, cultural history and anthropology, historiography, and applicable quantitative methods."
-  },
-  {
-   "code": "55.0101",
-   "series": "55.01",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1301",
-   "series": "55.13",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1302",
-   "series": "55.13",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1303",
-   "series": "55.13",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1304",
-   "series": "55.13",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1399",
-   "series": "55.13",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1401",
-   "series": "55.14",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1403",
-   "series": "55.14",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1404",
-   "series": "55.14",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1405",
-   "series": "55.14",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.1499",
-   "series": "55.14",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
-  },
-  {
-   "code": "55.9999",
-   "series": "55.99",
-   "family": "55",
-   "title": "Reserved",
-   "definition": "Reserved for use by Statistics Canada. This CIP code is not valid for IPEDS reporting."
   },
   {
    "code": "60.0101",
