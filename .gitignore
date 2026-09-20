@@ -13,3 +13,4 @@ neo4j-data/
 next-env.d.ts
 db/seed-data/.cso-cache.csv
 docker-compose.override.yml
+db/seed-data/open/.cache/

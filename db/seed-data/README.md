@@ -32,3 +32,39 @@ npm run migrate                                  # creates the schema
 psql "$DATABASE_URL" -f db/seed-data/snapshot.sql
 psql "$DATABASE_URL" -c 'REFRESH MATERIALIZED VIEW concept_idf'
 ```
+
+## Seed expansion (open data): more people, interests, clubs and organizations
+
+`npm run seed:expand` adds ~1,200 people on top of the base seed, without touching
+any existing row (it never uses `--reset`):
+
+- **Vocabulary** from `open/cip.json` (NCES CIP 2020 programs, with real
+  definitions) and `open/hobbies.json` (sports, music genres and art movements from
+  dariusk/corpora, plus a short hand-written list of everyday hobbies and popular
+  head entries such as Soccer or Jazz). ~1,700 concepts are added and embedded.
+- **Organizations**: ~26 new departments, ~48 labs, ~120 clubs (each tied to the
+  interests it is about), and ~180 courses/events/papers/projects/teams.
+- **People**: names are random first x last combinations from `open/names.json`
+  (63 countries, CC0), so they do not identify real people. Each person gets 4-8
+  field interests, 1-3 hobbies, club/lab/course/event edges and a working login
+  (`first@last`). About 10% of interest strings are noisy variants queued for the
+  resolution worker; the rest are resolved at seed time.
+
+```
+node scripts/build-open-vocab.mjs         # only to refresh open/*.json (cached)
+npm run seed:expand -- --dry-run          # plan only, nothing written
+npm run seed:expand                       # add ~1,200 people (idempotent)
+npm run seed:expand -- --rebuild          # remove what a previous run created, regenerate
+```
+
+Run it from the host against the published database, e.g.
+`DATABASE_URL=postgres://link:...@127.0.0.1:5432/link LLM_BASE_URL=http://127.0.0.1:11434 npm run seed:expand`.
+Sources and licences: `open/SOURCES.md`.
+
+## John Doe's collaboration story
+
+`npm run seed:collab:generate` expands the hand-written outline in `src/seed/collab/`
+with the local model into `collab-story/` (resumable, already committed);
+`npm run seed:collab` loads it straight into Postgres (10 conversations, ~770
+messages, 3 workspaces, 44 files) and builds the AI search index. Both are
+idempotent. `src/seed/collab/verify.ts` sanity-checks the loaded data.
