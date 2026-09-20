@@ -2,6 +2,9 @@ services:
   postgres:
     image: pgvector/pgvector:pg16
     platform: linux/arm64
+    # Without this the database stays down after a reboot, and api/worker
+    # crash-loop against nothing.
+    restart: unless-stopped
     environment:
       POSTGRES_DB: link
       POSTGRES_USER: link
