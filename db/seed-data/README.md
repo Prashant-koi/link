@@ -9,3 +9,26 @@ node scripts/build-cso-subset.mjs
 `.cso-cache.csv` (the raw ~8MB ontology download, gitignored) is reused across
 runs so re-generating the subset doesn't re-download; delete it to force a
 fresh download.
+
+## snapshot.sql
+
+A `pg_dump --data-only` snapshot of one specific `npm run seed -- --seed 42
+--reset` run — the exact data referenced in the demo cheat sheet (demo user
+"Nina Farouk", id `d39fa1b9-e8dd-9268-4d0d-f83e28c1177c`, hero pair on "human
+tracking", search triple on "fibre technology"). It's a point-in-time copy,
+not regenerated automatically — re-running the seeder will produce different
+random content unless you pass the same `--seed`.
+
+It intentionally excludes `schema_migrations`, `prompt`, `job`, `llm_call`,
+and `graph_version` — those are bookkeeping/operational tables that the
+migration runner and app populate themselves, and restoring them verbatim
+would either conflict with what's already there or restore stale queue
+state.
+
+To load it onto a fresh database:
+
+```
+npm run migrate                                  # creates the schema
+psql "$DATABASE_URL" -f db/seed-data/snapshot.sql
+psql "$DATABASE_URL" -c 'REFRESH MATERIALIZED VIEW concept_idf'
+```
