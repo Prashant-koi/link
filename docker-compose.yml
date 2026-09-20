@@ -1,61 +1,67 @@
 services:
   postgres:
     image: pgvector/pgvector:pg16
+    platform: linux/arm64
     environment:
       POSTGRES_DB: link
-      POSTGRES_PASSWORD: link
+      POSTGRES_USER: link
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - pg-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 2s
-      timeout: 5s
-      retries: 10
+      test: ["CMD-SHELL", "pg_isready -U link -d link"]
+      interval: 3s
+      retries: 20
+
+  # One-shot: runs migrations then exits. restart:"no" plus
+  # service_completed_successfully means the API refuses to start against
+  # an unmigrated database, and two replicas can never race applying the
+  # same migration (deployment handoff, "App stack").
+  migrate:
+    build: .
+    platform: linux/arm64
+    command: npm run migrate
+    depends_on:
+      postgres: { condition: service_healthy }
+    env_file: .env
+    restart: "no"
 
   api:
     build: .
+    platform: linux/arm64
     command: npm run start:api
+    depends_on:
+      migrate: { condition: service_completed_successfully }
     env_file: .env
-    environment:
-      DATABASE_URL: postgresql://postgres:link@postgres:5432/link
+    # Ollama runs in the separate model stack, reached via the host — see
+    # docker-compose.model.yml. Linux doesn't map host.docker.internal
+    # automatically, hence this.
+    extra_hosts: ["host.docker.internal:host-gateway"]
     ports:
-      - "3001:3001"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - "127.0.0.1:3000:3000" # tunnelled, never bound to 0.0.0.0 — see the deployment handoff, "Never expose"
+    restart: unless-stopped
 
-  resolution-worker:
+  worker:
     build: .
-    command: npm run start:resolution-worker
-    env_file: .env
-    environment:
-      DATABASE_URL: postgresql://postgres:link@postgres:5432/link
+    platform: linux/arm64
+    command: npm run start:worker
     depends_on:
-      postgres:
-        condition: service_healthy
+      migrate: { condition: service_completed_successfully }
+    env_file: .env
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    restart: unless-stopped
 
-  # Ingest worker is on-demand/batch (see runtime roles table in the backend
-  # handoff), not a long-running service — run it ad hoc:
+  # Ingest is on-demand/batch (backend handoff's runtime-roles table), not a
+  # long-running service — run ad hoc:
   #   docker compose run --rm ingest-worker path/to/batch.jsonl
   ingest-worker:
     build: .
+    platform: linux/arm64
     command: npm run start:ingest-worker
     env_file: .env
-    environment:
-      DATABASE_URL: postgresql://postgres:link@postgres:5432/link
     profiles: ["tools"]
     depends_on:
-      postgres:
-        condition: service_healthy
-
-  # Imports run on the resolution worker (extraction is a bio_extract call),
-  # so there is no extra service here — but that worker now makes outbound
-  # HTTPS calls to api.github.com as well as to the model runtime.
-
-  # Model runtime (vLLM/Ollama) runs on the GX10, not in this compose file —
-  # point LLM_BASE_URL in .env at it. Nothing above assumes it's local.
+      migrate: { condition: service_completed_successfully }
 
 volumes:
-  pg-data:
+  pgdata:

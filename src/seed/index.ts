@@ -18,7 +18,7 @@ interface CliArgs {
 }
 
 function parseArgs(argv: string[]): CliArgs {
-  const args: CliArgs = { seed: 42, reset: false, strict: false, definitions: "template" };
+  const args: CliArgs = { seed: Number(process.env.SEED ?? 42), reset: false, strict: false, definitions: "template" };
   for (const arg of argv) {
     if (arg.startsWith("--seed=")) args.seed = Number(arg.slice("--seed=".length));
     else if (arg === "--seed") continue; // value comes as next arg, handled below

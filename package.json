@@ -8,11 +8,14 @@
     "dev:resolution-worker": "tsx watch src/run-resolution-worker.ts",
     "build": "tsc -p tsconfig.json",
     "start:api": "node dist/run-api.js",
+    "start:worker": "node dist/run-resolution-worker.js",
     "start:ingest-worker": "node dist/run-ingest-worker.js",
     "start:resolution-worker": "node dist/run-resolution-worker.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "seed": "tsx src/seed/index.ts",
-    "migrate": "tsx src/migrate.ts"
+    "dev:seed": "tsx src/seed/index.ts",
+    "dev:migrate": "tsx src/migrate.ts",
+    "seed": "node dist/seed/index.js",
+    "migrate": "node dist/migrate.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

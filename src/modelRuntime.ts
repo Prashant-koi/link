@@ -59,7 +59,10 @@ export async function embed(texts: string[]): Promise<number[][]> {
         const res = await fetch(llmUrl("/v1/embeddings"), {
           method: "POST",
           headers: { "Content-Type": "application/json", ...authHeaders() },
-          body: JSON.stringify({ model: config.llm.embeddingModel, input: batch }),
+          // keep_alive: Ollama unloads an idle model after a few minutes and
+          // the next request pays a full reload; -1 keeps it resident. A
+          // no-op field for any other OpenAI-compatible runtime.
+          body: JSON.stringify({ model: config.llm.embeddingModel, input: batch, keep_alive: -1 }),
         });
         if (!res.ok) {
           throw new Error(`embedding request failed: ${res.status} ${await res.text()}`);
@@ -136,6 +139,7 @@ export async function runStructuredPrompt(
         model: config.llm.instructModel,
         temperature: params.temperature ?? 0,
         max_tokens: params.max_tokens ?? 300,
+        keep_alive: -1, // Ollama: stays resident: 128GB unified memory, no reason to reload
         messages: [
           { role: "system", content: prompt.system_body },
           { role: "user", content: userMessage },
@@ -145,6 +149,11 @@ export async function runStructuredPrompt(
         response_format: params.json_schema
           ? { type: "json_schema", json_schema: { name: prompt.name, schema: params.json_schema } }
           : { type: "json_object" },
+        // Ollama's own structured-output extension (deployment handoff,
+        // "Wiring the worker"): takes the schema directly rather than
+        // wrapped in response_format. Ignored by a strict OpenAI/vLLM
+        // server, so both runtimes get constrained output from one call.
+        ...(params.json_schema ? { format: params.json_schema } : {}),
       }),
     });
     if (!res.ok) {

@@ -24,15 +24,21 @@ export const config = {
   llm: {
     baseUrl: process.env.LLM_BASE_URL ?? "",
     apiKey: process.env.LLM_API_KEY ?? "",
-    instructModel: process.env.LLM_MODEL ?? "Qwen/Qwen2.5-14B-Instruct",
-    embeddingModel: process.env.LLM_EMBEDDING_MODEL ?? "",
+    // Deployment handoff settled Ollama over vLLM on the GX10 (aarch64 +
+    // CUDA 13 has no stable vLLM release). nomic-embed-text is 768
+    // dimensions, matching concept.embedding vector(768) exactly — swapping
+    // embedding models means a migration and a full re-embed, not a config
+    // change.
+    instructModel: process.env.LLM_INSTRUCT_MODEL ?? "qwen2.5:14b-instruct",
+    embeddingModel: process.env.LLM_EMBED_MODEL ?? "nomic-embed-text",
   },
   workers: {
-    // Instruct concurrency stays low deliberately: this is one box, and
-    // concurrent sequences thrash the KV cache rather than raising throughput.
-    instructConcurrency: Number(process.env.INSTRUCT_CONCURRENCY ?? 2),
+    // Ollama serialises requests per model by default, so instruct
+    // concurrency above 1-2 just adds queueing latency you can't see rather
+    // than raising throughput (deployment handoff, "Wiring the worker").
+    instructConcurrency: Number(process.env.LLM_INSTRUCT_CONCURRENCY ?? 2),
     embeddingConcurrency: Number(process.env.EMBEDDING_CONCURRENCY ?? 8),
-    embeddingBatchSize: Number(process.env.EMBEDDING_BATCH_SIZE ?? 256),
+    embeddingBatchSize: Number(process.env.LLM_EMBED_BATCH ?? 256),
     pollIntervalMs: Number(process.env.WORKER_POLL_INTERVAL_MS ?? 1000),
   },
   github: {

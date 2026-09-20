@@ -1,0 +1,27 @@
+# Separate from the app stack deliberately — deployment handoff, "Two
+# stacks, not one": the model loads once and stays loaded, needs GPU
+# passthrough nothing else in the stack needs, and is architecturally a
+# leaf (called, calls nothing, never touches the database). Bring up once:
+#
+#   docker compose -f docker-compose.model.yml up -d
+#   docker compose -f docker-compose.model.yml exec ollama ollama pull nomic-embed-text
+#   docker compose -f docker-compose.model.yml exec ollama ollama pull qwen2.5:14b-instruct
+#   curl http://localhost:11434/api/tags   # confirm before touching the app stack
+services:
+  ollama:
+    image: ollama/ollama:latest
+    platform: linux/arm64
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      # Both models stay resident — 128GB unified memory, no reason to pay a
+      # reload between the embedding and instruct pools.
+      - OLLAMA_KEEP_ALIVE=-1
+    ports:
+      - "127.0.0.1:11434:11434" # localhost only — never tunnelled, no auth in front of it
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama-models:
