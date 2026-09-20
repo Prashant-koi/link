@@ -15,8 +15,8 @@ import {
   buildEventNodes,
   buildInterests,
   buildNodes,
-  fieldsFrom,
   loadOrder,
+  MAX_FIELDS,
   saveOrder,
   selectVisible,
   splitByKind,
@@ -83,15 +83,33 @@ export function Home() {
   }, []);
 
   const interests = useMemo(
-    () => applyOrder(buildInterests(actor, interestRows), order),
-    [actor, interestRows, order],
+    () => applyOrder(buildInterests(actor, interestRows, suggestions), order),
+    [actor, interestRows, suggestions, order],
   );
-  const fields = useMemo(() => fieldsFrom(interests), [interests]);
-
   const { people: peopleSuggestions, societies: societySuggestions } = useMemo(
     () => splitByKind(suggestions),
     [suggestions],
   );
+
+  // An interest nobody shares is not drawn — an empty circle says nothing. It
+  // appears on its own once people come in, and the next-ranked interest that
+  // does have people takes its place. So: test every mappable interest against
+  // the audience on screen, then keep the first five that are populated.
+  const candidates = useMemo(() => interests.filter((i) => i.mappable), [interests]);
+  const probe = useMemo(
+    () =>
+      audience === "people"
+        ? buildNodes(peopleSuggestions, candidates, 1)
+        : audience === "societies"
+          ? buildNodes(societySuggestions, candidates, 1.08)
+          : buildEventNodes(eventRows, candidates, 1.05),
+    [audience, peopleSuggestions, societySuggestions, eventRows, candidates],
+  );
+  const fields = useMemo(
+    () => candidates.filter((_, i) => probe.some((n) => n.membership & (1 << i))).slice(0, MAX_FIELDS),
+    [candidates, probe],
+  );
+  const activeKeys = useMemo(() => new Set(fields.map((f) => f.key)), [fields]);
 
   const people = useMemo(() => buildNodes(peopleSuggestions, fields, 1), [peopleSuggestions, fields]);
   const societies = useMemo(() => buildNodes(societySuggestions, fields, 1.08), [societySuggestions, fields]);
@@ -140,7 +158,9 @@ export function Home() {
         <p style={{ fontSize: "var(--fs-sm)", color: "var(--ink-500)" }}>
           {fields.length > 0
             ? "People sit inside the interests they share with you."
-            : "Add some interests in Settings to see your map."}
+            : interests.some((i) => i.mappable)
+              ? "No one shares your interests yet. They'll appear here as people join."
+              : "Add some interests in Settings to see your map."}
         </p>
       </div>
 
@@ -171,7 +191,7 @@ export function Home() {
           )}
         </div>
 
-        {interests.length > 0 && <InterestRankList interests={interests} onReorder={handleReorder} />}
+        {interests.length > 0 && <InterestRankList interests={interests} activeKeys={activeKeys} onReorder={handleReorder} />}
       </div>
 
       <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>

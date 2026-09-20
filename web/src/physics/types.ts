@@ -60,7 +60,9 @@ export interface BlobState {
   cx: number;
   cy: number;
   r: number;
-  /** Radial displacement per control point, resting at 0. */
+  /** Resting radial offset per control point — the field's irregular outline. */
+  rest: Float32Array;
+  /** Radial displacement per control point; springs back to `rest`. */
   u: Float32Array;
   /** Radial velocity per control point. */
   v: Float32Array;

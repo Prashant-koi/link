@@ -81,6 +81,7 @@ export type InterestRow = {
   stance: Stance;
   visibility: Visibility;
   resolved: boolean;
+  conceptId: string | null;
 };
 
 // Live onboarding imports — mirrors the backend's src/types.ts additions.

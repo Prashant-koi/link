@@ -1,11 +1,12 @@
 import { useRef, useState } from "react";
 import type { RankedInterest } from "../home/model";
-import { MAX_FIELDS } from "../home/model";
 
 const ROW_HEIGHT = 40;
 
 interface Props {
   interests: RankedInterest[];
+  /** Keys of the interests currently drawn on the map (those with people in them). */
+  activeKeys: Set<string>;
   onReorder: (keys: string[]) => void;
 }
 
@@ -17,14 +18,13 @@ interface Props {
  * Pointer events rather than HTML5 drag-and-drop: touch works, it matches the
  * canvas's input model, and there is no drag image to fight.
  */
-export function InterestRankList({ interests, onReorder }: Props) {
+export function InterestRankList({ interests, activeKeys, onReorder }: Props) {
   const [dragKey, setDragKey] = useState<string | null>(null);
   const [order, setOrder] = useState<RankedInterest[] | null>(null);
   const startY = useRef(0);
   const startIndex = useRef(0);
 
   const list = order ?? interests;
-  let fieldSlot = 0;
 
   const commit = (next: RankedInterest[]) => {
     setOrder(null);
@@ -90,8 +90,8 @@ export function InterestRankList({ interests, onReorder }: Props) {
 
       <ul style={{ listStyle: "none", margin: "10px 0 0", padding: 0 }}>
         {list.map((interest, index) => {
-          const isField = interest.mappable && fieldSlot < MAX_FIELDS;
-          if (isField) fieldSlot++;
+          // Only interests someone actually shares are drawn on the map.
+          const isField = activeKeys.has(interest.key);
           const dragging = dragKey === interest.key;
           return (
             <li
@@ -158,12 +158,14 @@ export function InterestRankList({ interests, onReorder }: Props) {
                 <span
                   style={{ fontSize: "var(--fs-xs)", color: "var(--ink-400)" }}
                   title={
-                    interest.mappable
-                      ? "Rank it in the top five to show it on the map"
-                      : "Not resolved to a concept yet, so it can't be matched against people"
+                    !interest.mappable
+                      ? "Not resolved to a concept yet, so it can't be matched against people"
+                      : interest.coverage === 0
+                        ? "No one shares this yet — it will appear on the map once people do"
+                        : "Rank it higher to show it on the map"
                   }
                 >
-                  {interest.mappable ? "—" : "unmapped"}
+                  {interest.mappable ? (interest.coverage > 0 ? `${interest.coverage} ${interest.coverage === 1 ? "person" : "people"}` : "no one yet") : "unmapped"}
                 </span>
               )}
             </li>

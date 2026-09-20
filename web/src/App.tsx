@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { ParticleField } from "./components/ParticleField";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { AppShell } from "./components/AppShell";
 import { Home } from "./pages/Home";
@@ -32,6 +33,7 @@ function LoginRoute() {
 export function App() {
   return (
     <BrowserRouter>
+      <ParticleField />
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginRoute />} />

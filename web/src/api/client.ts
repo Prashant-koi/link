@@ -183,6 +183,7 @@ const fixtureApi: typeof realApi = {
       stance,
       visibility: "institution",
       resolved: false,
+      conceptId: null,
     });
     return settle({ ok: true as const });
   },

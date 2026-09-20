@@ -19,57 +19,8 @@ body {
   background: var(--surface);
 }
 
-/* Diagonal turquoise wash, fixed, fading to white before the top corner —
-   frontend handoff §2. Fixed rather than absolute so it never scrolls.
-   Pulled back from --tq-100 to --tq-050 so it sits under the band below
-   rather than competing with it. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -2;
-  pointer-events: none;
-  background: linear-gradient(to top right, var(--tq-050) 0%, var(--surface) 46%);
-}
-
-/* The diagonal band: one turquoise streak from the top-right corner to the
-   bottom-left, fading out into the white at both ends.
-
-   No rotated element — a rotated box has to be oversized to cover the
-   viewport after rotation, and the overflow has to be hidden somewhere. A
-   gradient does it exactly: colour stops run along the gradient line, so
-   bands of constant colour sit perpendicular to it. A line pointing
-   bottom-right (135deg) therefore produces a band running top-right to
-   bottom-left, and stop positions expressed as calc() off 50% give the band a
-   fixed pixel width at any viewport size.
-
-   Two passes: a wide diffuse one for the glow, and a 1px core with a 1px
-   feather either side so the line reads as crisp without aliasing. The mask
-   runs along the band (45deg, the perpendicular axis) and is what makes both
-   ends dissolve into the page instead of hitting the corners. */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      135deg,
-      transparent calc(50% - 1.5px),
-      var(--band-core) calc(50% - 0.5px),
-      var(--band-core) calc(50% + 0.5px),
-      transparent calc(50% + 1.5px)
-    ),
-    linear-gradient(
-      135deg,
-      transparent calc(50% - var(--band-soft-width) / 2),
-      var(--band-soft) 50%,
-      transparent calc(50% + var(--band-soft-width) / 2)
-    );
-  -webkit-mask-image: linear-gradient(45deg, transparent 4%, #000 30%, #000 70%, transparent 96%);
-  mask-image: linear-gradient(45deg, transparent 4%, #000 30%, #000 70%, transparent 96%);
-}
+/* The page background is plain white; the floating particles behind it are
+   drawn by <ParticleField /> (a fixed canvas mounted once in App.tsx). */
 
 h1,
 h2,
@@ -117,6 +68,19 @@ a {
   to {
     transform: translateX(0);
   }
+}
+
+/* The dashed orbit around the viewer's emblem on the home canvas. */
+@keyframes viewer-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.viewer-orbit {
+  animation: viewer-orbit 24s linear infinite;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .person-panel {

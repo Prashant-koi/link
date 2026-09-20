@@ -45,13 +45,15 @@ const BODY_K = 90; // whole-body sag: zeta = 12/(2*sqrt(90)) = 0.63, no bounce
 const BODY_DAMP = 12;
 const BODY_MAX = 0.1;
 
-export function createBlob(index: number, cx: number, cy: number, r: number): BlobState {
+export function createBlob(index: number, cx: number, cy: number, r: number, rest?: Float32Array): BlobState {
+  const resting = rest ?? new Float32Array(POINTS);
   return {
     index,
     cx,
     cy,
     r,
-    u: new Float32Array(POINTS),
+    rest: resting,
+    u: new Float32Array(resting),
     v: new Float32Array(POINTS),
     ox: 0,
     oy: 0,
@@ -86,12 +88,15 @@ export function injectBlob(
   const d = Math.hypot(dx, dy);
   if (d === 0) return;
 
+  const phi = Math.atan2(dy, dx);
+  // The outline is irregular now, so "the surface" is wherever the resting
+  // shape is in the pointer's direction, not a fixed radius.
+  const local = blob.r + blob.rest[(Math.round((phi / TAU) * POINTS) + POINTS) % POINTS];
   const reach = BAND * blob.r + extraReach;
-  const radialGate = smoothstep(1 - Math.abs(d - blob.r) / reach);
+  const radialGate = smoothstep(1 - Math.abs(d - local) / reach);
   if (radialGate <= 0) return;
 
-  const phi = Math.atan2(dy, dx);
-  const penetration = d < blob.r ? Math.min(blob.r - d, 0.35 * blob.r) : 0;
+  const penetration = d < local ? Math.min(local - d, 0.35 * blob.r) : 0;
 
   for (let k = 0; k < POINTS; k++) {
     const theta = (TAU * k) / POINTS;
@@ -115,20 +120,26 @@ export function injectBlob(
 }
 
 export function stepBlob(blob: BlobState, dt: number): void {
-  const { u, v, r } = blob;
+  const { u, v, r, rest } = blob;
   const maxIn = -MAX_IN * r;
   const maxOut = MAX_OUT * r;
 
+  // Everything below works on the displacement from the resting outline, so
+  // an irregular rest shape springs exactly like a circle would.
   let mean = 0;
   for (let k = 0; k < POINTS; k++) {
-    const prev = u[k === 0 ? POINTS - 1 : k - 1];
-    const next = u[k === POINTS - 1 ? 0 : k + 1];
-    // Restoring pull to the rest circle, plus a discrete Laplacian along the
+    const kp = k === 0 ? POINTS - 1 : k - 1;
+    const kn = k === POINTS - 1 ? 0 : k + 1;
+    const d = u[k] - rest[k];
+    const dPrev = u[kp] - rest[kp];
+    const dNext = u[kn] - rest[kn];
+    // Restoring pull to the rest outline, plus a discrete Laplacian along the
     // ring that lets a dent travel as a wave instead of spiking one point.
-    const a = -K_REST * u[k] + K_LINK * (prev + next - 2 * u[k]) - DAMP * v[k];
+    const a = -K_REST * d + K_LINK * (dPrev + dNext - 2 * d) - DAMP * v[k];
     v[k] += a * dt;
-    u[k] = clamp(u[k] + v[k] * dt, maxIn, maxOut);
-    mean += u[k];
+    const nd = clamp(d + v[k] * dt, maxIn, maxOut);
+    u[k] = rest[k] + nd;
+    mean += nd;
   }
 
   mean /= POINTS;
@@ -195,8 +206,11 @@ export function blobPath(blob: BlobState): string {
 
 /** Whether the pointer is close enough to this field's surface to press it. */
 export function blobHit(blob: BlobState, px: number, py: number): boolean {
-  const d = Math.hypot(px - (blob.cx + blob.ox), py - (blob.cy + blob.oy));
-  return Math.abs(d - blob.r) < BAND * blob.r;
+  const dx = px - (blob.cx + blob.ox);
+  const dy = py - (blob.cy + blob.oy);
+  const phi = Math.atan2(dy, dx);
+  const local = blob.r + blob.rest[(Math.round((phi / TAU) * POINTS) + POINTS) % POINTS];
+  return Math.abs(Math.hypot(dx, dy) - local) < BAND * blob.r;
 }
 
 export { clamp01 };

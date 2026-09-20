@@ -27,15 +27,6 @@
   --lh-tight: 1.25; /* xl and lg */
   --lh-body: 1.5; /* base and below */
 
-  /* ---- Diagonal band -----------------------------------------------------
-     The turquoise streak running top-right to bottom-left. It gets its own
-     tokens because the band is drawn as two passes — a wide diffuse one and a
-     narrow bright core — and the two have to stay in step. */
-  --band-core: rgba(23, 162, 184, 0.55); /* --tq-500, the bright centre line */
-  --band-soft: rgba(23, 162, 184, 0.14); /* the wide diffuse pass around it */
-  --band-core-width: 2px;
-  --band-soft-width: 260px;
-
   /* ---- Canvas ------------------------------------------------------------
      The home canvas paints in SVG, where a custom property resolves fine but
      there is no way to take a token and change its alpha at the use site. So
@@ -62,15 +53,14 @@
   --field-fill-alpha: 0.1;
   --field-stroke-alpha: 0.55;
 
-  /* Spheres are neutral glass, deliberately. A person can sit in two fields at
-     once, so colouring the sphere would contradict its position — the field
-     underneath supplies the colour. */
-  --sphere-glass: rgba(255, 255, 255, 0.58);
+  /* People are turquoise glass — the brand colour, and still translucent: a
+     person can sit in two fields at once, so the sphere must let the field
+     underneath show through rather than paint over it. */
+  --sphere-glass: rgba(214, 241, 244, 0.7);
   --sphere-glass-edge: rgba(255, 255, 255, 0.92);
-  --sphere-rim: rgba(15, 23, 36, 0.22);
-  --sphere-shadow: rgba(15, 23, 36, 0.14);
+  --sphere-rim: rgba(23, 162, 184, 0.75); /* --tq-500 */
+  --sphere-shadow: rgba(11, 102, 112, 0.22); /* --tq-700 */
 
-  --viewer-fill: #0a4a66; /* the profile at the centre: darker, still, quiet */
   --link: rgba(15, 23, 36, 0.14); /* node-to-node connections */
 
   --bridge-mid: rgba(226, 232, 240, 0.75); /* bridges are ink-toned, not a */

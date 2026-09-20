@@ -175,11 +175,18 @@ export function InterestCanvas({
   const rafRef = useRef<number | null>(null);
   const rectRef = useRef({ left: 0, top: 0, scale: 1 });
 
+  // A string, not the array: the parent may hand over a fresh array every
+  // render, and a new identity here would rebuild the world and reset the jelly.
+  const fieldKeys = fields.map((f) => f.label).join("\u0001");
+
   // Build the world whenever the layout changes.
   useEffect(() => {
     // The settled positions, not layout.placed — otherwise the loop would
     // spring everyone back to where they sat before the bridges pushed them.
-    const world = createWorld({ ...layout, placed }, new Set());
+    const world = createWorld({ ...layout, placed }, new Set(), {
+      membership: new Map(nodes.map((n) => [n.id, n.membership])),
+      keys: fieldKeys.split("\u0001"),
+    });
     for (const bp of bridgePlacements) {
       const body = createBody(bp.bridge.id, bp.x, bp.y, 17 * frame.scale, true);
       world.bodies.push(body);
@@ -190,7 +197,7 @@ export function InterestCanvas({
     draw();
     // draw is stable for the life of the effect; the world is what changed.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layout, placed, bridgePlacements, still, frame.scale]);
+  }, [layout, placed, bridgePlacements, still, frame.scale, nodes, fieldKeys]);
 
   const measure = useCallback(() => {
     const svg = svgRef.current;
@@ -479,9 +486,18 @@ export function InterestCanvas({
         {/* Translucent throughout — the highlight is opacity, not a lighter
             colour, so whatever the sphere sits on still reads through it. */}
         <radialGradient id="sphere-glass" cx="0.34" cy="0.28" r="0.85">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="45%" stopColor="#ffffff" stopOpacity="0.62" />
-          <stop offset="100%" stopColor="#dbe4ec" stopOpacity="0.5" />
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.92" />
+          <stop offset="42%" stopColor="var(--tq-100)" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="var(--tq-300)" stopOpacity="0.72" />
+        </radialGradient>
+        <radialGradient id="viewer-badge" cx="0.34" cy="0.3" r="0.85">
+          <stop offset="0%" stopColor="var(--tq-300)" />
+          <stop offset="60%" stopColor="var(--tq-600)" />
+          <stop offset="100%" stopColor="var(--tq-700)" />
+        </radialGradient>
+        <radialGradient id="viewer-glow">
+          <stop offset="55%" stopColor="var(--tq-300)" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="var(--tq-300)" stopOpacity="0" />
         </radialGradient>
         <radialGradient id="bridge-glass" cx="0.34" cy="0.28" r="0.85">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
@@ -529,11 +545,11 @@ export function InterestCanvas({
           const halfWidth = (text.length * 7.1 * frame.fontScale) / 2 + 16;
           const lx = Math.min(
             frame.width - halfWidth,
-            Math.max(halfWidth, f.cx + Math.cos(angle) * (f.r + 18)),
+            Math.max(halfWidth, f.cx + Math.cos(angle) * (f.r * 1.15 + 18)),
           );
           const ly = Math.min(
             frame.height - 14,
-            Math.max(14, f.cy + Math.sin(angle) * (f.r + 18)),
+            Math.max(14, f.cy + Math.sin(angle) * (f.r * 1.15 + 18)),
           );
           const color = FIELD_COLORS[fields[f.index]?.colorIndex ?? f.index] ?? FIELD_COLORS[0];
           const fs = 13 * frame.fontScale;
@@ -609,13 +625,57 @@ export function InterestCanvas({
         ))}
       </g>
 
-      {/* The profile at the centre. Smaller than the spheres around it, a flat
-          dark blue rather than glass, and unnamed — it is the anchor every
-          thread runs back to, and it does not compete for attention. It never
-          moves, and no field ever reaches it. */}
-      <g transform={`translate(${layout.viewerX} ${layout.viewerY})`}>
+      {/* The profile at the centre: a "link" emblem, echoing the app's name —
+          a glossy turquoise badge with a chain-link glyph, a soft glow, and a
+          slowly turning dashed orbit. Everything is drawn within the solver's
+          viewer radius, so the clearance the layout kept around the centre is
+          unchanged. It never moves, is unnamed on the canvas, and no field
+          ever reaches it. The orbit only turns when motion is allowed. */}
+      <g transform={`translate(${layout.viewerX} ${layout.viewerY})`} style={{ pointerEvents: "none" }}>
         <title>{viewerName}</title>
-        <circle r={layout.viewerRadius * 0.62} fill="var(--viewer-fill)" />
+        <circle r={layout.viewerRadius * 1.3} fill="url(#viewer-glow)" />
+        <circle
+          className={still ? undefined : "viewer-orbit"}
+          r={layout.viewerRadius * 0.98}
+          fill="none"
+          stroke="var(--tq-500)"
+          strokeOpacity={0.7}
+          strokeWidth={1.2}
+          strokeLinecap="round"
+          strokeDasharray="1.5 5"
+        />
+        <g style={{ filter: "drop-shadow(0 2px 4px var(--sphere-shadow))" }}>
+          <circle r={layout.viewerRadius * 0.72} fill="url(#viewer-badge)" stroke="#ffffff" strokeWidth={1.6} />
+          <ellipse
+            cx={-layout.viewerRadius * 0.24}
+            cy={-layout.viewerRadius * 0.34}
+            rx={layout.viewerRadius * 0.34}
+            ry={layout.viewerRadius * 0.16}
+            transform="rotate(-28)"
+            fill="#ffffff"
+            fillOpacity={0.32}
+          />
+          {/* Two interlocked links along the diagonal. */}
+          <g
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth={layout.viewerRadius * 0.09}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            {[-1, 1].map((dir) => (
+              <rect
+                key={dir}
+                x={-layout.viewerRadius * 0.27}
+                y={-layout.viewerRadius * 0.115}
+                width={layout.viewerRadius * 0.54}
+                height={layout.viewerRadius * 0.23}
+                rx={layout.viewerRadius * 0.115}
+                transform={`translate(${dir * layout.viewerRadius * 0.1} ${-dir * layout.viewerRadius * 0.1}) rotate(-45)`}
+              />
+            ))}
+          </g>
+        </g>
       </g>
 
       {/* Bridges: pinned, ink-toned, visibly not part of the drifting crowd. */}
@@ -705,7 +765,7 @@ export function InterestCanvas({
               onPointerLeave={() => setHovered((h) => (h === node.id ? null : h))}
               style={{ cursor: still ? "pointer" : "grab" }}
             >
-              {selected && <circle r={r + 6} fill="none" stroke="var(--tq-600)" strokeWidth={2.5} />}
+              {selected && <circle r={r + 6} fill="none" stroke="var(--ink-900)" strokeWidth={2.5} />}
               {/* Glass, not a solid ball: the field colour underneath shows
                   through, which matters because a sphere can sit in two
                   fields at once and its own fill must not contradict that. */}
@@ -720,7 +780,7 @@ export function InterestCanvas({
               <text
                 textAnchor="middle"
                 dominantBaseline="central"
-                fill="var(--ink-900)"
+                fill="var(--tq-700)"
                 fontSize={Math.round(r * 0.58)}
                 fontWeight={600}
                 style={{ pointerEvents: "none" }}

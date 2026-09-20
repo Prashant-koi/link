@@ -275,6 +275,7 @@ const interests: InterestRow[] = BRANCHES.map((b, i) => ({
   stance: i === 5 ? "aspiring" : i === 6 ? "exploring" : "established",
   visibility: "institution",
   resolved: i < 5,
+  conceptId: i < 5 ? b.id : null,
 }));
 
 const courses: CourseOffering[] = [

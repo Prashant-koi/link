@@ -1,7 +1,8 @@
 // The simulation: spheres on springs, fields that deform, and the step order
 // that ties them together.
 
-import { blobEnergy, blobHit, createBlob, injectBlob, stepBlob } from "./blob";
+import { blobEnergy, blobHit, blobPointCount, createBlob, injectBlob, stepBlob } from "./blob";
+import { restProfile } from "./shape";
 import { clamp, hashUnit, TAU } from "./vec";
 import type { Body, BlobState, LayoutResult } from "./types";
 
@@ -57,8 +58,30 @@ export function createBody(id: string, x: number, y: number, radius: number, pin
   };
 }
 
-export function createWorld(layout: LayoutResult, pinnedIds: Set<string>): World {
-  const blobs = layout.fields.map((f) => createBlob(f.index, f.cx, f.cy, f.r));
+/** What createWorld needs to give each field an irregular outline that still
+ *  covers exactly its members. Omit it and fields are plain circles. */
+export interface ShapeInfo {
+  /** Membership bitmask per node id. */
+  membership: Map<string, number>;
+  /** A stable key per field index, so each interest keeps its own shape. */
+  keys: string[];
+}
+
+export function createWorld(layout: LayoutResult, pinnedIds: Set<string>, shape?: ShapeInfo): World {
+  const blobs = layout.fields.map((f) => {
+    let rest: Float32Array | undefined;
+    if (shape) {
+      const nodes = layout.placed.map((p) => {
+        const droppedBits = p.dropped.reduce((m, i) => m | (1 << i), 0);
+        const effective = (shape.membership.get(p.id) ?? 0) & ~droppedBits;
+        return { x: p.x, y: p.y, radius: p.radius, member: ((effective >> f.index) & 1) === 1 };
+      });
+      // Clearance = the solver's own pad, plus the idle float, plus a hair for
+      // the spline cutting a corner between control points.
+      rest = restProfile(shape.keys[f.index] ?? String(f.index), f.cx, f.cy, f.r, nodes, layout.pad + DRIFT + 3, blobPointCount());
+    }
+    return createBlob(f.index, f.cx, f.cy, f.r, rest);
+  });
   const bodies = layout.placed.map((p) => createBody(p.id, p.x, p.y, p.radius, pinnedIds.has(p.id)));
   return {
     blobs,
@@ -200,7 +223,7 @@ export function settleWorld(world: World): void {
     body.vy = 0;
   }
   for (const blob of world.blobs) {
-    blob.u.fill(0);
+    blob.u.set(blob.rest);
     blob.v.fill(0);
     blob.ox = 0;
     blob.oy = 0;

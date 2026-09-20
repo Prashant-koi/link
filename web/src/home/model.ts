@@ -32,6 +32,8 @@ export interface RankedInterest {
    * follow-up in the plan.
    */
   mappable: boolean;
+  /** How many of the current suggestions share this interest (0 if unknown). */
+  coverage: number;
   /**
    * Which of the five field hues this interest wears, 0-based. Assigned from
    * the interest's position in the API's own ordering and never from the
@@ -86,32 +88,89 @@ export interface HomeModel {
 
 const SOCIETY_KINDS = new Set(["club", "lab", "department", "company"]);
 
-/**
- * Merge the two interest sources. `topConcepts` carries concept ids but is
- * capped at five; the interests list is complete but has no ids. Taking ids
- * from the first and the tail from the second is what gets eight rows on
- * screen while keeping the five that can actually be matched honest.
- */
-export function buildInterests(actor: ActorSummary | null, rows: InterestRow[]): RankedInterest[] {
-  const out: RankedInterest[] = [];
-  const seen = new Set<string>();
+/** Concept ids named by a suggestion's concept evidence. For a direct shared
+ *  interest the evidence carries the *viewer's* concept id. */
+function evidenceConceptIds(suggestion: ConnectionSuggestion): Set<string> {
+  const ids = new Set<string>();
+  for (const reason of suggestion.reasons) {
+    for (const ev of reason.evidence) if (ev.kind === "concept") ids.add(ev.id);
+  }
+  return ids;
+}
 
+/**
+ * Build the ranked interest list. `topConcepts` is only the five *rarest*
+ * concepts, which are exactly the ones few people share — drawing those as the
+ * fields left the canvas empty. The full interest list now carries concept
+ * ids, so every resolved interest can be matched, and the default order puts
+ * the interests shared with the most suggested people first (ties: rarer, then
+ * established over aspiring). A saved drag order is applied on top of this by
+ * `applyOrder`.
+ */
+export function buildInterests(
+  actor: ActorSummary | null,
+  rows: InterestRow[],
+  suggestions: ConnectionSuggestion[] = [],
+): RankedInterest[] {
+  const coverage = new Map<string, number>();
+  for (const s of suggestions) {
+    for (const id of evidenceConceptIds(s)) coverage.set(id, (coverage.get(id) ?? 0) + 1);
+  }
+  const chipById = new Map((actor?.topConcepts ?? []).map((c) => [c.conceptId, c]));
+
+  // One entry per concept: the list holds several rows for the same thing
+  // ("machine learning" five times), and each would otherwise be its own field.
+  const byConcept = new Map<string, InterestRow>();
+  for (const row of rows) {
+    if (!row.conceptId) continue;
+    const prev = byConcept.get(row.conceptId);
+    if (!prev || (prev.stance !== "established" && row.stance === "established")) byConcept.set(row.conceptId, row);
+  }
+
+  const mapped: RankedInterest[] = [];
+  for (const [conceptId, row] of byConcept) {
+    const chip = chipById.get(conceptId);
+    mapped.push({
+      key: conceptId,
+      conceptId,
+      label: row.conceptLabel ?? chip?.label ?? row.rawText,
+      shownAs: chip?.shownAs || row.rawText,
+      rarity: chip?.rarity ?? 0,
+      mappable: true,
+      coverage: coverage.get(conceptId) ?? 0,
+      colorIndex: 0,
+    });
+  }
+  // Chips the list somehow lacks (older API) still count.
   for (const chip of actor?.topConcepts ?? []) {
-    out.push({
+    if (byConcept.has(chip.conceptId)) continue;
+    mapped.push({
       key: chip.conceptId,
       conceptId: chip.conceptId,
       label: chip.label,
       shownAs: chip.shownAs || chip.label,
       rarity: chip.rarity,
       mappable: true,
-      colorIndex: out.length % MAX_FIELDS,
+      coverage: coverage.get(chip.conceptId) ?? 0,
+      colorIndex: 0,
     });
-    seen.add(normalise(chip.label));
-    seen.add(normalise(chip.shownAs));
   }
+  const establishedFirst = new Set(rows.filter((r) => r.stance === "established" && r.conceptId).map((r) => r.conceptId));
+  mapped.sort(
+    (a, b) =>
+      b.coverage - a.coverage ||
+      b.rarity - a.rarity ||
+      Number(establishedFirst.has(b.conceptId!)) - Number(establishedFirst.has(a.conceptId!)) ||
+      a.label.localeCompare(b.label),
+  );
 
+  const out = mapped.slice(0, MAX_LISTED_INTERESTS);
+  const seen = new Set(out.flatMap((i) => [normalise(i.label), normalise(i.shownAs)]));
+
+  // Unresolved interests fill any remaining rows, listed but never mappable.
   for (const row of rows) {
     if (out.length >= MAX_LISTED_INTERESTS) break;
+    if (row.conceptId) continue;
     const label = row.conceptLabel ?? row.rawText;
     if (seen.has(normalise(label))) continue;
     seen.add(normalise(label));
@@ -122,11 +181,14 @@ export function buildInterests(actor: ActorSummary | null, rows: InterestRow[]):
       shownAs: row.rawText,
       rarity: 0,
       mappable: false,
-      colorIndex: out.length % MAX_FIELDS,
+      coverage: 0,
+      colorIndex: 0,
     });
   }
 
-  return out.slice(0, MAX_LISTED_INTERESTS);
+  // Colour follows the interest's position in this default order, never the
+  // viewer's later re-ranking (see RankedInterest.colorIndex).
+  return out.map((i, idx) => ({ ...i, colorIndex: idx % MAX_FIELDS }));
 }
 
 function normalise(s: string): string {
@@ -162,12 +224,9 @@ function membershipOf(
     matchedLabels.push(fields[index].label);
   };
 
-  for (const reason of suggestion.reasons) {
-    for (const ev of reason.evidence) {
-      if (ev.kind !== "concept") continue;
-      sawConceptEvidence = true;
-      note(ev.id);
-    }
+  for (const id of evidenceConceptIds(suggestion)) {
+    sawConceptEvidence = true;
+    note(id);
   }
 
   // Reasons are capped at three, so someone can share a field without it
