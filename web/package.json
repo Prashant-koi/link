@@ -19,6 +19,8 @@
     "@codemirror/language": "^6.12.4",
     "@codemirror/state": "^6.7.5",
     "@codemirror/view": "^6.43.12",
+    "@fontsource/manrope": "^5.3.0",
+    "@fontsource/sora": "^5.3.0",
     "@hocuspocus/provider": "^4.7.0",
     "@lezer/highlight": "^1.2.3",
     "@uiw/react-codemirror": "^4.25.11",
@@ -30,12 +32,14 @@
     "react-resizable-panels": "^4.12.4",
     "react-router-dom": "^6.25.1",
     "remark-gfm": "^4.0.1",
+    "three": "^0.186.0",
     "y-codemirror.next": "^0.3.6",
     "yjs": "^13.6.32"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^4.3.1",
     "typescript": "^5.5.3",
     "vite": "^5.3.4"

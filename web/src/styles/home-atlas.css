@@ -1,0 +1,1393 @@
+/* Home page (from link-campus). Generated from its remake.css: only the rules Home uses, scoped to .discover-page. */
+/* The sage-green palette and fonts of the Home page live here, scoped to it, so the
+   rest of the app keeps its own turquoise theme. Copied from the link-campus remake. */
+.discover-page {
+  --font: "Manrope", "Inter", system-ui, sans-serif;
+  --display: "Sora", "Inter", system-ui, sans-serif;
+  --ink-900: #223b36;
+  --ink-600: #61746e;
+  --ink-500: #72817c;
+  --ink-400: #a1afa8;
+  --ink-200: #e4eae5;
+  --tq-700: #174b47;
+  --tq-600: #277d71;
+  --tq-500: #348a7c;
+  --tq-300: #c1ded1;
+  --tq-100: #e1f0e8;
+  --tq-050: #f0f6f1;
+  --surface: #fff;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Base rules the remake applies globally, scoped here so only Home takes them. */
+.discover-page {
+  font-size: 14px;
+}
+.discover-page button,
+.discover-page input,
+.discover-page textarea,
+.discover-page select {
+  font: inherit;
+}
+.discover-page button {
+  cursor: pointer;
+}
+.discover-page button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+.discover-page a {
+  text-decoration: none;
+}
+.discover-page h1,
+.discover-page h2,
+.discover-page h3,
+.discover-page h4 {
+  letter-spacing: -0.035em;
+}
+.discover-page h1,
+.discover-page h2,
+.discover-page h3 {
+  font-family: var(--display);
+}
+.discover-page ::selection {
+  background: #c4e4d5;
+  color: #174b47;
+}
+
+.discover-page .campus-switch > .status-dot {
+  margin-left: auto;
+}
+
+.discover-page .status-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  background: #64997d;
+  border-radius: 50%;
+}
+
+.discover-page .side-link.active {
+  color: #275d4e;
+  background: #eaf1e8;
+  font-weight: 700;
+}
+
+.discover-page .active .nav-active-dot {
+  display: block;
+  margin-left: auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #457c66;
+}
+
+.discover-page .interest-dot {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #84a78e;
+}
+
+.discover-page .icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: #809086;
+  border-radius: 6px;
+  padding: 6px;
+  flex-shrink: 0;
+}
+
+.discover-page .icon-button:hover {
+  background: #eaf1e8;
+  color: #245a46;
+}
+
+.discover-page .avatar {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 500;
+  color: #637562;
+  background: #e6eddd;
+  border: 3px solid #f6f8f3;
+}
+
+
+
+.discover-page .eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.75px;
+  font-weight: 700;
+  color: #85977f;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 15px;
+}
+
+.discover-page .tiny-spark {
+  font-size: 16px;
+  line-height: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.discover-page .network-section {
+  margin-top: 32px;
+}
+
+.discover-page .section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 17px;
+}
+
+.discover-page .section-heading h2 {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.45px;
+  color: #354d3e;
+}
+
+.discover-page .section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.discover-page .count-badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid #dfe7db;
+  background: #f1f5ef;
+  color: #84927a;
+}
+
+.discover-page .text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 0;
+  background: transparent;
+  color: #7a8e71;
+  font-size: 12px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.discover-page .text-link:hover {
+  color: #2c684b;
+}
+
+.discover-page .section-heading p {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #71816c;
+}
+
+.discover-page .network-tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.discover-page .network-tabs > div {
+  display: flex;
+  gap: 2px;
+  border: 1px solid #e8ece3;
+  background: #f0f3ed;
+  border-radius: 7px;
+  padding: 3px;
+}
+
+.discover-page .network-tabs button {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  color: #919c87;
+  font-size: 12px;
+  padding: 6px 11px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 5px;
+}
+
+.discover-page .network-tabs button.active {
+  background: #fff;
+  color: #527547;
+  border-color: #e0e6d9;
+  box-shadow: 0 1px 2px #38512208;
+}
+
+.discover-page .network-tabs small {
+  font-size: 10px;
+  color: #71816c;
+}
+
+.discover-page .network-tabs-note {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #71816c;
+}
+
+.discover-page .network-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 17px;
+  min-height: 405px;
+}
+
+.discover-page .atlas-panel {
+  position: relative;
+  border: 1px solid #d9e7da;
+  background: radial-gradient(
+    ellipse at 45% 45%,
+    #e3f1e4 0%,
+    #edf4e9 58%,
+    #f0f5eb 100%
+  );
+  border-radius: 12px;
+  overflow: hidden;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 405px;
+}
+
+.discover-page .atlas-panel:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#74977924 0.6px, transparent 0.6px);
+  background-size: 15px 15px;
+  pointer-events: none;
+  mask-image: linear-gradient(to right, black, transparent 70%);
+}
+
+.discover-page .atlas-heading {
+  position: absolute;
+  left: 23px;
+  right: 19px;
+  top: 19px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.discover-page .atlas-heading button {
+  pointer-events: auto;
+}
+
+.discover-page .atlas-eyebrow {
+  letter-spacing: 1.65px;
+  font-size: 10px;
+  color: #86a083;
+}
+
+.discover-page .atlas-heading h3 {
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.6px;
+  color: #638362;
+  margin-top: 6px;
+}
+
+.discover-page .atlas-stage {
+  position: absolute;
+  inset: 28px 0 42px;
+}
+
+.discover-page .atlas-footer {
+  position: absolute;
+  bottom: 15px;
+  left: 20px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.discover-page .atlas-footer > span {
+  font-size: 10px;
+  color: #71816c;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.discover-page .drag-icon {
+  font-size: 14px;
+}
+
+.discover-page .atlas-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #dfe9dc;
+  border-radius: 7px;
+  background: #f8fcf5e8;
+  pointer-events: auto;
+}
+
+.discover-page .atlas-controls > span {
+  height: 13px;
+  border-left: 1px solid #dde6d7;
+  margin: 0 2px;
+}
+
+.discover-page .atlas-controls .icon-button {
+  padding: 5px;
+}
+
+.discover-page .atlas-help {
+  position: absolute;
+  z-index: 8;
+  right: 17px;
+  top: 54px;
+  background: #fff;
+  border: 1px solid #d6e5d6;
+  border-radius: 9px;
+  box-shadow: 0 8px 25px #34574315;
+  width: min(280px, calc(100% - 34px));
+  padding: 18px;
+  font-size: 12px;
+}
+
+.discover-page .atlas-help > button {
+  float: right;
+  margin: -9px -10px 0 6px;
+}
+
+.discover-page .atlas-help p {
+  font-size: 12px;
+  color: #799071;
+  line-height: 1.8;
+  margin-top: 8px;
+}
+
+.discover-page .atlas-fallback-loading {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: #618567;
+}
+
+.discover-page .network-expanded {
+  position: fixed;
+  inset: 24px;
+  z-index: 70;
+  padding: 18px;
+  border: 1px solid #dae4d6;
+  background: #f8faf5;
+  border-radius: 20px;
+  box-shadow: 0 0 0 100vmax #203a3273;
+}
+
+.discover-page .network-expanded .atlas-panel {
+  height: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.discover-page .primary-button {
+  border: 1px solid #34684f;
+  background: #346b52;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: 7px;
+  padding: 12px 17px;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+.discover-page .primary-button:hover {
+  background: #25593f;
+  transform: translateY(-1px);
+}
+
+
+
+
+
+.discover-page .interest-filters {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.discover-page .interest-filters > span {
+  font-size: 11px;
+  color: #71816c;
+  margin-right: 5px;
+}
+
+.discover-page .interest-filters button {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  border-radius: 5px;
+  background: #fff;
+  border: 1px solid #e3e8dc;
+  color: #71816c;
+  padding: 6px 9px;
+  font-size: 10px;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.discover-page .interest-filters button.active {
+  background: #eaf1e3;
+  color: #547747;
+  border-color: #d3e0c7;
+}
+
+.discover-page .interest-filters button:hover {
+  border-color: #94ad80;
+}
+
+.discover-page .interest-filters .interest-dot {
+  width: 5px;
+  height: 5px;
+}
+
+.discover-page .people-section {
+  margin-top: 31px;
+}
+
+.discover-page .people-section .section-heading {
+  margin-bottom: 17px;
+}
+
+.discover-page .person-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.discover-page .connection-card {
+  padding: 18px 20px 0;
+  border-radius: 11px;
+  border: 1px solid #e2e8dc;
+  background: #fff;
+  transition:
+    border 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.discover-page .connection-card:hover {
+  transform: translateY(-3px);
+  border-color: #bacdad;
+  box-shadow: 0 8px 23px #334d2808;
+}
+
+.discover-page .connection-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.discover-page .bookmark-button {
+  margin: -3px -5px 0 0;
+  color: #acb59e;
+}
+
+.discover-page .bookmark-button.is-saved {
+  color: #739262;
+}
+
+.discover-page .connection-card h3 {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.35px;
+}
+
+.discover-page .person-meta {
+  font-size: 10px;
+  color: #71816c;
+  margin-top: 4px;
+  text-transform: capitalize;
+}
+
+.discover-page .connection-reason {
+  display: flex;
+  gap: 5px;
+  align-items: baseline;
+  font-size: 11px;
+  color: #667d5d;
+  margin: 15px 0 16px;
+  line-height: 1.6;
+  min-height: 28px;
+}
+
+.discover-page .small-link-mark {
+  color: #93a680;
+}
+
+.discover-page .connection-card-bottom {
+  padding: 10px 0 12px;
+  border-top: 1px solid #edf0e7;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.discover-page .person-interest {
+  font-size: 10px;
+  color: #71816c;
+  background: #f4f7ee;
+  border-radius: 4px;
+  padding: 3px 6px;
+}
+
+.discover-page .connection-card-bottom button {
+  border: 0;
+  background: none;
+  color: #8e9f7d;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  padding: 3px;
+}
+
+.discover-page .connection-card-bottom button:hover {
+  color: #2d6f49;
+  background: #edf4e5;
+}
+
+.discover-page .saved-filter {
+  font-size: 11px;
+}
+
+.discover-page .saved-filter.active {
+  color: #477640;
+}
+
+.discover-page .discover-footer {
+  border-top: 1px solid #e6ebe0;
+  margin-top: 29px;
+  padding: 18px 0 22px;
+  display: flex;
+  justify-content: space-between;
+  color: #71816c;
+  font-size: 10px;
+}
+
+.discover-page .discover-footer span,
+.discover-page .discover-footer a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.discover-page .discover-footer a {
+  color: #71816c;
+}
+
+.discover-page .empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #819378;
+  width: 100%;
+}
+
+.discover-page .empty-state h3 {
+  font-size: 15px;
+  color: #557149;
+  font-weight: 500;
+}
+
+.discover-page .empty-state p {
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.discover-page .network-loading {
+  min-height: 405px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: #eff5eb;
+  border-radius: 12px;
+  color: #638259;
+}
+
+.discover-page .network-loading h3 {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.discover-page .network-loading p {
+  font-size: 12px;
+}
+
+.discover-page .loading-orbit {
+  width: 44px;
+  height: 44px;
+  border: 1px solid #bbd1b1;
+  border-top-color: #4c8c64;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.discover-page .events-preview {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 22px;
+  border: 1px solid #dce5d4;
+  border-radius: 12px;
+  background: #eff5eb;
+}
+
+.discover-page .events-intro {
+  grid-column: 1 / -1;
+  padding: 10px 0 17px;
+}
+
+.discover-page .events-intro svg {
+  color: #84a373;
+  margin-bottom: 10px;
+}
+
+.discover-page .events-intro h3 {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.discover-page .events-intro p {
+  font-size: 12px;
+  color: #89967e;
+  margin-top: 8px;
+}
+
+.discover-page .event-preview-card {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: #fff;
+  border: 1px solid #dfe7d8;
+  border-radius: 9px;
+  padding: 20px;
+  color: #55734a;
+}
+
+.discover-page .event-preview-card strong {
+  font-size: 14px;
+  font-family: var(--display);
+  font-weight: 400;
+}
+
+.discover-page .event-preview-card > span:last-child {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+}
+
+.discover-page .event-glyph {
+  background: #ecf3e4;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+}
+
+.discover-page .profile-dialog-heading .avatar {
+  margin-bottom: 14px;
+}
+
+.discover-page .profile-contact .primary-button {
+  width: 100%;
+}
+
+.discover-page .profile-contact-actions .text-link {
+  padding: 0 8px;
+}
+
+@media (min-width: 1550px) {
+
+.discover-page .network-grid {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 450px;
+  }
+.discover-page .atlas-panel {
+    min-height: 450px;
+  }
+
+
+
+
+
+}
+
+@media (max-width: 1190px) {
+.discover-page .network-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+
+
+.discover-page .connection-card {
+    padding: 15px 14px 0;
+  }
+.discover-page .atlas-footer > span {
+    font-size: 10px;
+  }
+.discover-page .network-tabs-note {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 980px) {
+.discover-page .network-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+.discover-page .atlas-panel {
+    min-height: 390px;
+  }
+
+
+
+
+
+
+
+
+
+.discover-page .network-expanded {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+.discover-page .network-tabs-note {
+    display: none;
+  }
+.discover-page .person-cards {
+    gap: 10px;
+  }
+.discover-page .connection-card h3 {
+    font-size: 12px;
+  }
+.discover-page .person-meta {
+    font-size: 10px;
+  }
+.discover-page .person-interest {
+    font-size: 10px;
+  }
+.discover-page .connection-reason {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 720px) {
+
+.discover-page .eyebrow {
+    font-size: 10px;
+    letter-spacing: 1.4px;
+  }
+
+
+
+
+
+
+
+
+
+.discover-page .network-section {
+    margin-top: 27px;
+  }
+.discover-page .section-heading h2 {
+    font-size: 14px;
+  }
+.discover-page .section-heading p {
+    font-size: 11px;
+    max-width: 240px;
+    line-height: 1.8;
+  }
+.discover-page .text-link {
+    font-size: 11px;
+  }
+.discover-page .network-tabs button {
+    font-size: 11px;
+    padding-inline: 11px;
+  }
+.discover-page .atlas-panel {
+    min-height: 355px;
+  }
+.discover-page .atlas-heading {
+    left: 17px;
+  }
+.discover-page .atlas-heading h3 {
+    font-size: 14px;
+  }
+.discover-page .atlas-footer {
+    left: 13px;
+    right: 12px;
+  }
+.discover-page .atlas-footer > span {
+    max-width: 110px;
+    font-size: 10px;
+  }
+.discover-page .atlas-controls .icon-button {
+    padding: 4px;
+  }
+.discover-page .atlas-footer .drag-icon {
+    display: none;
+  }
+
+
+
+
+
+
+
+.discover-page .interest-filters {
+    gap: 6px;
+  }
+.discover-page .interest-filters > span {
+    flex-basis: 100%;
+    margin-bottom: 2px;
+  }
+.discover-page .interest-filters button {
+    font-size: 10px;
+  }
+.discover-page .person-cards {
+    grid-template-columns: 1fr;
+  }
+.discover-page .connection-card {
+    position: relative;
+    padding: 17px 18px 0;
+  }
+.discover-page .connection-card-top {
+    margin-bottom: 0;
+  }
+.discover-page .connection-card h3 {
+    margin-top: -37px;
+    margin-left: 56px;
+    font-size: 13px;
+    padding-right: 15px;
+  }
+.discover-page .person-meta {
+    margin-left: 56px;
+    font-size: 11px;
+    margin-top: 5px;
+  }
+.discover-page .connection-reason {
+    font-size: 12px;
+    margin-top: 23px;
+    min-height: 0;
+  }
+.discover-page .connection-card-bottom {
+    padding-block: 12px;
+  }
+.discover-page .person-interest {
+    font-size: 11px;
+  }
+.discover-page .saved-filter {
+    flex-shrink: 0;
+  }
+.discover-page .discover-footer {
+    font-size: 10px;
+    margin-top: 23px;
+  }
+.discover-page .discover-footer a {
+    max-width: 115px;
+    text-align: right;
+  }
+.discover-page .events-preview {
+    grid-template-columns: 1fr;
+    padding: 17px;
+  }
+.discover-page .network-expanded {
+    inset: 9px;
+    padding: 8px;
+  }
+}
+
+.discover-page .search-page-intro .eyebrow {
+  justify-content: center;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.discover-page .connection-reason {
+  font-size: 12px;
+}
+
+.discover-page .person-meta {
+  font-size: 10px;
+}
+
+.discover-page .connection-card h3 {
+  font-size: 15px;
+}
+
+.discover-page .connection-card-bottom button {
+  width: 30px;
+  height: 30px;
+}
+
+.discover-page .bookmark-button {
+  min-width: 30px;
+  min-height: 30px;
+}
+
+
+
+
+
+
+
+.discover-page .atlas-footer > span {
+  font-size: 10px;
+}
+
+.discover-page .section-heading h2 {
+  font-size: 17px;
+}
+
+.discover-page .section-heading p {
+  font-size: 12px;
+}
+
+.discover-page .interest-filters button {
+  padding-block: 7px;
+}
+
+
+
+
+
+@media (max-width: 720px) {
+
+
+
+
+
+
+
+.discover-page .section-heading h2 {
+    font-size: 15px;
+  }
+.discover-page .section-heading p {
+    font-size: 11px;
+  }
+.discover-page .atlas-footer > span {
+    font-size: 9px;
+  }
+
+.discover-page .network-tabs button {
+    min-height: 34px;
+  }
+.discover-page .interest-filters button {
+    min-height: 32px;
+  }
+.discover-page .icon-button {
+    min-width: 30px;
+    min-height: 30px;
+  }
+.discover-page .person-meta {
+    font-size: 10px;
+  }
+.discover-page .connection-reason {
+    font-size: 12px;
+  }
+.discover-page .connection-card h3 {
+    font-size: 15px;
+  }
+
+
+}
+
+.discover-page .settings-profile span:not(.avatar) {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 11px;
+  color: #8a9e7a;
+  margin-top: 10px;
+}
+
+.discover-page .atlas-panel {
+  min-height: 475px;
+}
+
+.discover-page .atlas-explorer {
+  position: absolute;
+  inset: 82px 0 52px;
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.discover-page .interest-globe-rail {
+  min-width: 0;
+  position: relative;
+  border-right: 1px solid #ceddca;
+  margin: 0 0 6px 12px;
+  padding-right: 8px;
+}
+
+.discover-page .atlas-network-area {
+  position: relative;
+  min-width: 0;
+}
+
+.discover-page .atlas-network-area .atlas-stage {
+  inset: 29px 0 24px;
+}
+
+.discover-page .atlas-view-caption {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 18px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  z-index: 5;
+  font-size: 10px;
+  color: #7c9272;
+  text-transform: capitalize;
+  pointer-events: none;
+}
+
+.discover-page .atlas-view-caption strong {
+  color: #53794c;
+  font-size: 9px;
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.discover-page .atlas-depth-note {
+  position: absolute;
+  bottom: 0;
+  left: 14px;
+  right: 14px;
+  font-size: 9px;
+  color: #78916f;
+  text-align: center;
+}
+
+.discover-page .atlas-inline-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #739069;
+  font-size: 12px;
+  text-align: center;
+  padding: 24px;
+}
+
+.discover-page .atlas-inline-state .loading-orbit {
+  width: 28px;
+  height: 28px;
+}
+
+.discover-page .network-expanded .atlas-explorer {
+  grid-template-columns: 245px minmax(0, 1fr);
+}
+
+.discover-page .network-expanded .interest-globe-rail {
+  display: flex;
+  align-items: center;
+}
+
+.discover-page .network-expanded .interest-globe-rail > * {
+  width: 100%;
+}
+
+@media (min-width: 1550px) {
+.discover-page .atlas-panel {
+    min-height: 500px;
+  }
+.discover-page .atlas-explorer {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1190px) and (min-width: 981px) {
+.discover-page .network-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+
+
+
+
+
+
+
+}
+
+@media (max-width: 720px) {
+.discover-page .atlas-panel {
+    min-height: 720px;
+  }
+.discover-page .atlas-explorer {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 275px minmax(0, 1fr);
+    inset: 74px 0 56px;
+  }
+.discover-page .interest-globe-rail {
+    border-right: 0;
+    border-bottom: 1px solid #ceddca;
+    margin: 0 18px;
+    padding: 0 0 6px;
+  }
+.discover-page .atlas-network-area {
+    margin-top: 15px;
+  }
+.discover-page .atlas-view-caption {
+    left: 17px;
+    right: 17px;
+  }
+.discover-page .atlas-view-caption strong {
+    font-size: 9px;
+  }
+.discover-page .atlas-footer > span {
+    max-width: 155px;
+    font-size: 9px;
+  }
+.discover-page .atlas-heading h3 {
+    max-width: 260px;
+  }
+.discover-page .atlas-depth-note {
+    font-size: 9px;
+  }
+.discover-page .network-expanded .atlas-explorer {
+    grid-template-columns: 150px minmax(0, 1fr);
+    grid-template-rows: 1fr;
+  }
+.discover-page .network-expanded .atlas-panel {
+    min-height: 0;
+  }
+.discover-page .network-expanded .interest-globe-rail {
+    margin: 0;
+    border-bottom: 0;
+    border-right: 1px solid #ceddca;
+  }
+.discover-page .network-expanded .atlas-view-caption {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+.discover-page .network-expanded .atlas-network-area {
+    margin-top: 0;
+  }
+.discover-page .network-expanded .atlas-network-area .atlas-stage {
+    top: 45px;
+  }
+}
+
+.discover-page .atlas-explorer.atlas-explorer-communities {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+@media (max-width: 720px) {
+.discover-page .network-expanded .atlas-explorer {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 240px minmax(0, 1fr);
+  }
+.discover-page .network-expanded .interest-globe-rail {
+    margin: 0 14px;
+    border-right: 0;
+    border-bottom: 1px solid #ceddca;
+  }
+.discover-page .network-expanded .atlas-network-area {
+    margin-top: 15px;
+  }
+.discover-page .network-expanded .atlas-view-caption {
+    flex-direction: row;
+    align-items: center;
+  }
+.discover-page .network-expanded .atlas-network-area .atlas-stage {
+    top: 29px;
+  }
+.discover-page .network-expanded .atlas-explorer-communities {
+    grid-template-rows: minmax(0, 1fr);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Header: whose map this is. */
+.discover-page .home-heading {
+  padding: 18px 0 0;
+}
+.discover-page .home-heading h1 {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.1;
+  font-weight: 500;
+  color: var(--ink-900);
+}
+
+/* Person cards: the whole card opens the profile. An invisible full-card button sits
+   under the content; only the bookmark and arrow buttons stay clickable on their own. */
+.discover-page .connection-card {
+  position: relative;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.discover-page .connection-card:hover {
+  box-shadow: 0 6px 18px rgba(34, 59, 54, 0.1);
+  transform: translateY(-1px);
+}
+.discover-page .card-open {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+}
+.discover-page .card-open:focus-visible {
+  outline: 2px solid var(--tq-600);
+  outline-offset: 2px;
+}
+.discover-page .connection-card > *:not(.card-open) {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+.discover-page .connection-card .bookmark-button,
+.discover-page .connection-card-bottom button {
+  pointer-events: auto;
+}

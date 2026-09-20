@@ -1,5 +1,6 @@
 import type {
   ActorSummary,
+  AtlasResponse,
   BridgeSuggestion,
   CourseOffering,
   EventSuggestion,
@@ -85,6 +86,14 @@ const realApi = {
   // "me" is accepted as a literal path segment server-side and resolved
   // from the session — the frontend never needs to know its own actor id.
   getActor: () => get<ActorSummary>(`/actors/me`),
+
+  async getAtlas(conceptId?: string, limit = 12, signal?: AbortSignal): Promise<AtlasResponse> {
+    const query = new URLSearchParams({ limit: String(limit) });
+    if (conceptId) query.set("conceptId", conceptId);
+    const res = await fetch(`${BASE}/actors/me/atlas?${query}`, { credentials: "include", signal });
+    if (!res.ok) throw new Error(await errorMessage(res, "GET /actors/me/atlas"));
+    return res.json() as Promise<AtlasResponse>;
+  },
 
   // Neither of these has an endpoint yet. They resolve empty rather than
   // throwing, so against the live backend the home page renders the real
@@ -174,6 +183,43 @@ const settle = <T>(value: T, ms = 120): Promise<T> =>
 
 const fixtureApi: typeof realApi = {
   getActor: () => settle(fixtures.viewer),
+  async getAtlas(conceptId?: string, limit = 12, signal?: AbortSignal): Promise<AtlasResponse> {
+    if (signal?.aborted) throw new DOMException("Atlas request cancelled", "AbortError");
+    const interestMap = new Map(fixtureInterests
+      .filter((interest) => interest.resolved && interest.conceptId && interest.conceptLabel && interest.visibility !== "private")
+      .map((interest) => [interest.conceptId!, { conceptId: interest.conceptId!, label: interest.conceptLabel!, count: 0 }]));
+    const ranked = fixtures.people.map((suggestion) => ({
+      ...suggestion,
+      sharedConceptIds: suggestion.actor.topConcepts.map((concept) => concept.conceptId).filter((id) => interestMap.has(id)),
+      // Match the server's privacy-aware scorer after demo settings change.
+      reasons: suggestion.reasons.filter((reason) => reason.kind !== "shared_concept" ||
+        reason.evidence.every((evidence) => evidence.kind !== "concept" || interestMap.has(evidence.id))),
+    })).filter((suggestion) => suggestion.sharedConceptIds.length > 0)
+      .sort((a, b) => b.score - a.score);
+    for (const suggestion of ranked) {
+      for (const id of suggestion.sharedConceptIds) interestMap.get(id)!.count++;
+    }
+    const matching = conceptId ? ranked.filter((suggestion) => suggestion.sharedConceptIds.includes(conceptId)) : ranked;
+    const selected = conceptId ? interestMap.get(conceptId) : undefined;
+    const suggestions = matching.slice(0, Math.min(24, Math.max(1, Math.floor(limit)))).map((suggestion) => {
+      if (!selected) return suggestion;
+      const reason: Reason = {
+        kind: "shared_concept",
+        summary: `Both interested in ${selected.label}`,
+        evidence: [{ kind: "concept", id: selected.conceptId, label: selected.label }],
+      };
+      return { ...suggestion, reasons: [reason, ...suggestion.reasons.filter((entry) =>
+        !entry.evidence.some((evidence) => evidence.kind === "concept" && evidence.id === selected.conceptId),
+      )].slice(0, 3) };
+    });
+    const result = await settle({
+      interests: [...interestMap.values()].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label)),
+      suggestions,
+      total: matching.length,
+    });
+    if (signal?.aborted) throw new DOMException("Atlas request cancelled", "AbortError");
+    return result;
+  },
   getBridges: () => settle(fixtures.bridges),
   getEventSuggestions: () => settle(fixtures.events),
   getActorSettings: () => settle({ ...fixtures.viewer, discoverable: fixtureDiscoverable }),

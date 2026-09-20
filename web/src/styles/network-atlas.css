@@ -1,0 +1,154 @@
+.atlas-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  isolation: isolate;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.atlas-atmosphere {
+  position: absolute;
+  inset: 7% 5%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 48% 45%,
+    rgb(185 224 207 / 26%),
+    rgb(212 240 229 / 9%) 40%,
+    transparent 68%
+  );
+}
+
+.atlas-canvas,
+.atlas-labels,
+.atlas-fallback {
+  position: absolute;
+  inset: 0;
+}
+
+.atlas-canvas {
+  cursor: grab;
+  visibility: hidden;
+}
+
+.atlas-ready .atlas-canvas {
+  visibility: visible;
+}
+
+.atlas-canvas:active {
+  cursor: grabbing;
+}
+
+.atlas-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.atlas-labels {
+  pointer-events: none;
+}
+
+.atlas-person {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 4px 11px 4px 5px;
+  color: #355c53;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 1;
+  white-space: nowrap;
+  border: 1px solid rgb(255 255 255 / 95%);
+  border-radius: 100px;
+  background: rgb(251 255 252 / 85%);
+  box-shadow: 0 2px 10px rgb(33 88 72 / 5%);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    background 160ms,
+    box-shadow 160ms,
+    border-color 160ms,
+    opacity 260ms ease;
+  will-change: opacity;
+}
+
+.atlas-person:hover {
+  background: #fff;
+  border-color: #b6d8c9;
+  box-shadow: 0 3px 14px rgb(23 93 76 / 12%);
+}
+
+.atlas-person:focus-visible {
+  outline: 2px solid #178b7f;
+  outline-offset: 4px;
+}
+
+.atlas-person-selected {
+  color: #0d7168;
+  border-color: #8bc5b4;
+  background: #fff;
+  box-shadow: 0 3px 15px rgb(27 117 94 / 12%);
+}
+
+.atlas-person-initials {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e9f1e9;
+  font-size: 7px;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+
+.atlas-person-dot {
+  width: 4px;
+  height: 4px;
+  margin-left: 1px;
+  border-radius: 50%;
+  background: #1d9c87;
+}
+
+.atlas-fallback svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.atlas-fallback-node {
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .atlas-root {
+    min-height: 260px;
+  }
+  .atlas-person {
+    min-height: 34px;
+    font-size: 10px;
+    gap: 5px;
+    padding-right: 8px;
+  }
+  .atlas-person-initials {
+    width: 21px;
+    height: 21px;
+    font-size: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atlas-person {
+    transition: none;
+  }
+}
