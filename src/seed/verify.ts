@@ -52,12 +52,16 @@ export async function runVerification(client: Queryable, planted: PlantedReport)
   const total = resolutionMix.rows.reduce((sum, r) => sum + Number(r.n), 0);
   const needsReview = Number(resolutionMix.rows.find((r) => r.status === "needs_review")?.n ?? 0);
   const needsReviewJobs = await client.query<{ n: string }>(`SELECT count(*) AS n FROM job WHERE state = 'needs_review'`);
+  // A failed job is not a parked one: it means the pipeline broke (an
+  // unregistered prompt, an unreachable model), and its row stays unresolved
+  // looking exactly like a needs_review row. Counting rows alone hid 112 of them.
+  const failedJobs = await client.query<{ n: string }>(`SELECT count(*) AS n FROM job WHERE state = 'failed'`);
   const needsReviewShare = total > 0 ? needsReview / total : 0;
   const exactShare = total > 0 ? (total - needsReview) / total : 0;
   gates.push({
     name: "Resolution mix",
-    passed: exactShare >= 0.75 && needsReviewShare <= 0.2,
-    detail: `resolved ${(exactShare * 100).toFixed(1)}%, needs_review ${(needsReviewShare * 100).toFixed(1)}% (${needsReviewJobs.rows[0].n} jobs)`,
+    passed: exactShare >= 0.75 && needsReviewShare <= 0.2 && Number(failedJobs.rows[0].n) === 0,
+    detail: `resolved ${(exactShare * 100).toFixed(1)}%, needs_review ${(needsReviewShare * 100).toFixed(1)}% (${needsReviewJobs.rows[0].n} parked jobs, ${failedJobs.rows[0].n} FAILED jobs)`,
   });
 
   const collapse = await client.query<{ concept_id: string; n: string }>(

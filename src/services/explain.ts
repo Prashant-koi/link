@@ -34,6 +34,19 @@ export async function attachCachedProse(
     return { ...reason, prose: cached.prose };
   }
 
-  await enqueue(pool, "explain_pair", { actorA, actorB, ...vars });
+  // The prose cache is keyed on (evidence_path, graph_version) alone — the
+  // worker never looks at the actors — so an identical job that is already
+  // waiting or running will produce exactly this result. Without this guard
+  // every suggestions request re-enqueued one job per reason.
+  const alreadyQueued = await pool.query(
+    `SELECT 1 FROM job
+     WHERE kind = 'explain_pair' AND state IN ('pending', 'running')
+       AND payload->>'evidence_path' = $1 AND payload->>'graph_version' = $2
+     LIMIT 1`,
+    [vars.evidence_path, vars.graph_version],
+  );
+  if (alreadyQueued.rows.length === 0) {
+    await enqueue(pool, "explain_pair", { actorA, actorB, ...vars });
+  }
   return reason;
 }

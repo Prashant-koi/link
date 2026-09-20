@@ -15,7 +15,9 @@
     "dev:seed": "tsx src/seed/index.ts",
     "dev:migrate": "tsx src/migrate.ts",
     "seed": "node dist/seed/index.js",
-    "migrate": "node dist/migrate.js"
+    "migrate": "node dist/migrate.js",
+    "reprocess": "node dist/scripts/reprocess.js",
+    "dev:reprocess": "tsx src/scripts/reprocess.ts"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

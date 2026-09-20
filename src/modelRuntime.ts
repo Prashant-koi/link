@@ -44,13 +44,20 @@ function authHeaders(): Record<string, string> {
   return config.llm.apiKey ? { Authorization: `Bearer ${config.llm.apiKey}` } : {};
 }
 
+// "query" = a messy string being looked up; "document" = a concept definition
+// being indexed. nomic-embed-text is trained with a different prefix for
+// each, so the two sides of the kNN match have to say which they are.
+export type EmbedKind = "query" | "document";
+
 // Batches up to embeddingBatchSize texts per request against the
 // OpenAI-compatible /embeddings endpoint.
-export async function embed(texts: string[]): Promise<number[][]> {
+export async function embed(texts: string[], kind: EmbedKind): Promise<number[][]> {
   if (texts.length === 0) return [];
+  const prefix = kind === "query" ? config.llm.embedQueryPrefix : config.llm.embedDocumentPrefix;
+  const prefixed = texts.map((t) => prefix + t);
   const batches: string[][] = [];
-  for (let i = 0; i < texts.length; i += config.workers.embeddingBatchSize) {
-    batches.push(texts.slice(i, i + config.workers.embeddingBatchSize));
+  for (let i = 0; i < prefixed.length; i += config.workers.embeddingBatchSize) {
+    batches.push(prefixed.slice(i, i + config.workers.embeddingBatchSize));
   }
 
   const results: number[][][] = await Promise.all(
@@ -59,10 +66,7 @@ export async function embed(texts: string[]): Promise<number[][]> {
         const res = await fetch(llmUrl("/v1/embeddings"), {
           method: "POST",
           headers: { "Content-Type": "application/json", ...authHeaders() },
-          // keep_alive: Ollama unloads an idle model after a few minutes and
-          // the next request pays a full reload; -1 keeps it resident. A
-          // no-op field for any other OpenAI-compatible runtime.
-          body: JSON.stringify({ model: config.llm.embeddingModel, input: batch, keep_alive: -1 }),
+          body: JSON.stringify({ model: config.llm.embeddingModel, input: batch }),
         });
         if (!res.ok) {
           throw new Error(`embedding request failed: ${res.status} ${await res.text()}`);
@@ -139,7 +143,7 @@ export async function runStructuredPrompt(
         model: config.llm.instructModel,
         temperature: params.temperature ?? 0,
         max_tokens: params.max_tokens ?? 300,
-        keep_alive: -1, // Ollama: stays resident: 128GB unified memory, no reason to reload
+        ...(config.llm.reasoningEffort ? { reasoning_effort: config.llm.reasoningEffort } : {}),
         messages: [
           { role: "system", content: prompt.system_body },
           { role: "user", content: userMessage },
@@ -160,11 +164,20 @@ export async function runStructuredPrompt(
       throw new Error(`instruct request failed: ${res.status} ${await res.text()}`);
     }
     const json = (await res.json()) as {
-      choices: Array<{ message: { content: string } }>;
+      choices: Array<{ message: { content: string | null }; finish_reason?: string }>;
       usage?: { prompt_tokens?: number; completion_tokens?: number };
     };
+    const content = json.choices[0].message.content;
+    if (!content?.trim()) {
+      // The signature of a thinking model that spent its whole budget
+      // reasoning — say so, instead of surfacing a bare JSON.parse error.
+      throw new Error(
+        `instruct model returned empty content for ${prompt.name} ` +
+          `(finish_reason=${json.choices[0].finish_reason}; if this is a thinking model, LLM_REASONING_EFFORT must be "none")`,
+      );
+    }
     return {
-      text: json.choices[0].message.content,
+      text: content,
       tokensIn: json.usage?.prompt_tokens ?? null,
       tokensOut: json.usage?.completion_tokens ?? null,
     };
@@ -191,4 +204,38 @@ export async function runStructuredPrompt(
   );
 
   return { parsed, fromCache: false };
+}
+
+// Ollama unloads an idle model after ~5 minutes, and the next call then pays
+// a full reload (measured: ~14s for the embedder, ~46s for qwen3.8). A
+// `keep_alive: -1` field on /v1/* requests is accepted but ignored, and every
+// /v1 request resets the expiry to the 5-minute default anyway — so the
+// models are pinned through Ollama's native /api/generate with an empty
+// prompt (loads, no generation) or a one-word embed, repeated inside the idle window. Best-effort
+// and Ollama-specific: against any other runtime it just fails quietly.
+async function pinModel(model: string, kind: "embedding" | "chat"): Promise<void> {
+  if (!model) return;
+  try {
+    // An embedding model refuses /api/generate, so it is pinned with a tiny
+    // /api/embed instead; both native endpoints honour keep_alive.
+    const [path, body] =
+      kind === "embedding"
+        ? ["/api/embed", { model, input: "warm", keep_alive: -1 }]
+        : ["/api/generate", { model, keep_alive: -1 }];
+    await fetch(llmUrl(path), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    // Not fatal: the next real request will just pay the load time.
+  }
+}
+
+export function keepModelsWarm(): void {
+  if (!config.llm.baseUrl) return;
+  const pinAll = () =>
+    Promise.all([pinModel(config.llm.embeddingModel, "embedding"), pinModel(config.llm.instructModel, "chat")]);
+  void pinAll();
+  setInterval(() => void pinAll(), 2 * 60 * 1000).unref();
 }

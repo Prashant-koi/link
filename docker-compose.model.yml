@@ -1,3 +1,9 @@
+# NOT USED ON THIS MACHINE (the GX10): its Docker has no NVIDIA runtime, so
+# `runtime: nvidia` below fails to start. Ollama runs natively here instead
+# (systemd, 127.0.0.1:11434) and the worker reaches it over host networking —
+# see the `worker` service in docker-compose.yml. Kept for hosts that do have
+# nvidia-container-toolkit installed.
+#
 # Separate from the app stack deliberately — deployment handoff, "Two
 # stacks, not one": the model loads once and stays loaded, needs GPU
 # passthrough nothing else in the stack needs, and is architecturally a

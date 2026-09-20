@@ -1,6 +1,7 @@
 import { pool } from "../db.js";
 import { runMigrations } from "../migrate.js";
 import { config } from "../config.js";
+import { loadPrompts } from "../promptRegistry.js";
 import { runOnce as drainOnce } from "../workers/resolutionWorker.js";
 import { loadCsoSubset } from "./cso.js";
 import { buildCohorts, generateContexts, generateOrgs, generatePeople, TRENDING_COUNT } from "./generate.js";
@@ -71,6 +72,11 @@ async function main() {
   console.log(`Migrations applied: ${applied.length ? applied.join(", ") : "(none — already up to date)"}`);
 
   if (args.reset) await resetData();
+
+  // The API and worker register prompts at boot; the seeder is a third entry
+  // point that drains the same queue, and on a fresh database nothing has
+  // registered them yet — every row that needs the model would fail.
+  await loadPrompts();
 
   const rng = new Rng(args.seed);
 

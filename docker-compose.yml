@@ -5,6 +5,11 @@ services:
     # Without this the database stays down after a reboot, and api/worker
     # crash-loop against nothing.
     restart: unless-stopped
+    # Loopback only — reachable from this machine, not from the network. The
+    # worker runs on the host network (see below) so it can't use the compose
+    # service name "postgres", and needs a host port to reach the database.
+    ports:
+      - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_DB: link
       POSTGRES_USER: link
@@ -67,14 +72,23 @@ services:
     depends_on:
       - api
 
+  # The only process (with the seeder and reprocess script) that talks to the
+  # model. Ollama runs natively on this host bound to 127.0.0.1 — the docker
+  # runtime here has no NVIDIA support, so docker-compose.model.yml can't be
+  # used — and a bridge-network container can't reach a loopback-only service.
+  # Host networking is the way in that needs neither root nor rebinding
+  # Ollama (which has no auth) onto the venue network.
   worker:
     build: .
     platform: linux/arm64
     command: npm run start:worker
+    network_mode: host
     depends_on:
       migrate: { condition: service_completed_successfully }
     env_file: .env
-    extra_hosts: ["host.docker.internal:host-gateway"]
+    environment:
+      DATABASE_URL: postgres://link:${POSTGRES_PASSWORD}@127.0.0.1:5432/link
+      LLM_BASE_URL: http://127.0.0.1:11434
     restart: unless-stopped
 
   # Ingest is on-demand/batch (backend handoff's runtime-roles table), not a

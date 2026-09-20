@@ -124,7 +124,7 @@ export async function loadCsoSubset(
     const batchSize = config.workers.embeddingBatchSize;
     for (let i = 0; i < subset.concepts.length; i += batchSize) {
       const batch = subset.concepts.slice(i, i + batchSize);
-      const vectors = await embed(batch.map((c) => c.definition));
+      const vectors = await embed(batch.map((c) => c.definition), "document");
       for (let j = 0; j < batch.length; j++) {
         await client.query(`UPDATE concept SET embedding = $2::vector WHERE id = $1`, [
           idByLabel.get(batch[j].label),
