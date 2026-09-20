@@ -1,7 +1,13 @@
 import { pool } from "./db.js";
 import type { Queryable } from "./db.js";
 
-export type JobKind = "resolve_concept" | "embed" | "extract_bio" | "explain_pair" | "parse_ask";
+export type JobKind =
+  | "resolve_concept"
+  | "embed"
+  | "extract_bio"
+  | "explain_pair"
+  | "parse_ask"
+  | "ingest_import";
 export type JobState = "pending" | "running" | "done" | "failed" | "needs_review";
 
 export interface Job {

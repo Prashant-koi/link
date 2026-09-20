@@ -82,6 +82,12 @@ export async function resolveRawText(rawText: string): Promise<ResolutionResult>
     return { status: "resolved", conceptId: fast.conceptId, via: fast.via };
   }
 
+  // Everything past this point needs the model runtime. Without one, a
+  // string that no alias covers is parked for review rather than failing the
+  // job: the raw_text is already written, and re-running resolution over it
+  // once the GPU host is back is exactly the recovery path the data model
+  // doc describes. --strict (RESOLUTION_STRICT) makes this a hard failure
+  // instead, once there's a runtime to point at.
   if (!config.llm.baseUrl && !config.resolution.strict) {
     return { status: "needs_review", reason: "model runtime unavailable (LLM_BASE_URL unset)" };
   }

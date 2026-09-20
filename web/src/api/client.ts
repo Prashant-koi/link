@@ -1,5 +1,8 @@
 import type {
   ActorSummary,
+  CourseOffering,
+  ImportKind,
+  ImportSummary,
   AskSummary,
   AspirationMatch,
   ConnectionSuggestion,
@@ -28,8 +31,20 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`POST ${path} failed: ${res.status}`);
+  if (!res.ok) throw new Error(await errorMessage(res, `POST ${path}`));
   return res.json() as Promise<T>;
+}
+
+// Import rejections carry a message the person needs to read ("that PDF has
+// no text layer"), so it is preserved rather than flattened to a status code.
+async function errorMessage(res: Response, prefix: string): Promise<string> {
+  try {
+    const body = (await res.json()) as { error?: string };
+    if (body?.error) return body.error;
+  } catch {
+    // Non-JSON error body — fall through to the status line.
+  }
+  return `${prefix} failed: ${res.status}`;
 }
 
 async function patch<T>(path: string, body: unknown): Promise<T> {
@@ -60,13 +75,31 @@ export const api = {
   listAsks: (cursor?: string) => get<Cursor<AskSummary>>(`/asks${cursor ? `?cursor=${cursor}` : ""}`),
   createAsk: (text: string) => post<{ id: string }>("/asks", { text }),
   requestIntro: (targetId: string) => post<{ state: IntroState }>("/intros", { targetId }),
-  search: (q: string) => get<unknown[]>(`/search?q=${encodeURIComponent(q)}`),
   searchAspirations: (q: string) => get<AspirationMatch[]>(`/search/aspirations?q=${encodeURIComponent(q)}`),
   postInterest: (rawText: string, stance: Stance) => post<{ ok: true }>("/me/interests", { rawText, stance }),
   setDiscoverable: (discoverable: boolean) => patch<ActorSummary>(`/actors/me`, { discoverable }),
   listInterests: () => get<InterestRow[]>(`/actors/me/interests`),
   setInterestVisibility: (interestId: string, visibility: Visibility) =>
     patch<{ ok: true }>(`/actors/me/interests/${interestId}`, { visibility }),
+
+  // Onboarding/imports run before a session exists — see the imports
+  // router, which is mounted ahead of requireSession for exactly this
+  // reason — so these still pass actorId explicitly rather than relying on
+  // the session, unlike everything above.
+  createActor: (displayName: string) => post<ActorSummary>("/actors", { displayName }),
+  getCourseCatalog: () => get<CourseOffering[]>("/courses/catalog"),
+  listImports: (actorId: string) => get<ImportSummary[]>(`/me/imports?actorId=${actorId}`),
+  // Accepted immediately (202); the import runs on the worker and its
+  // progress is read back from listImports.
+  createImport: (body: {
+    actorId: string;
+    kind: ImportKind;
+    origin?: string;
+    text?: string;
+    filename?: string;
+    contentBase64?: string;
+    courses?: CourseOffering[];
+  }) => post<{ id: string }>("/me/imports", body),
 
   // Auth — these read the JSON body regardless of status code, since the
   // login page needs the error message (or authMode) either way.

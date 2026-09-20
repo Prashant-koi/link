@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import { AppShell } from "./components/AppShell";
 import { Home } from "./pages/Home";
+import { Import } from "./pages/Import";
 import { View } from "./pages/View";
 import { Search } from "./pages/Search";
 import { Settings } from "./pages/Settings";
@@ -38,6 +39,7 @@ export function App() {
             }
           >
             <Route path="/" element={<Home />} />
+            <Route path="/import" element={<Import />} />
             <Route path="/view" element={<View />} />
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />

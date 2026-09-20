@@ -75,3 +75,37 @@ export type AspirationMatch = {
   score: number;
   reasons: Reason[];
 };
+
+// Live onboarding imports (resume / LinkedIn / GitHub / courses). The UI
+// never sees job rows — it sees one summary per import, with the counts that
+// tell the person their upload actually turned into graph.
+export type ImportKind = "resume" | "linkedin" | "github" | "courses";
+export type ImportStatus = "pending" | "running" | "done" | "failed";
+
+export type ImportSummary = {
+  id: string;
+  kind: ImportKind;
+  origin?: string;
+  status: ImportStatus;
+  detail?: string;
+  createdAt: string;
+  completedAt?: string;
+  // Extraction and resolution are separate async stages, so they're counted
+  // separately: "12 interests found, 9 resolved so far" is the honest
+  // statement, and it's what makes the pipeline legible on stage.
+  conceptsFound: number;
+  conceptsResolved: number;
+  contextsLinked: number;
+};
+
+// The simulated course system (a real Canvas/SIS integration is deliberately
+// out of scope). Shape matches what a registrar feed would give us, so the
+// import path doesn't change when a real one replaces the catalogue.
+export type CourseOffering = {
+  code: string;
+  title: string;
+  term: string;
+  description: string;
+  startsOn: string;
+  endsOn: string;
+};

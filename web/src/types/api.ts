@@ -82,3 +82,29 @@ export type InterestRow = {
   visibility: Visibility;
   resolved: boolean;
 };
+
+// Live onboarding imports — mirrors the backend's src/types.ts additions.
+export type ImportKind = "resume" | "linkedin" | "github" | "courses";
+export type ImportStatus = "pending" | "running" | "done" | "failed";
+
+export type ImportSummary = {
+  id: string;
+  kind: ImportKind;
+  origin?: string;
+  status: ImportStatus;
+  detail?: string;
+  createdAt: string;
+  completedAt?: string;
+  conceptsFound: number;
+  conceptsResolved: number;
+  contextsLinked: number;
+};
+
+export type CourseOffering = {
+  code: string;
+  title: string;
+  term: string;
+  description: string;
+  startsOn: string;
+  endsOn: string;
+};

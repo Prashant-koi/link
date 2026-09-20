@@ -35,6 +35,11 @@ export const config = {
     embeddingBatchSize: Number(process.env.EMBEDDING_BATCH_SIZE ?? 256),
     pollIntervalMs: Number(process.env.WORKER_POLL_INTERVAL_MS ?? 1000),
   },
+  github: {
+    // Unauthenticated GitHub API calls are capped at 60/hour per IP, which a
+    // demo can burn through. Optional, and nothing else changes when it is set.
+    token: process.env.GITHUB_TOKEN ?? "",
+  },
   resolution: {
     vectorAcceptThreshold: Number(process.env.RESOLUTION_ACCEPT_THRESHOLD ?? 0.92),
     vectorAdjudicateFloor: Number(process.env.RESOLUTION_ADJUDICATE_FLOOR ?? 0.75),
