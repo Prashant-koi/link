@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/AuthContext";
 
 const NAV_ITEMS = [
   { to: "/", label: "Home" },
@@ -8,8 +9,17 @@ const NAV_ITEMS = [
 ];
 
 // Single top bar: left-aligned wordmark, four text links. No sidebar, no
-// footer. The background wash lives on body::before globally.
+// footer (frontend handoff, "Routes"). Log out sits at the far right —
+// not a fifth nav item, since the spec fixes the nav at four.
 export function AppShell() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    await logout();
+    navigate("/login", { replace: true });
+  }
+
   return (
     <div>
       <header
@@ -21,7 +31,7 @@ export function AppShell() {
         }}
       >
         <span style={{ fontSize: "var(--fs-lg)", fontWeight: 600, color: "var(--ink-900)" }}>Link</span>
-        <nav style={{ display: "flex", gap: 24 }}>
+        <nav style={{ display: "flex", gap: 24, flex: 1 }}>
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
@@ -39,6 +49,18 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
+        <button
+          onClick={handleLogout}
+          style={{
+            fontSize: "var(--fs-sm)",
+            color: "var(--ink-500)",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Log out
+        </button>
       </header>
       <main style={{ padding: "24px" }}>
         <Outlet />

@@ -10,19 +10,16 @@ import { ContactBlock } from "./ContactBlock";
 export function PersonPanel({
   actor,
   reasons,
-  meId,
   onClose,
 }: {
   actor: ActorSummary;
   reasons: Reason[];
-  meId: string;
   onClose: () => void;
 }) {
   const [introState, setIntroState] = useState<IntroState | null>(null);
 
   async function handleRequestIntro() {
-    if (!meId) return;
-    const { state } = await api.requestIntro(meId, actor.id);
+    const { state } = await api.requestIntro(actor.id);
     setIntroState(state);
   }
 

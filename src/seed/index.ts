@@ -6,6 +6,7 @@ import { loadCsoSubset } from "./cso.js";
 import { buildCohorts, generateContexts, generateOrgs, generatePeople, TRENDING_COUNT } from "./generate.js";
 import { assignConceptsAndEdges, assignOrgConcepts } from "./assign.js";
 import { applyPlantedCases } from "./planted.js";
+import { generateCredentials } from "./credentials.js";
 import { runVerification, printReport } from "./verify.js";
 import { Rng } from "./rng.js";
 
@@ -40,6 +41,8 @@ const RESET_TABLES_IN_ORDER = [
   "ask_concept",
   "ask",
   "intro",
+  "session",
+  "credential",
   "actor_contact_method",
   "actor_concept",
   "edge",
@@ -109,6 +112,29 @@ async function main() {
     client2.release();
   }
   console.log(`Generated ${orgs.departments.length + orgs.labs.length + orgs.clubs.length} orgs, ${contexts.length} contexts, ${people.length} people`);
+
+  // Stage 4b: credentials. Pure string manipulation + hashing, no model
+  // calls — see auth handoff, "Seeder integration". This is the slowest
+  // stage (bcrypt at cost 8 is deliberately expensive), so it only runs
+  // when (re)generating people, same guard as stage 5 below.
+  const alreadyHasCredentials = await pool.query(`SELECT 1 FROM credential WHERE actor_id = $1`, [people[0].id]);
+  let credentials: Awaited<ReturnType<typeof generateCredentials>> = [];
+  if (alreadyHasCredentials.rows.length > 0 && !args.reset) {
+    console.log("credentials already exist for this seed — skipping (pass --reset to regenerate)");
+  } else {
+    const credClient = await pool.connect();
+    try {
+      await credClient.query("BEGIN");
+      credentials = await generateCredentials(credClient, rng, people);
+      await credClient.query("COMMIT");
+    } catch (err) {
+      await credClient.query("ROLLBACK");
+      throw err;
+    } finally {
+      credClient.release();
+    }
+    console.log(`Generated ${credentials.length} credentials`);
+  }
 
   // Stage 5 (skipped if this seed's data already exists and --reset wasn't passed)
   const alreadySeeded = await pool.query(`SELECT 1 FROM actor_concept WHERE actor_id = $1 LIMIT 1`, [people[0].id]);
@@ -185,6 +211,16 @@ async function main() {
     // Stage 9
     const gates = await runVerification(pool, planted);
     printReport(gates, planted);
+
+    if (credentials.length > 0) {
+      const byActorId = new Map(credentials.map((c) => [c.actorId, c]));
+      const demoCred = byActorId.get(planted.demoUser.id);
+      const heroPartnerCred = byActorId.get(planted.heroPair.ids[1]);
+      console.log("\n=== Login credentials ===");
+      if (demoCred) console.log(`Demo user:  ${demoCred.username} / ${demoCred.password}`);
+      if (demoCred && heroPartnerCred) console.log(`Hero pair:  ${demoCred.username}  <->  ${heroPartnerCred.username}`);
+      console.log(`Search concept: "${planted.searchTriple.conceptLabel}"`);
+    }
   }
 
   await pool.end();

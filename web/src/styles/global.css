@@ -82,6 +82,14 @@ a {
   animation: panel-slide-in 150ms ease-out;
 }
 
+/* Login page inputs: 1px hairline, turning --tq-500 on focus (auth
+   handoff, "Login page"), plus the standard focus ring. */
+.login-input:focus-visible {
+  border-color: var(--tq-500);
+  outline: 2px solid var(--tq-600);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

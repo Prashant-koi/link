@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { api } from "../api/client";
-import { useMe } from "../hooks/useMe";
 import { ConceptChip } from "../components/ConceptChip";
 import { ReasonList } from "../components/ReasonList";
 import type { AspirationMatch, MatchKind } from "../types/api";
@@ -15,36 +13,27 @@ const SECTIONS: { kind: MatchKind; title: string }[] = [
 const RETRY_DELAY_MS = 3000;
 
 export function Search() {
-  const [me] = useMe();
   const [query, setQuery] = useState("");
   const [pendingText, setPendingText] = useState<string | null>(null);
   const [matches, setMatches] = useState<AspirationMatch[] | null>(null);
 
   async function runSearch(q: string) {
-    const results = await api.searchAspirations(me, q);
+    const results = await api.searchAspirations(q);
     setMatches(results);
     // Resolution is async: if nothing resolved yet, try once more shortly
     // rather than leaving the raw-text chip stuck forever.
     if (results.length === 0) {
-      setTimeout(() => api.searchAspirations(me, q).then(setMatches), RETRY_DELAY_MS);
+      setTimeout(() => api.searchAspirations(q).then(setMatches), RETRY_DELAY_MS);
     }
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!query.trim() || !me) return;
+    if (!query.trim()) return;
     setPendingText(query.trim());
     setMatches(null);
-    await api.postInterest(me, query.trim(), "aspiring");
+    await api.postInterest(query.trim(), "aspiring");
     await runSearch(query.trim());
-  }
-
-  if (!me) {
-    return (
-      <p style={{ fontSize: "var(--fs-base)", color: "var(--ink-600)" }}>
-        Set up your profile in <Link to="/settings">Settings</Link> first.
-      </p>
-    );
   }
 
   return (

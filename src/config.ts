@@ -11,6 +11,16 @@ function required(name: string, fallback?: string): string {
 export const config = {
   databaseUrl: required("DATABASE_URL"),
   apiPort: Number(process.env.API_PORT ?? 3001),
+  nodeEnv: process.env.NODE_ENV ?? "development",
+  auth: {
+    // No default: an unrecognised or missing AUTH_MODE is an error, not a
+    // silent fall-through to the permissive branch (auth handoff, "Mode
+    // gate" — "it fails closed").
+    mode: process.env.AUTH_MODE,
+    allowDemoAuth: process.env.ALLOW_DEMO_AUTH === "1",
+    sessionSecret: process.env.SESSION_SECRET ?? "dev-only-change-me-to-a-long-random-string",
+    bcryptCost: Number(process.env.AUTH_BCRYPT_COST ?? 8), // real mode must raise this to 12 + argon2id
+  },
   llm: {
     baseUrl: process.env.LLM_BASE_URL ?? "",
     apiKey: process.env.LLM_API_KEY ?? "",

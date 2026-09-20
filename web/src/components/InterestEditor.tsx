@@ -7,13 +7,11 @@ import { StanceSelect } from "./StanceSelect";
 // shown) and Search (default 'aspiring', selector hidden) — same
 // interaction, different defaults, per the components spec.
 export function InterestEditor({
-  actorId,
   defaultStance,
   showStanceSelector = false,
   placeholder = "Add an interest",
   onSubmitted,
 }: {
-  actorId: string;
   defaultStance: Stance;
   showStanceSelector?: boolean;
   placeholder?: string;
@@ -25,12 +23,12 @@ export function InterestEditor({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!rawText.trim() || !actorId) return;
+    if (!rawText.trim()) return;
     setSubmitting(true);
     try {
       // Resolution is async — never block the input on the model. This
       // accepts immediately; the concept chip fills in on a later fetch.
-      await api.postInterest(actorId, rawText.trim(), stance);
+      await api.postInterest(rawText.trim(), stance);
       onSubmitted?.(rawText.trim(), stance);
       setRawText("");
     } finally {
