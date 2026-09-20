@@ -83,6 +83,15 @@ export async function resolveRawText(rawText: string): Promise<ResolutionResult>
   }
   const surfaceNorm = normalizeSurface(rawText);
 
+  // Everything past this point needs the model runtime. Without one, a
+  // string that no alias covers is parked for review rather than failing the
+  // job: the raw_text is already written, and re-running resolution over it
+  // once the GPU host is back is exactly the recovery path the data model
+  // doc describes.
+  if (!config.llm.baseUrl) {
+    return { status: "needs_review", reason: "model runtime unavailable (LLM_BASE_URL unset)" };
+  }
+
   const [embedding] = await embed([rawText]);
   const vectorLiteral = toVectorLiteral(embedding);
   const candidates = await pool.query<ConceptCandidate>(

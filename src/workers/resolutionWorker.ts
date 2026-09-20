@@ -3,8 +3,18 @@ import { runStructuredPrompt } from "../modelRuntime.js";
 import { getActivePrompt } from "../promptRegistry.js";
 import { claim, complete, enqueue, fail, needsReview, type Job } from "../queue.js";
 import { embedConceptDefinition, resolveRawText } from "../services/resolution.js";
+import { ingestExtractedItems } from "../services/extraction.js";
+import { processImport } from "../services/imports.js";
+import { refreshConceptIdf } from "../services/idf.js";
 
-const JOB_KINDS = ["resolve_concept", "embed", "extract_bio", "explain_pair", "parse_ask"] as const;
+const JOB_KINDS = [
+  "resolve_concept",
+  "embed",
+  "extract_bio",
+  "explain_pair",
+  "parse_ask",
+  "ingest_import",
+] as const;
 
 async function handleResolveConcept(job: Job): Promise<void> {
   const { target, targetId, rawText } = job.payload as {
@@ -25,6 +35,10 @@ async function handleResolveConcept(job: Job): Promise<void> {
     `UPDATE ${table} SET concept_id = $2, resolved_at = now() WHERE id = $1`,
     [targetId, result.conceptId],
   );
+  // A just-resolved concept is invisible to the read path until concept_idf
+  // catches up — and during a live import that is the difference between a
+  // graph that fills in on screen and one that stays empty.
+  await refreshConceptIdf();
   await complete(job.id);
 }
 
@@ -40,19 +54,9 @@ async function handleExtractBio(job: Job): Promise<void> {
   const { parsed } = await runStructuredPrompt(prompt, { source_text: sourceText });
   const items = Array.isArray(parsed.items) ? (parsed.items as string[]) : [];
 
-  await withTransaction(async (client) => {
-    for (const rawText of items) {
-      const { rows } = await client.query<{ id: string }>(
-        `INSERT INTO actor_concept (actor_id, raw_text, source) VALUES ($1, $2, 'llm') RETURNING id`,
-        [actorId, rawText],
-      );
-      await enqueue(client, "resolve_concept", {
-        target: "actor_concept",
-        targetId: rows[0].id,
-        rawText,
-      });
-    }
-  });
+  await withTransaction((client) =>
+    ingestExtractedItems(client, actorId, items, { source: "llm", strength: 0.7 }),
+  );
   await complete(job.id);
 }
 
@@ -90,6 +94,15 @@ async function handleParseAsk(job: Job): Promise<void> {
   await complete(job.id);
 }
 
+// Imports (resume / LinkedIn / GitHub / courses) run on this worker because
+// extraction is a bio_extract call, and this is the only process that talks
+// to the model runtime. The work itself lives in services/imports.ts.
+async function handleIngestImport(job: Job): Promise<void> {
+  const { importId } = job.payload as { importId: string };
+  await processImport(importId);
+  await complete(job.id);
+}
+
 async function dispatch(job: Job): Promise<void> {
   switch (job.kind) {
     case "resolve_concept":
@@ -102,6 +115,8 @@ async function dispatch(job: Job): Promise<void> {
       return handleExplainPair(job);
     case "parse_ask":
       return handleParseAsk(job);
+    case "ingest_import":
+      return handleIngestImport(job);
   }
 }
 

@@ -2,6 +2,7 @@ import express from "express";
 import { actorsRouter } from "./routes/actors.js";
 import { asksRouter } from "./routes/asks.js";
 import { conceptsRouter } from "./routes/concepts.js";
+import { importsRouter } from "./routes/imports.js";
 import { introsRouter } from "./routes/intros.js";
 import { meRouter } from "./routes/me.js";
 import { searchRouter } from "./routes/search.js";
@@ -10,7 +11,9 @@ import { searchRouter } from "./routes/search.js";
 // vs. session identity isn't reconciled yet) — no auth middleware here.
 export function createServer() {
   const app = express();
-  app.use(express.json());
+  // Uploads arrive as base64 in the JSON body (no multipart middleware in
+  // this API), so the default 100kb limit would reject an ordinary resume.
+  app.use(express.json({ limit: "12mb" }));
 
   app.use(actorsRouter);
   app.use(conceptsRouter);
@@ -18,6 +21,7 @@ export function createServer() {
   app.use(introsRouter);
   app.use(meRouter);
   app.use(searchRouter);
+  app.use(importsRouter);
 
   app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     console.error(err);

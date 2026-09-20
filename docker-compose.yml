@@ -50,6 +50,10 @@ services:
       postgres:
         condition: service_healthy
 
+  # Imports run on the resolution worker (extraction is a bio_extract call),
+  # so there is no extra service here — but that worker now makes outbound
+  # HTTPS calls to api.github.com as well as to the model runtime.
+
   # Model runtime (vLLM/Ollama) runs on the GX10, not in this compose file —
   # point LLM_BASE_URL in .env at it. Nothing above assumes it's local.
 
